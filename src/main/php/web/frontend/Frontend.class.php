@@ -32,9 +32,6 @@ class Frontend implements Handler {
    */
   private function handler($verb, $uri) {
 
-    // Direct match
-    if ($this->type->hasMethod($verb)) return [$this->type->getMethod($verb), []];
-
     // Check methods annotated, e.g. @post
     foreach ($this->type->getMethods() as $method) {
       if (!$method->hasAnnotation($verb)) continue;
