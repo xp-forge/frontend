@@ -39,7 +39,7 @@ class TemplateEngine implements Templates {
     $this->backing= (new HandlebarsEngine())->withTemplates(new FilesIn($templates));
   }
 
-  public function write($name, $context= [], $out) {
+  public function write($name, $context, $out) {
     $this->backing->write($this->backing->load($name), $context, $out);
   }
 }

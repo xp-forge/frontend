@@ -9,5 +9,5 @@ interface Templates {
    * @param  [:var] $context
    * @param  io.streams.OutputStream $out
    */
-  public function write($name, $context= [], $out);
+  public function write($name, $context, $out);
 }
