@@ -1,5 +1,8 @@
 <?php namespace web\frontend;
 
+use web\frontend\delegates\PatternBased;
+use web\frontend\delegates\MarkBased;
+
 module xp-forge/frontend {
 
   /** @return void */
