@@ -54,7 +54,7 @@ The handlebars template is quite straight-forward:
   </head>
   <body>
     <h1>Hello {{name}}</h1>
-  </bod>
+  </body>
 </html>
 ```
 
