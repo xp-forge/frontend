@@ -2,7 +2,7 @@ Web frontends
 =============
 
 [![Build Status on TravisCI](https://secure.travis-ci.org/xp-forge/frontend.svg)](http://travis-ci.org/xp-forge/frontend)
-[![XP Framework Module](https://raw.githubusercontent.com/xp-framework/frontendb/master/static/xp-framework-badge.png)](https://github.com/xp-framework/core)
+[![XP Framework Module](https://raw.githubusercontent.com/xp-framework/web/master/static/xp-framework-badge.png)](https://github.com/xp-framework/core)
 [![BSD Licence](https://raw.githubusercontent.com/xp-framework/web/master/static/licence-bsd.png)](https://github.com/xp-framework/core/blob/master/LICENCE.md)
 [![Required PHP 5.6+](https://raw.githubusercontent.com/xp-framework/web/master/static/php-5_6plus.png)](http://php.net/)
 [![Supports PHP 7.0+](https://raw.githubusercontent.com/xp-framework/web/master/static/php-7_0plus.png)](http://php.net/)
@@ -25,7 +25,26 @@ class Home {
 }
 ```
 
-Wiring it together:
+For the above class, the template engine will receive *home* as template name and an empty array as context. The implementation below uses the [xp-forge/handlebars](https://github.com/xp-forge/handlebars) library to transform the templates.
+
+```php
+use com\handlebarsjs\{HandlebarsEngine, FilesIn};
+use io\Path;
+use web\frontend\Templates;
+
+class TemplateEngine implements Templates {
+  private $backing;
+
+  public function __construct(Path $templates) {
+    $this->backing= (new HandlebarsEngine())->withTemplates(new FilesIn($templates));
+  }
+
+  public function write($name, $context= [], $out) {
+    $this->backing->write($this->backing->load($name), $context, $out);
+  }
+}
+
+Wiring it together is done in the application class, as follows:
 
 ```php
 use web\Application;
@@ -37,15 +56,7 @@ class Site extends Application {
   /** @return [:var] */
   protected function routes() {
     $files= new FilesFrom(new Path($this->environment->webroot(), 'src/main/webapp'));
-
-    $templates= new class() implements Templates {
-      public function write($name, $context= [], $out) {
-
-        // TBI:
-        // - Transform template named $name with context $context
-        // - Write result to the OutputStream $out
-      }
-    };
+    $templates= new TemplateEngine(new Path($this->environment->webroot(), 'src/main/handlebars'));
 
     return [
       '/favicon.ico' => $files,
