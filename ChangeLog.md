@@ -3,6 +3,9 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Changed parameter annotations parsing to no longer be performed for
+  every request, instead lazily initialize on first use; then cache.
+  (@thekid)
 * Made HTTP response headers controllable via `View::header()` - @thekid
 * Made HTTP response status controllable via `View::status()` - @thekid
 

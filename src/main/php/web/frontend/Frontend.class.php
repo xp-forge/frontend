@@ -7,7 +7,8 @@ use lang\XPClass;
 use lang\reflect\TargetInvocationException;
 
 class Frontend implements Handler {
-  private $handler, $templates, $type;
+  private $delegates= [];
+  private $templates, $type;
 
   /**
    * Instantiates a new frontend
@@ -18,33 +19,19 @@ class Frontend implements Handler {
    */
   public function __construct($handler, Templates $templates, $base= '') {
     $this->type= cast(typeof($handler), XPClass::class);
-    $this->handler= $handler;
     $this->templates= $templates;
     $this->base= rtrim($base, '/');
-  }
 
-  /**
-   * Returns the correct handler or NULL if not supported
-   *
-   * @param  string $verb
-   * @param  util.URI $uri
-   * @return var
-   */
-  private function handler($verb, $uri) {
-
-    // Check methods annotated, e.g. @post
+    $p= '';
     foreach ($this->type->getMethods() as $method) {
-      if (!$method->hasAnnotation($verb)) continue;
+      $name= $method->getName();
+      foreach ($method->getAnnotations() as $verb => $segment) {
+        $p.= '|((*:'.$name.')^'.$verb.($segment ? preg_replace('/\{([^}]+)\}/', '(?<$1>[^/]+)', $segment) : '.+').'$)';
+      }
 
-      $segment= $method->getAnnotation($verb);
-      if (null === $segment) return [$method, []];
-
-      // Check whether URI matches
-      $pattern= '#^'.preg_replace('/\{([^}]+)\}/', '(?<$1>[^/]+)', $segment).'$#';
-      if (preg_match($pattern, $uri->path(), $matches)) return [$method, $matches];
+      $this->delegates[$name]= new Delegate($handler, $method);
     }
-
-    return null;
+    $this->pattern= '#'.substr($p, 1).'#';
   }
 
   /**
@@ -56,46 +43,28 @@ class Frontend implements Handler {
    */
   public function handle($req, $res) {
     $verb= strtolower($req->method());
-    if (null === ($handler= $this->handler($verb, $req->uri()))) {
+    preg_match_all($this->pattern, $verb.$req->uri()->path(), $matches, PREG_SET_ORDER);
+    if (empty($matches)) {
       throw new Error(400, 'Method '.$req->method().' not supported by '.$this->type->getName());
     }
+    $delegate= $this->delegates[$matches[0]['MARK']];
 
     // Verify CSRF token for anything which is not a GET or HEAD request
     if (!in_array($verb, ['get', 'head']) && $req->value('token') !== $req->param('token')) {
-      throw new Error(400, 'Missing CSRF token for '.$handler[0]->getName());
+      throw new Error(400, 'Missing CSRF token for '.$delegate->name());
     }
 
     try {
       $args= [];
-      foreach ($handler[0]->getParameters() as $param) {
-        $name= $param->getName();
-        if (isset($handler[1][$name])) {
-          $args[]= $handler[1][$name];
-          continue;
-        }
-
-        $annotations= $param->getAnnotations();
-        if (array_key_exists('value', $annotations)) {
-          $value= $req->value($annotations['value'] ?: $name);
-        } else if (array_key_exists('cookie', $annotations)) {
-          $value= $req->cookie($annotations['cookie'] ?: $name);
-        } else if (array_key_exists('header', $annotations)) {
-          $value= $req->header($annotations['header'] ?: $name);
-        } else if (array_key_exists('param', $annotations)) {
-          $value= $req->param($annotations['param'] ?: $name);
+      foreach ($delegate->parameters() as $name => $source) {
+        if (isset($matches[0][$name])) {
+          $args[]= $matches[0][$name];
         } else {
-          $args[]= $req->stream();
-          continue;
-        }
-
-        if (null === $value) {
-          $args[]= $param->isOptional() ? $param->getDefaultValue() : null;
-        } else {
-          $args[]= $value;
+          $args[]= $source($req, $name);
         }
       }
 
-      $result= $handler[0]->invoke($this->handler, $args);
+      $result= $delegate->invoke($args);
       if ($result instanceof View) {
         $res->answer($result->status);
         foreach ($result->headers as $name => $value) {
