@@ -14,9 +14,9 @@ class FrontendTest extends TestCase {
 
   /** @return void */
   public function setUp() {
-    $this->templates= new class() implements Templates {
-      public function write($template, $context= [], $out) { /* NOOP */ }
-    };
+    $this->templates= newinstance(Templates::class, [], [
+      'write' => function($template, $context= [], $out) { /* NOOP */ }
+    ]);
   }
 
   /**
