@@ -1,9 +1,13 @@
 <?php namespace web\frontend\unittest;
 
 use unittest\TestCase;
-use web\frontend\{Frontend, Templates};
-use web\{Request, Response, Error};
-use web\io\{TestInput, TestOutput};
+use web\Error;
+use web\frontend\Frontend;
+use web\frontend\Templates;
+use web\io\TestInput;
+use web\io\TestOutput;
+use web\Request;
+use web\Response;
 
 class FrontendTest extends TestCase {
   private $templates;
