@@ -1,7 +1,9 @@
 <?php namespace web\frontend;
 
-use web\{Handler, Error};
-use lang\{ElementNotFoundException, XPClass};
+use web\Handler;
+use web\Error;
+use lang\ElementNotFoundException;
+use lang\XPClass;
 use lang\reflect\TargetInvocationException;
 
 class Frontend implements Handler {
@@ -102,7 +104,7 @@ class Frontend implements Handler {
         foreach ($result->headers as $name => $value) {
           $res->header($name, $value);
         }
-        $template= $result->template ?? strtolower($this->type->getSimpleName());
+        $template= $result->template ?: strtolower($this->type->getSimpleName());
         $context= $result->context;
       } else {
         $res->answer(200);
