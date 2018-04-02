@@ -63,6 +63,7 @@ Finally, wiring it together is done in the application class, as follows:
 ```php
 use web\Application;
 use web\frontend\{Frontend, Templates};
+use web\handler\FilesFrom;
 use io\Path;
 
 class Site extends Application {
@@ -75,7 +76,7 @@ class Site extends Application {
     return [
       '/favicon.ico' => $files,
       '/static'      => $files,
-      '/'            => new Frontend(Home::class, $templates)
+      '/'            => new Frontend(new Home(), $templates)
     ];
   }
 }
