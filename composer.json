@@ -3,7 +3,7 @@
   "type" : "library",
   "homepage" : "http://xp-framework.net/",
   "license" : "BSD-3-Clause",
-  "description" : "Rest API",
+  "description" : "Web Frontends",
   "keywords": ["module", "xp"],
   "require" : {
     "xp-framework/core": "^9.0 | ^8.0 | ^7.0",
