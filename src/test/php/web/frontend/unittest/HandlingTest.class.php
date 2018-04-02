@@ -135,6 +135,15 @@ class HandlingTest extends TestCase {
   }
 
   #[@test, @expect(Error::class)]
+  public function unsupported_verb() {
+    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+      'write' => function($template, $context, $out) { /* NOOP */ }
+    ]));
+
+    $this->handle($fixture, 'PATCH', '/users/1', 'username=@illegal@');
+  }
+
+  #[@test, @expect(Error::class)]
   public function exceptions_result_in_internal_server_error() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
       'write' => function($template, $context, $out) { /* NOOP */ }
