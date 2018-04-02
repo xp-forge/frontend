@@ -1,9 +1,8 @@
 <?php namespace web\frontend;
 
 use lang\IllegalArgumentException;
-use util\Objects;
 
-class Delegates {
+class MarkBased {
   private $map= [];
   private $pattern;
 

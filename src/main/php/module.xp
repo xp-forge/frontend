@@ -1,0 +1,9 @@
+<?php namespace web\frontend;
+
+module xp-forge/frontend {
+
+  /** @return void */
+  public function initialize() {
+    class_alias(defined('HHVM_VERSION') ? PatternBased::class : MarkBased::class, Delegates::class);
+  }
+}
