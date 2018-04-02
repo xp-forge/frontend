@@ -20,12 +20,12 @@ class Home {
 
   #[@get]
   public function get() {
-    return [];
+    return ['name' => 'World'];
   }
 }
 ```
 
-For the above class, the template engine will receive *home* as template name and an empty array as context. The implementation below uses the [xp-forge/handlebars](https://github.com/xp-forge/handlebars) library to transform the templates.
+For the above class, the template engine will receive *home* as template name and the returned map as context. The implementation below uses the [xp-forge/handlebars](https://github.com/xp-forge/handlebars) library to transform the templates.
 
 ```php
 use com\handlebarsjs\{HandlebarsEngine, FilesIn};
@@ -43,8 +43,22 @@ class TemplateEngine implements Templates {
     $this->backing->write($this->backing->load($name), $context, $out);
   }
 }
+```
 
-Wiring it together is done in the application class, as follows:
+The handlebars template is quite straight-forward:
+
+```handlebars
+<html>
+  <head>
+    <title>Hello {{name}}</title>
+  </head>
+  <body>
+    <h1>Hello {{name}}</h1>
+  </bod>
+</html>
+```
+
+Finally, wiring it together is done in the application class, as follows:
 
 ```php
 use web\Application;
