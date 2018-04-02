@@ -22,6 +22,8 @@ class Frontend implements Handler {
     $this->templates= $templates;
     $this->base= rtrim($base, '/');
 
+    // Uses `(*MARK:NAME)` PCRE syntax to return names
+    // See https://www.pcre.org/current/doc/html/pcre2syntax.html#SEC23
     $p= '';
     foreach ($this->type->getMethods() as $method) {
       $name= $method->getName();
