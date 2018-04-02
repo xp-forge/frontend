@@ -80,3 +80,5 @@ class Site extends Application {
   }
 }
 ```
+
+To run it, use `xp -supervise web Site`, which will serve the site at http://localhost:8080/
