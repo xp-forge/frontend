@@ -57,7 +57,7 @@ class Frontend implements Handler {
   public function handle($req, $res) {
     $verb= strtolower($req->method());
     if (null === ($handler= $this->handler($verb, $req->uri()))) {
-      throw new Error(400, 'Method '.$verb.' not supported by '.$this->type->getName());
+      throw new Error(400, 'Method '.$req->method().' not supported by '.$this->type->getName());
     }
 
     // Verify CSRF token for anything which is not a GET or HEAD request
