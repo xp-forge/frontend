@@ -2,6 +2,12 @@
 
 use lang\IllegalArgumentException;
 
+/**
+ * Creates one big pattern to match request. Uses `(*MARK:NAME)` PCRE
+ * syntax internally to return names
+ *
+ * @see   https://www.pcre.org/current/doc/html/pcre2syntax.html#SEC23
+ */
 class MarkBased {
   private $map= [];
   private $pattern;
@@ -12,8 +18,6 @@ class MarkBased {
       throw new IllegalArgumentException('Expected an object, have '.typeof($instance));
     }
 
-    // Uses `(*MARK:NAME)` PCRE syntax to return names
-    // See https://www.pcre.org/current/doc/html/pcre2syntax.html#SEC23
     $p= '';
     foreach (typeof($instance)->getMethods() as $method) {
       $name= $method->getName();

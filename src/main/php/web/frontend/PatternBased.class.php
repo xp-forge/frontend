@@ -2,6 +2,11 @@
 
 use lang\IllegalArgumentException;
 
+/**
+ * Creates multiple patterns to match request
+ *
+ * @see   https://github.com/xp-forge/frontend/issues/1
+ */
 class PatternBased {
   private $patterns= [];
 
