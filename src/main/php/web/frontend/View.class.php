@@ -6,6 +6,7 @@ class View {
   public $context= [];
   public $headers= [];
 
+  /** @param string $template */
   private function __construct($template) {
     $this->template= $template;
   }
@@ -32,6 +33,17 @@ class View {
     $self->headers['Location']= $url;
     $self->context= null;
     return $self;
+  }
+
+  /**
+   * Sets status
+   *
+   * @param  int $status
+   * @return self
+   */
+  public function status($status) {
+    $this->status= $status;
+    return $this;
   }
 
   /**

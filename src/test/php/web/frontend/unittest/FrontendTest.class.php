@@ -4,6 +4,7 @@ use unittest\TestCase;
 use web\Error;
 use web\frontend\Frontend;
 use web\frontend\Templates;
+use web\frontend\View;
 use web\io\TestInput;
 use web\io\TestOutput;
 use web\Request;
@@ -150,6 +151,18 @@ class FrontendTest extends TestCase {
   public function exceptions_result_in_internal_server_error() {
     $fixture= new Frontend(new Users(), $this->templates);
 
-    $this->handle($fixture, 'GET', '/users/no.such.user');
+    $this->handle($fixture, 'POST', '/users', 'username=@illegal@');
+  }
+
+  #[@test]
+  public function template_determined_from_view() {
+    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+      'write' => function($template, $context= [], $out) use(&$result) {
+        $result= $template;
+      }
+    ]));
+
+    $this->handle($fixture, 'GET', '/users/0');
+    $this->assertEquals('no-user', $result);
   }
 }
