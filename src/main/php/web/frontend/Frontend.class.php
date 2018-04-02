@@ -30,6 +30,8 @@ class Frontend implements Handler {
    * @return var
    */
   public function handle($req, $res) {
+    $res->header('Server', 'XP/Frontend');
+
     $verb= strtolower($req->method());
     if (null === ($target= $this->delegates->target($verb, $req->uri()->path()))) {
       throw new Error(400, 'Method '.$req->method().' not supported by any delegate');
