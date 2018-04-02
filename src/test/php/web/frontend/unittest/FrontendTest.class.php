@@ -162,7 +162,19 @@ class FrontendTest extends TestCase {
       }
     ]));
 
-    $this->handle($fixture, 'GET', '/users/0');
+    $this->handle($fixture, 'GET', '/users/1000');
     $this->assertEquals('no-user', $result);
+  }
+
+  #[@test]
+  public function redirect() {
+    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+      'write' => function($template, $context= [], $out) use(&$result) {
+        $result= $template;
+      }
+    ]));
+
+    $res= $this->handle($fixture, 'GET', '/users/0');
+    $this->assertEquals('/users/1', $res->headers()['Location']);
   }
 }

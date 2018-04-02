@@ -19,11 +19,13 @@ class Users {
 
   #[@get('/users/{id}')]
   public function find($id) {
-    if (!isset($this->list[$id])) {
-      return View::named('no-user')->status(404)->with(['user' => $id]);
+    if (0 == $id) {
+      return View::redirect('/users/'.key($this->list));
+    } else if (!isset($this->list[$id])) {
+      return View::named('no-user')->status(404)->with(['id' => $id]);
+    } else {
+      return View::named('users')->with($this->list[$id]);
     }
-
-    return $this->list[$id];
   }
 
   #[@post, @$username: param]
