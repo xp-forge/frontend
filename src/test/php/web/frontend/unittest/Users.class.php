@@ -24,7 +24,7 @@ class Users {
     } else if (!isset($this->list[$id])) {
       return View::named('no-user')->status(404)->with(['id' => $id]);
     } else {
-      return View::named('users')->with($this->list[$id]);
+      return View::named('users')->header('X-User-ID', $id)->with($this->list[$id]);
     }
   }
 

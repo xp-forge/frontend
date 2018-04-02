@@ -47,6 +47,18 @@ class View {
   }
 
   /**
+   * Adds a header
+   *
+   * @param  string $name
+   * @param  string $value
+   * @return self
+   */
+  public function header($name, $value) {
+    $this->headers[$name]= $value;
+    return $this;
+  }
+
+  /**
    * Gives context
    *
    * @param  [:var] $context

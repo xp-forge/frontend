@@ -165,14 +165,32 @@ class HandlingTest extends TestCase {
   }
 
   #[@test]
+  public function can_set_status() {
+    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+      'write' => function($template, $context, $out) { /* NOOP */ }
+    ]));
+
+    $res= $this->handle($fixture, 'GET', '/users/1000');
+    $this->assertEquals(404, $res->status());
+  }
+
+  #[@test]
+  public function can_set_header() {
+    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+      'write' => function($template, $context, $out) { /* NOOP */ }
+    ]));
+
+    $res= $this->handle($fixture, 'GET', '/users/1');
+    $this->assertEquals('1', $res->headers()['X-User-ID']);
+  }
+
+  #[@test]
   public function redirect() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) use(&$result) {
-        $result= $template;
-      }
+      'write' => function($template, $context, $out) { /* NOOP */ }
     ]));
 
     $res= $this->handle($fixture, 'GET', '/users/0');
-    $this->assertEquals('/users/1', $res->headers()['Location']);
+    $this->assertEquals([302, '/users/1'], [$res->status(), $res->headers()['Location']]);
   }
 }
