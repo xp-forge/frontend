@@ -30,7 +30,15 @@ class Delegate {
   }
 
   /** @return string */
-  public function name() { return nameof($this->instance).'::'.$this->method->getName(); }
+  public function group() {
+    $t= strtolower(get_class($this->instance));
+    return false === $p= strrpos($t, '\\') ? $t : substr($t, $p + 1);
+  }
+
+  /** @return string */
+  public function name() {
+    return nameof($this->instance).'::'.$this->method->getName();
+  }
 
   /**
    * Returns a map of named sources to read arguments from request. Lazily

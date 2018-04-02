@@ -134,7 +134,7 @@ class HandlingTest extends TestCase {
     );
   }
 
-  #[@test, @expect(class= Error::class, withMessage= '/Method PATCH not supported by .+Users/')]
+  #[@test, @expect(class= Error::class, withMessage= '/Method PATCH not supported by any delegate/')]
   public function unsupported_verb() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
       'write' => function($template, $context, $out) { /* NOOP */ }

@@ -3,7 +3,7 @@
 use unittest\TestCase;
 use web\frontend\Frontend;
 use web\frontend\Templates;
-use lang\ClassCastException;
+use lang\IllegalArgumentException;
 
 class FrontendTest extends TestCase {
   private $templates;
@@ -20,7 +20,7 @@ class FrontendTest extends TestCase {
     new Frontend(new Users(), $this->templates);
   }
 
-  #[@test, @expect(ClassCastException::class)]
+  #[@test, @expect(IllegalArgumentException::class)]
   public function first_argument_must_be_object() {
     new Frontend(null, $this->templates);
   }

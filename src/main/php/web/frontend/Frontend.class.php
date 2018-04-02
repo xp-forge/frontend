@@ -7,8 +7,7 @@ use lang\XPClass;
 use lang\reflect\TargetInvocationException;
 
 class Frontend implements Handler {
-  private $delegates= [];
-  private $templates, $type;
+  private $delegates, $templates, $base;
 
   /**
    * Instantiates a new frontend
@@ -18,22 +17,9 @@ class Frontend implements Handler {
    * @param  string $base
    */
   public function __construct($handler, Templates $templates, $base= '') {
-    $this->type= cast(typeof($handler), XPClass::class);
+    $this->delegates= new Delegates($handler);
     $this->templates= $templates;
     $this->base= rtrim($base, '/');
-
-    // Uses `(*MARK:NAME)` PCRE syntax to return names
-    // See https://www.pcre.org/current/doc/html/pcre2syntax.html#SEC23
-    $p= '';
-    foreach ($this->type->getMethods() as $method) {
-      $name= $method->getName();
-      foreach ($method->getAnnotations() as $verb => $segment) {
-        $p.= '|((*:'.$name.')^'.$verb.($segment ? preg_replace('/\{([^}]+)\}/', '(?<$1>[^/]+)', $segment) : '.+').'$)';
-      }
-
-      $this->delegates[$name]= new Delegate($handler, $method);
-    }
-    $this->pattern= '#'.substr($p, 1).'#';
   }
 
   /**
@@ -45,11 +31,10 @@ class Frontend implements Handler {
    */
   public function handle($req, $res) {
     $verb= strtolower($req->method());
-    preg_match_all($this->pattern, $verb.$req->uri()->path(), $matches, PREG_SET_ORDER);
-    if (empty($matches)) {
-      throw new Error(400, 'Method '.$req->method().' not supported by '.$this->type->getName());
+    if (null === ($target= $this->delegates->target($verb, $req->uri()->path()))) {
+      throw new Error(400, 'Method '.$req->method().' not supported by any delegate');
     }
-    $delegate= $this->delegates[$matches[0]['MARK']];
+    list($delegate, $matches)= $target;
 
     // Verify CSRF token for anything which is not a GET or HEAD request
     if (!in_array($verb, ['get', 'head']) && $req->value('token') !== $req->param('token')) {
@@ -59,8 +44,8 @@ class Frontend implements Handler {
     try {
       $args= [];
       foreach ($delegate->parameters() as $name => $source) {
-        if (isset($matches[0][$name])) {
-          $args[]= $matches[0][$name];
+        if (isset($matches[$name])) {
+          $args[]= $matches[$name];
         } else {
           $args[]= $source($req, $name);
         }
@@ -72,11 +57,11 @@ class Frontend implements Handler {
         foreach ($result->headers as $name => $value) {
           $res->header($name, $value);
         }
-        $template= $result->template ?: strtolower($this->type->getSimpleName());
+        $template= $result->template ?: $delegate->group();
         $context= $result->context;
       } else {
         $res->answer(200);
-        $template= strtolower($this->type->getSimpleName());
+        $template= $delegate->group();
         $context= $result;
       }
 
