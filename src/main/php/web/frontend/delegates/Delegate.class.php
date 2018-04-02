@@ -32,7 +32,7 @@ class Delegate {
   /** @return string */
   public function group() {
     $t= strtolower(get_class($this->instance));
-    return false === $p= strrpos($t, '\\') ? $t : substr($t, $p + 1);
+    return false === ($p= strrpos($t, '\\')) ? $t : substr($t, $p + 1);
   }
 
   /** @return string */
