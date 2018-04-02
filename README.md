@@ -18,9 +18,9 @@ Frontend uses classes with methods annotated with HTTP verbs to handle routing. 
 ```php
 class Home {
 
-  #[@get]
-  public function get() {
-    return ['name' => 'World'];
+  #[@get, @$param: param('name')]
+  public function get($param) {
+    return ['name' => $param ?: 'World'];
   }
 }
 ```
