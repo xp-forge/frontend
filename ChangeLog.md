@@ -3,6 +3,12 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 0.3.0 / 2018-04-10
+
+* Changed dependency on `xp-forge/web` to version 1.0.0 since it has
+  been released
+  (@thekid)
+
 ## 0.2.0 / 2018-04-03
 
 * Changed parameter annotations parsing to no longer be performed for
