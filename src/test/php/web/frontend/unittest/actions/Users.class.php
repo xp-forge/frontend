@@ -28,7 +28,7 @@ class Users {
     }
   }
 
-  #[@post, @$username: param]
+  #[@post('/users'), @$username: param]
   public function create($username) {
     if (!preg_match('/^[a-z0-9.]{3,}$/i', $username)) {
       throw new Error(400, 'Illegal username "'.$username.'"');

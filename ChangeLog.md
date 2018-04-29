@@ -3,6 +3,12 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 0.4.1 / 2018-04-29
+
+* Fixed patterns to always be applied in order of their length, longest
+  patterns first
+  (@thekid)
+
 ## 0.4.0 / 2018-04-29
 
 * Merged PR #5: Delegates; adding shorthand alternative to manually

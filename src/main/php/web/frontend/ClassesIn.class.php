@@ -20,5 +20,6 @@ class ClassesIn extends Delegates {
         $this->with($new ? $new($class) : $class->newInstance());
       }
     }
+    uksort($this->patterns, function($a, $b) { return strlen($b) - strlen($a); });
   }
 }
