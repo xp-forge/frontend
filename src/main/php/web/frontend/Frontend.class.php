@@ -54,18 +54,11 @@ class Frontend implements Handler {
       }
 
       $result= $delegate->invoke($args);
-      if ($result instanceof View) {
-        $res->answer($result->status);
-        foreach ($result->headers as $name => $value) {
-          $res->header($name, $value);
-        }
-        $template= $result->template ?: $delegate->group();
-        $context= $result->context;
-      } else {
-        $res->answer(200);
-        $template= $delegate->group();
-        $context= $result;
+      $res->answer($result->status);
+      foreach ($result->headers as $name => $value) {
+        $res->header($name, $value);
       }
+      $context= $result->context;
 
       if (null === $context) {
         $res->flush();
@@ -76,7 +69,7 @@ class Frontend implements Handler {
         $res->header('Content-Type', 'text/html; charset=utf-8');
         $out= $res->stream();
         try {
-          $this->templates->write($template, $context, $out);
+          $this->templates->write($result->template, $context, $out);
         } finally {
           $out->close();
         }

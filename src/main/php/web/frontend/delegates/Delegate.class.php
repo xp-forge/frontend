@@ -1,6 +1,7 @@
 <?php namespace web\frontend\delegates;
 
 use lang\IllegalArgumentException;
+use web\frontend\View;
 
 class Delegate {
   private static $SOURCES;
@@ -77,10 +78,16 @@ class Delegate {
    * Invokes this delegate
    *
    * @param  var[] $args
-   * @return var
+   * @return web.frontend.View
    * @throws lang.reflect.TargetInvocationException
    */
   public function invoke($args) {
-    return $this->method->invoke($this->instance, $args);
+    $result= $this->method->invoke($this->instance, $args);
+    if ($result instanceof View) {
+      $result->template || $result->template= $this->group();
+      return $result;
+    } else {
+      return View::named($this->group())->with($result);
+    }
   }
 }
