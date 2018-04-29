@@ -3,6 +3,11 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 0.4.0 / 2018-04-29
+
+* Merged PR #5: Delegates; adding shorthand alternative to manually
+  entering all routes
+  (@thekid)
 * Added support for patterns in path segments, e.g. `/users/{id:[0-9]+}`
   (@thekid)
 
