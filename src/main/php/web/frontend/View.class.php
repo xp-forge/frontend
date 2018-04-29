@@ -2,6 +2,7 @@
 
 class View {
   public $template;
+  public $templates;
   public $status= 200;
   public $context= [];
   public $headers= [];
@@ -67,5 +68,46 @@ class View {
   public function with($context) {
     $this->context= $context;
     return $this;
+  }
+
+  /**
+   * Sets templates
+   *
+   * @param  web.frontend.Templates $templates
+   * @return self
+   */
+  public function using($templates) {
+    $this->templates= $templates;
+    return $this;
+  }
+
+  /**
+   * Transfers this result
+   *
+   * @param  web.Request $req
+   * @param  web.Response $res
+   * @param  string $base
+   * @return void
+   */
+  public function transfer($req, $res, $base) {
+    $res->answer($this->status);
+    foreach ($this->headers as $name => $value) {
+      $res->header($name, $value);
+    }
+
+    if (null === $this->context) {
+      $res->flush();
+    } else {
+      $this->context['base']= $base;
+      $this->context['request']= ['params' => $req->params(), 'values' => $req->values()];
+
+      $res->header('Content-Type', 'text/html; charset=utf-8');
+      $out= $res->stream();
+      try {
+        $this->templates->write($this->template, $this->context, $out);
+      } finally {
+        $out->close();
+      }
+    }
   }
 }

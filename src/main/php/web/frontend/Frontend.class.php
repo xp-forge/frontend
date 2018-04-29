@@ -53,27 +53,7 @@ class Frontend implements Handler {
         }
       }
 
-      $result= $delegate->invoke($args);
-      $res->answer($result->status);
-      foreach ($result->headers as $name => $value) {
-        $res->header($name, $value);
-      }
-      $context= $result->context;
-
-      if (null === $context) {
-        $res->flush();
-      } else {
-        $context['base']= $this->base;
-        $context['request']= ['params' => $req->params(), 'values' => $req->values()];
-
-        $res->header('Content-Type', 'text/html; charset=utf-8');
-        $out= $res->stream();
-        try {
-          $this->templates->write($result->template, $context, $out);
-        } finally {
-          $out->close();
-        }
-      }
+      $delegate->invoke($args, $this->templates)->transfer($req, $res, $this->base);
     } catch (TargetInvocationException $e) {
       throw new Error(500, $e->getCause());
     }

@@ -78,16 +78,17 @@ class Delegate {
    * Invokes this delegate
    *
    * @param  var[] $args
+   * @param  web.frontend.Templates $templates
    * @return web.frontend.View
    * @throws lang.reflect.TargetInvocationException
    */
-  public function invoke($args) {
+  public function invoke($args, $templates) {
     $result= $this->method->invoke($this->instance, $args);
     if ($result instanceof View) {
       $result->template || $result->template= $this->group();
-      return $result;
+      return $result->using($templates);
     } else {
-      return View::named($this->group())->with($result);
+      return View::named($this->group())->with($result)->using($templates);
     }
   }
 }
