@@ -2,6 +2,7 @@
 
 use lang\IllegalArgumentException;
 use web\frontend\View;
+use web\frontend\Result;
 
 class Delegate {
   private static $SOURCES;
@@ -87,6 +88,8 @@ class Delegate {
     if ($result instanceof View) {
       $result->template || $result->template= $this->group();
       return $result->using($templates);
+    } else if ($result instanceof Result) {
+      return $result;
     } else {
       return View::named($this->group())->with($result)->using($templates);
     }
