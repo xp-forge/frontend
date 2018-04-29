@@ -4,6 +4,7 @@ use unittest\TestCase;
 use web\frontend\Frontend;
 use web\frontend\Templates;
 use lang\IllegalArgumentException;
+use web\frontend\unittest\actions\Users;
 
 class FrontendTest extends TestCase {
   private $templates;

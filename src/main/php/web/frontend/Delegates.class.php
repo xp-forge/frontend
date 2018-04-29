@@ -6,7 +6,7 @@ use lang\IllegalArgumentException;
  * Matches request and routes to correct delegate
  */
 class Delegates {
-  private $patterns= [];
+  protected $patterns= [];
 
   /**
    * Routes to instance methods based on annotations

@@ -1,4 +1,4 @@
-<?php namespace web\frontend\unittest;
+<?php namespace web\frontend\unittest\actions;
 
 class Blogs {
 

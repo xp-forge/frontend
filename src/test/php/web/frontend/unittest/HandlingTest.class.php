@@ -9,6 +9,8 @@ use web\io\TestInput;
 use web\io\TestOutput;
 use web\Request;
 use web\Response;
+use web\frontend\unittest\actions\Blogs;
+use web\frontend\unittest\actions\Users;
 
 class HandlingTest extends TestCase {
 
