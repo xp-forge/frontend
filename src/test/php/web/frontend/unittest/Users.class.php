@@ -38,4 +38,9 @@ class Users {
     $this->list[]= ['id' => $id, 'name' => $username];
     return ['created' => $id];
   }
+
+  #[@get('/users/{id}/avatar')]
+  public function avatar($id) {
+    // TBI
+  }
 }
