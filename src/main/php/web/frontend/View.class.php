@@ -1,11 +1,11 @@
 <?php namespace web\frontend;
 
-class View {
+class View implements Result {
   public $template;
-  public $templates;
   public $status= 200;
   public $context= [];
   public $headers= [];
+  public $templates;
 
   /** @param string $template */
   private function __construct($template) {
