@@ -4,7 +4,13 @@ use io\File;
 use io\Path;
 use io\streams\InputStream;
 use io\streams\MemoryInputStream;
+use util\MimeType;
 
+/**
+ * Returns a stream from a delegate
+ *
+ * @test  xp://web.frontend.unittest.StreamTest
+ */
 class Stream implements Result {
   public $in;
   public $type;
@@ -25,14 +31,14 @@ class Stream implements Result {
    * @param  string $type
    * @return self
    */
-  public static function of($arg, $type) {
+  public static function of($arg, $type= null) {
     if ($arg instanceof InputStream) {
       return new self($arg, $type);
     } else if ($arg instanceof File) {
-      return new self($arg->in(), $type, $arg->size());
+      return new self($arg->in(), $type ?: MimeType::getByFilename($arg->getURI()), $arg->size());
     } else if ($arg instanceof Path) {
       $f= $arg->asFile();
-      return new self($f, $type, $f->size());
+      return new self($f, $type ?: MimeType::getByFilename($f->getURI()), $f->size());
     } else {
       $s= (string)$arg;
       return new self(new MemoryInputStream($s), $type, strlen($s));
@@ -70,6 +76,19 @@ class Stream implements Result {
    */
   public function size($size) {
     $this->size= $size;
+    return $this;
+  }
+
+  /**
+   * Forces a file download
+   *
+   * @param  string $name Optional file name without directories inside
+   * @return self
+   */
+  public function download($name= null) {
+    $this->type= 'application/octet-stream';
+    $this->headers['Content-Disposition']= null === $name ? 'attachment' : 'attachment; filename="'.$name.'"';
+    $this->headers['Content-Transfer-Encoding']= 'binary';
     return $this;
   }
 
