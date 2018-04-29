@@ -1,7 +1,6 @@
 <?php namespace web\frontend;
 
 use lang\IllegalArgumentException;
-use web\frontend\delegates\Delegate;
 
 /**
  * Matches request and routes to correct delegate
