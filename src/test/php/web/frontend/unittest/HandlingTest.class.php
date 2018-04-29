@@ -193,4 +193,17 @@ class HandlingTest extends TestCase {
     $res= $this->handle($fixture, 'GET', '/users/0');
     $this->assertEquals([302, '/users/1'], [$res->status(), $res->headers()['Location']]);
   }
+
+  #[@test]
+  public function avatar() {
+    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+      'write' => function($template, $context, $out) { /* NOOP */ }
+    ]));
+
+    $res= $this->handle($fixture, 'GET', '/users/1/avatar');
+    $this->assertEquals(
+      "HTTP/1.1 200 OK\r\nServer: XP/Frontend\r\nContent-Type: image/jpeg\r\nContent-Length: 7\r\n\r\nJFIF...",
+      $res->output()->bytes()
+    );
+  }
 }

@@ -2,6 +2,7 @@
 
 use web\Error;
 use web\frontend\View;
+use web\frontend\Stream;
 
 class Users {
   private $list= [
@@ -41,6 +42,6 @@ class Users {
 
   #[@get('/users/{id}/avatar')]
   public function avatar($id) {
-    // TBI
+    return Stream::of('JFIF...', 'image/jpeg');
   }
 }
