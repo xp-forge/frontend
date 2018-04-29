@@ -96,6 +96,7 @@ class View {
     }
 
     if (null === $this->context) {
+      $res->header('Content-Length', 0);
       $res->flush();
     } else {
       $this->context['base']= $base;
