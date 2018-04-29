@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 0.3.1 / 2018-04-29
+
+* Fixed issue #3: Two named subpatterns have the same name - @thekid
+
 ## 0.3.0 / 2018-04-10
 
 * Changed dependency on `xp-forge/web` to version 1.0.0 since it has
