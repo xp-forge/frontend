@@ -3,11 +3,9 @@
 use lang\IllegalArgumentException;
 
 /**
- * Creates multiple patterns to match request
- *
- * @see   https://github.com/xp-forge/frontend/issues/1
+ * Matches request and routes to correct delegate
  */
-class PatternBased {
+class Delegates {
   private $patterns= [];
 
   /** @param object $instance */
