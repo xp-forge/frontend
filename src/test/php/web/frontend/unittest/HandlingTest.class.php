@@ -193,4 +193,23 @@ class HandlingTest extends TestCase {
     $res= $this->handle($fixture, 'GET', '/users/0');
     $this->assertEquals([302, '/users/1'], [$res->status(), $res->headers()['Location']]);
   }
+
+  #[@test]
+  public function path_segments() {
+    $fixture= new Frontend(new Blogs(), newinstance(Templates::class, [], [
+      'write' => function($template, $context, $out) use(&$result) {
+        $result= $context;
+      }
+    ]));
+
+    $return= ['category' => 'development', 'article' => 1];
+    $res= $this->handle($fixture, 'GET', '/blogs/development/1');
+    $this->assertEquals(
+      array_merge($return, ['base' => '', 'request' => [
+        'params' => [],
+        'values' => []
+      ]]),
+      $result
+    );
+  }
 }

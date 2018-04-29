@@ -3,6 +3,9 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Added support for patterns in path segments, e.g. `/users/{id:[0-9]+}`
+  (@thekid)
+
 ## 0.3.1 / 2018-04-29
 
 * Fixed issue #3: Two named subpatterns have the same name - @thekid

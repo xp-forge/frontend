@@ -17,8 +17,11 @@ class Delegates {
     foreach (typeof($instance)->getMethods() as $method) {
       $name= $method->getName();
       foreach ($method->getAnnotations() as $verb => $segment) {
-        $p= '#'.$verb.($segment ? preg_replace('/\{([^}]+)\}/', '(?<$1>[^/]+)', $segment) : '.+').'$#';
-        $this->patterns[$p]= new Delegate($instance, $method);
+        $p= $segment
+          ? preg_replace(['/\{([^:}]+):([^}]+)\}/', '/\{([^}]+)\}/'], ['(?<$1>$2)', '(?<$1>[^/]+)'], $segment)
+          : '.+'
+        ;
+        $this->patterns['#'.$verb.$p.'$#']= new Delegate($instance, $method);
       }
     }
   }
