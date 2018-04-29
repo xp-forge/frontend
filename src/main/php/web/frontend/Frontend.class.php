@@ -12,12 +12,12 @@ class Frontend implements Handler {
   /**
    * Instantiates a new frontend
    *
-   * @param  object $handler
+   * @param  web.frontend.Delegates|object $arg
    * @param  web.frontend.Templates $templates
    * @param  string $base
    */
-  public function __construct($handler, Templates $templates, $base= '') {
-    $this->delegates= new Delegates($handler);
+  public function __construct($arg, Templates $templates, $base= '') {
+    $this->delegates= $arg instanceof Delegates ? $arg : new MethodsIn($arg);
     $this->templates= $templates;
     $this->base= rtrim($base, '/');
   }
