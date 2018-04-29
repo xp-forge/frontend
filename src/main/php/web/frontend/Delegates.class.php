@@ -8,8 +8,14 @@ use lang\IllegalArgumentException;
 class Delegates {
   private $patterns= [];
 
-  /** @param object $instance */
-  public function __construct($instance) {
+  /**
+   * Routes to instance methods based on annotations
+   *
+   * @param  object $instance
+   * @return self
+   * @throws lang.IllegalArgumentException
+   */
+  public function with($instance) {
     if (!is_object($instance)) {
       throw new IllegalArgumentException('Expected an object, have '.typeof($instance));
     }
@@ -17,13 +23,14 @@ class Delegates {
     foreach (typeof($instance)->getMethods() as $method) {
       $name= $method->getName();
       foreach ($method->getAnnotations() as $verb => $segment) {
-        $p= $segment
+        $pattern= $segment
           ? preg_replace(['/\{([^:}]+):([^}]+)\}/', '/\{([^}]+)\}/'], ['(?<$1>$2)', '(?<$1>[^/]+)'], $segment)
           : '.+'
         ;
-        $this->patterns['#'.$verb.$p.'$#']= new Delegate($instance, $method);
+        $this->patterns['#'.$verb.$pattern.'$#']= new Delegate($instance, $method);
       }
     }
+    return $this;
   }
 
   /**
