@@ -80,7 +80,7 @@ class Delegate {
    *
    * @param  var[] $args
    * @param  web.frontend.Templates $templates
-   * @return web.frontend.View
+   * @return web.frontend.Result
    * @throws lang.reflect.TargetInvocationException
    */
   public function invoke($args, $templates) {
