@@ -1,4 +1,4 @@
-<?php namespace web\frontend\delegates;
+<?php namespace web\frontend;
 
 use lang\IllegalArgumentException;
 use web\frontend\View;
