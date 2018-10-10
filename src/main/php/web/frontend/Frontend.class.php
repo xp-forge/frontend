@@ -55,6 +55,9 @@ class Frontend implements Handler {
 
       $delegate->invoke($args, $this->templates)->transfer($req, $res, $this->base);
     } catch (TargetInvocationException $e) {
+      if ($e->getCause() instanceof Error) {
+        throw $e->getCause();
+      }
       throw new Error(500, $e->getCause());
     }
   }
