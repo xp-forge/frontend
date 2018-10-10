@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 0.5.0 / 2018-10-10
+
+* Merged PR #6: Allows to throw web.Error in handler - @johannes85
+
 ## 0.4.1 / 2018-04-29
 
 * Fixed patterns to always be applied in order of their length, longest
