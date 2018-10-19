@@ -10,6 +10,7 @@ class Delegate {
 
   static function __static() {
     self::$SOURCES= [
+      'request' => function($req, $name) { return $req; },
       'value'   => function($req, $name) { return $req->value($name); },
       'cookie'  => function($req, $name) { return $req->cookie($name); },
       'header'  => function($req, $name) { return $req->header($name); },
