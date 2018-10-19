@@ -3,6 +3,12 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 0.6.0 / 2018-10-19
+
+* Added possibility to inject request by using `request` as parameter
+  annotation
+  (@johannes85, @thekid)
+
 ## 0.5.0 / 2018-10-10
 
 * Merged PR #6: Allows to throw web.Error in handler - @johannes85
