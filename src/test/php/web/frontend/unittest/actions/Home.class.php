@@ -2,8 +2,8 @@
 
 class Home {
 
-  #[@get]
-  public function get() {
-    return ['home' => true];
+  #[@get, @$req: request]
+  public function get($req) {
+    return ['home' => $req->cookie('test')];
   }
 }

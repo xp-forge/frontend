@@ -15,6 +15,7 @@ class Delegate {
       'header'  => function($req, $name) { return $req->header($name); },
       'param'   => function($req, $name) { return $req->param($name); },
       'default' => function($req, $name) { return $req->stream(); },
+      'request' => function($req, $name) { return $req; },
       'segment' => function($req, $name) { throw new IllegalArgumentException('Missing segment "'.$name.'"'); },
     ];
   }

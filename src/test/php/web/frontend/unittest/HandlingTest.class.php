@@ -2,15 +2,16 @@
 
 use unittest\TestCase;
 use web\Error;
+use web\Request;
+use web\Response;
 use web\frontend\Frontend;
 use web\frontend\Templates;
 use web\frontend\View;
+use web\frontend\unittest\actions\Blogs;
+use web\frontend\unittest\actions\Home;
+use web\frontend\unittest\actions\Users;
 use web\io\TestInput;
 use web\io\TestOutput;
-use web\Request;
-use web\Response;
-use web\frontend\unittest\actions\Blogs;
-use web\frontend\unittest\actions\Users;
 
 class HandlingTest extends TestCase {
 
@@ -23,11 +24,10 @@ class HandlingTest extends TestCase {
    * @param  string $body
    * @return web.Response
    */
-  private function handle($fixture, $method, $uri, $body= null) {
-    if (null === $body) {
-      $headers= [];
-    } else {
-      $headers= ['Content-Type' => 'application/x-www-form-urlencoded', 'Content-Length' => strlen($body)];
+  private function handle($fixture, $method, $uri, $headers= [], $body= null) {
+    if (null !== $body) {
+      $headers['Content-Type']= 'application/x-www-form-urlencoded';
+      $headers['Content-Length']= strlen($body);
     }
 
     $req= new Request(new TestInput($method, $uri, $headers, $body));
@@ -126,7 +126,7 @@ class HandlingTest extends TestCase {
     ]));
 
     $return= ['created' => 2];
-    $this->handle($fixture, 'POST', '/users', 'username=New');
+    $this->handle($fixture, 'POST', '/users', [], 'username=New');
     $this->assertEquals(
       array_merge($return, ['base' => '', 'request' => [
         'params' => ['username' => 'New'],
@@ -142,7 +142,7 @@ class HandlingTest extends TestCase {
       'write' => function($template, $context, $out) { /* NOOP */ }
     ]));
 
-    $this->handle($fixture, 'PATCH', '/users/1', 'username=@illegal@');
+    $this->handle($fixture, 'PATCH', '/users/1', [], 'username=@illegal@');
   }
 
   #[@test, @expect(class= Error::class, withMessage= '/Illegal username ".+"/')]
@@ -151,7 +151,7 @@ class HandlingTest extends TestCase {
       'write' => function($template, $context, $out) { /* NOOP */ }
     ]));
 
-    $this->handle($fixture, 'POST', '/users', 'username=@illegal@');
+    $this->handle($fixture, 'POST', '/users', [], 'username=@illegal@');
   }
 
   #[@test]
@@ -211,6 +211,24 @@ class HandlingTest extends TestCase {
         'params' => [],
         'values' => []
       ]]),
+      $result
+    );
+  }
+
+  #[@test]
+  public function accessing_request() {
+    $fixture= new Frontend(new Home(), newinstance(Templates::class, [], [
+      'write' => function($template, $context= [], $out) use(&$result) {
+        $result= $context;
+      }
+    ]));
+
+    $this->handle($fixture, 'GET', '/', ['Cookie' => 'test=Works']);
+    $this->assertEquals(
+      ['home' => 'Works', 'base' => '', 'request' => [
+        'params' => [],
+        'values' => []
+      ]],
       $result
     );
   }
