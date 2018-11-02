@@ -100,7 +100,7 @@ class View {
       $res->flush();
     } else {
       $this->context['base']= $base;
-      $this->context['request']= ['params' => $req->params(), 'values' => $req->values()];
+      $this->context['request']= $req;
 
       $res->header('Content-Type', 'text/html; charset=utf-8');
       $out= $res->stream();
