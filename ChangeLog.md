@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 0.7.0 / 2018-11-02
+
+* Merged PR #8: Request in templates - @johannes85, @thekid
+
 ## 0.6.0 / 2018-10-19
 
 * Added possibility to inject request by using `request` as parameter
