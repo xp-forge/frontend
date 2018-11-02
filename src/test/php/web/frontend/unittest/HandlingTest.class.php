@@ -46,10 +46,7 @@ class HandlingTest extends TestCase {
    * @throws unittest.AssertionFailedError
    */
   private function assertContext($expected, $actual) {
-    $actual['request']= [
-      'params' => $actual['request']->params(),
-      'values' => $actual['request']->values(),
-    ];
+    $actual['request']= ['params' => $actual['request']->params()];
     $this->assertEquals($expected, $actual);
   }
 
@@ -88,8 +85,7 @@ class HandlingTest extends TestCase {
     $this->handle($fixture, 'GET', '/users/1');
     $this->assertContext(
       ['id' => 1, 'name' => 'Test', 'base' => '', 'request' => [
-        'params' => [],
-        'values' => []
+        'params' => []
       ]],
       $result
     );
@@ -107,8 +103,7 @@ class HandlingTest extends TestCase {
     $this->handle($fixture, 'GET', $uri);
     $this->assertContext(
       array_merge($return, ['base' => '', 'request' => [
-        'params' => ['max' => '100', 'start' => '1'],
-        'values' => []
+        'params' => ['max' => '100', 'start' => '1']
       ]]),
       $result
     );
@@ -126,8 +121,7 @@ class HandlingTest extends TestCase {
     $this->handle($fixture, 'GET', '/users');
     $this->assertContext(
       array_merge($return, ['base' => '', 'request' => [
-        'params' => [],
-        'values' => []
+        'params' => []
       ]]),
       $result
     );
@@ -145,8 +139,7 @@ class HandlingTest extends TestCase {
     $this->handle($fixture, 'POST', '/users', [], 'username=New');
     $this->assertContext(
       array_merge($return, ['base' => '', 'request' => [
-        'params' => ['username' => 'New'],
-        'values' => []
+        'params' => ['username' => 'New']
       ]]),
       $result
     );
@@ -224,8 +217,7 @@ class HandlingTest extends TestCase {
     $res= $this->handle($fixture, 'GET', '/blogs/development/1');
     $this->assertContext(
       array_merge($return, ['base' => '', 'request' => [
-        'params' => [],
-        'values' => []
+        'params' => []
       ]]),
       $result
     );
@@ -242,8 +234,7 @@ class HandlingTest extends TestCase {
     $this->handle($fixture, 'GET', '/', ['Cookie' => 'test=Works']);
     $this->assertContext(
       ['home' => 'Works', 'base' => '', 'request' => [
-        'params' => [],
-        'values' => []
+        'params' => []
       ]],
       $result
     );
