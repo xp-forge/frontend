@@ -37,6 +37,19 @@ class HandlingTest extends TestCase {
     return $res;
   }
 
+  /**
+   * Assertion helper to compare template engine context
+   *
+   * @param  [:var] $expected
+   * @param  [:var] $actual
+   * @return void
+   * @throws unittest.AssertionFailedError
+   */
+  private function assertContext($expected, $actual) {
+    $actual['request']= ['params' => $actual['request']->params()];
+    $this->assertEquals($expected, $actual);
+  }
+
   #[@test]
   public function template_name_inferred_from_class_name() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
@@ -70,10 +83,9 @@ class HandlingTest extends TestCase {
     ]));
 
     $this->handle($fixture, 'GET', '/users/1');
-    $this->assertEquals(
+    $this->assertContext(
       ['id' => 1, 'name' => 'Test', 'base' => '', 'request' => [
-        'params' => [],
-        'values' => []
+        'params' => []
       ]],
       $result
     );
@@ -89,10 +101,9 @@ class HandlingTest extends TestCase {
 
     $return= ['start' => '1', 'max' => '100', 'list' => []];
     $this->handle($fixture, 'GET', $uri);
-    $this->assertEquals(
+    $this->assertContext(
       array_merge($return, ['base' => '', 'request' => [
-        'params' => ['max' => '100', 'start' => '1'],
-        'values' => []
+        'params' => ['max' => '100', 'start' => '1']
       ]]),
       $result
     );
@@ -108,10 +119,9 @@ class HandlingTest extends TestCase {
 
     $return= ['start' => 0, 'max' => -1, 'list' => [['id' => 1, 'name' => 'Test']]];
     $this->handle($fixture, 'GET', '/users');
-    $this->assertEquals(
+    $this->assertContext(
       array_merge($return, ['base' => '', 'request' => [
-        'params' => [],
-        'values' => []
+        'params' => []
       ]]),
       $result
     );
@@ -127,10 +137,9 @@ class HandlingTest extends TestCase {
 
     $return= ['created' => 2];
     $this->handle($fixture, 'POST', '/users', [], 'username=New');
-    $this->assertEquals(
+    $this->assertContext(
       array_merge($return, ['base' => '', 'request' => [
-        'params' => ['username' => 'New'],
-        'values' => []
+        'params' => ['username' => 'New']
       ]]),
       $result
     );
@@ -206,10 +215,9 @@ class HandlingTest extends TestCase {
 
     $return= ['category' => 'development', 'article' => 1];
     $res= $this->handle($fixture, 'GET', '/blogs/development/1');
-    $this->assertEquals(
+    $this->assertContext(
       array_merge($return, ['base' => '', 'request' => [
-        'params' => [],
-        'values' => []
+        'params' => []
       ]]),
       $result
     );
@@ -224,10 +232,9 @@ class HandlingTest extends TestCase {
     ]));
 
     $this->handle($fixture, 'GET', '/', ['Cookie' => 'test=Works']);
-    $this->assertEquals(
+    $this->assertContext(
       ['home' => 'Works', 'base' => '', 'request' => [
-        'params' => [],
-        'values' => []
+        'params' => []
       ]],
       $result
     );
