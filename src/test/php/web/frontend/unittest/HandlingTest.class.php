@@ -1,5 +1,6 @@
 <?php namespace web\frontend\unittest;
 
+use lang\XPException;
 use unittest\TestCase;
 use web\Error;
 use web\Request;
@@ -238,5 +239,26 @@ class HandlingTest extends TestCase {
       ]],
       $result
     );
+  }
+
+  #[@test, @expect(class= Error::class, withMessage= '/^test$/')]
+  public function error_exclude_stacktrace_in_message() {
+    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+      'write' => function($template, $context, $out) { /* NOOP */ }
+    ]));
+    $this->handle($fixture, 'GET', '/exception');
+  }
+
+  #[@test]
+  public function error_contains_cause() {
+    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+      'write' => function($template, $context, $out) { /* NOOP */ }
+    ]));
+    try {
+      $this->handle($fixture, 'GET', '/exception');
+    } catch (Error $ex) {
+      $this->assertTrue($ex->getCause() instanceof XPException);
+      $this->assertEquals('test', $ex->getMessage());
+    }
   }
 }

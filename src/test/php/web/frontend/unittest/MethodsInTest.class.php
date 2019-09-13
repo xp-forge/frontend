@@ -18,8 +18,9 @@ class MethodsInTest extends TestCase {
       [
         '#get/users/(?<id>[^/]+)/avatar$#',
         '#get/users/(?<id>[^/]+)$#',
+        '#get/exception$#',
         '#post/users$#',
-        '#get/users$#',
+        '#get/users$#'
       ],
       array_keys($delegates->patterns)
     );

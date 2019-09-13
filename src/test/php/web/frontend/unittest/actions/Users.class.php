@@ -1,5 +1,6 @@
 <?php namespace web\frontend\unittest\actions;
 
+use lang\XPException;
 use web\Error;
 use web\frontend\View;
 
@@ -42,5 +43,10 @@ class Users {
   #[@get('/users/{id}/avatar')]
   public function avatar($id) {
     // TBI
+  }
+
+  #[@get('/exception')]
+  public function exception() {
+    throw new XPException('test');
   }
 }

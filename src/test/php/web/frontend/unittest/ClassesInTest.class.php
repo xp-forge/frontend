@@ -24,6 +24,7 @@ class ClassesInTest extends TestCase {
         '#get/blogs/(?<category>[^/]+)/(?<id>[0-9]+)$#',
         '#get/users/(?<id>[^/]+)/avatar$#',
         '#get/users/(?<id>[^/]+)$#',
+        '#get/exception$#',
         '#post/users$#',
         '#get/users$#',
         '#get.+$#'
