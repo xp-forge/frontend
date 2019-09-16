@@ -3,6 +3,14 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 1.0.0 / 2019-09-16
+
+* Merged PR #10: Handlers. Heads up: This deprecates the `ClassesIn`
+  loader! Refactoring code means replacing *ClassesIn* with *HandlersIn*
+  inside the application and adding the `@handler` annotation to all
+  handler classes.
+  (@thekid)
+
 ## 0.7.1 / 2019-09-16
 
 * Added PHP 7.4 support - @thekid
