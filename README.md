@@ -69,7 +69,7 @@ use io\Path;
 class Site extends Application {
 
   /** @return [:var] */
-  protected function routes() {
+  public function routes() {
     $files= new FilesFrom(new Path($this->environment->webroot(), 'src/main/webapp'));
     $templates= new TemplateEngine(new Path($this->environment->webroot(), 'src/main/handlebars'));
 
