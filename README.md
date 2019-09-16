@@ -82,3 +82,26 @@ class Site extends Application {
 ```
 
 To run it, use `xp -supervise web Site`, which will serve the site at http://localhost:8080/. Find and clone the example code [here](https://gist.github.com/thekid/8ce84b0d0de8fce5b6dd5faa22e1d716).
+
+## Organizing your code
+
+In real-life situations, you will not want to put all of your code into the `Home` class. In order to separate code out into various classes, place all handler classes inside a dedicated package:
+
+```bash
+@FileSystemCL<./src/main/php>
+package de.thekid.example.handlers {
+
+  public class de.thekid.example.handlers.Home
+  public class de.thekid.example.handlers.User
+  public class de.thekid.example.handlers.Group
+}
+```
+
+Then use the delegation API provided by the `HandlersIn` class:
+
+```php
+use web\frontend\{Frontend, HandlersIn};
+
+// ...inside the routes() method, as seen above:
+new Frontend(new HandlersIn('de.thekid.example.handlers'), $templates);
+```
