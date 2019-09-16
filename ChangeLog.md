@@ -3,6 +3,12 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 0.7.1 / 2019-09-16
+
+* Fixed wrapped exceptions' stacktraces from appearing. See PR #9 for
+  discussions, examples and the (easy) fix.
+  (@thekid, @johannes85)
+
 ## 0.7.0 / 2018-11-02
 
 * Merged PR #8: Request in templates - @johannes85, @thekid

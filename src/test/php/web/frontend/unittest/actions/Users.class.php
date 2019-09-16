@@ -41,6 +41,10 @@ class Users {
 
   #[@get('/users/{id}/avatar')]
   public function avatar($id) {
-    // TBI
+    if (!isset($this->list[$id])) {
+      throw new Error(404, 'No such user '.$id);
+    }
+    return $this->list[$id]['avatar'];  // Raises an exception if key is undefined!
   }
+
 }

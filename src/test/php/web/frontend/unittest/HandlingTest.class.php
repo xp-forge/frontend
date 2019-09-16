@@ -1,5 +1,6 @@
 <?php namespace web\frontend\unittest;
 
+use lang\IndexOutOfBoundsException;
 use unittest\TestCase;
 use web\Error;
 use web\Request;
@@ -238,5 +239,37 @@ class HandlingTest extends TestCase {
       ]],
       $result
     );
+  }
+
+  #[@test]
+  public function exceptions_are_wrapped_in_internal_server_errors() {
+    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+      'write' => function($template, $context, $out) { /* NOOP */ }
+    ]));
+
+    try {
+      $this->handle($fixture, 'GET', '/users/1/avatar');
+      $this->fail('No exception raised', null, Error::class);
+    } catch (Error $expected) {
+      $this->assertEquals(500, $expected->status());
+      $this->assertEquals('Undefined index: avatar', $expected->getMessage());
+      $this->assertInstanceOf(IndexOutOfBoundsException::class, $expected->getCause());
+    }
+  }
+
+  #[@test]
+  public function errors_are_transmitted_as_is() {
+    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+      'write' => function($template, $context, $out) { /* NOOP */ }
+    ]));
+
+    try {
+      $this->handle($fixture, 'GET', '/users/42/avatar');
+      $this->fail('No exception raised', null, Error::class);
+    } catch (Error $expected) {
+      $this->assertEquals(404, $expected->status());
+      $this->assertEquals('No such user 42', $expected->getMessage());
+      $this->assertNull($expected->getCause());
+    }
   }
 }

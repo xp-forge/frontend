@@ -1,8 +1,8 @@
 <?php namespace web\frontend\unittest;
 
+use lang\reflect\Package;
 use unittest\TestCase;
 use web\frontend\ClassesIn;
-use lang\reflect\Package;
 
 class ClassesInTest extends TestCase {
 
