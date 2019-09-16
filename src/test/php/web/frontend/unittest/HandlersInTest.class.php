@@ -2,23 +2,23 @@
 
 use lang\reflect\Package;
 use unittest\TestCase;
-use web\frontend\ClassesIn;
+use web\frontend\HandlersIn;
 
-class ClassesInTest extends TestCase {
+class HandlersInTest extends TestCase {
 
   #[@test]
   public function can_create_with_string() {
-    new ClassesIn('web.frontend.unittest.actions');
+    new HandlersIn('web.frontend.unittest.actions');
   }
 
   #[@test]
   public function can_create_with_package() {
-    new ClassesIn(Package::forName('web.frontend.unittest.actions'));
+    new HandlersIn(Package::forName('web.frontend.unittest.actions'));
   }
 
   #[@test]
   public function patterns_sorted_by_length() {
-    $delegates= new ClassesIn('web.frontend.unittest.actions');
+    $delegates= new HandlersIn('web.frontend.unittest.actions');
     $this->assertEquals(
       [
         '#get/blogs/(?<category>[^/]+)/(?<id>[0-9]+)$#',

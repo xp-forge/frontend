@@ -4,10 +4,8 @@ use lang\reflect\Package;
 
 /**
  * Creates routing based on handler classes in a given package
- *
- * @deprecated Use HandlersIn instead
  */
-class ClassesIn extends Delegates {
+class HandlersIn extends Delegates {
 
   /**
    * Creates this delegates instance
