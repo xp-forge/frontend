@@ -5,6 +5,7 @@ Web frontends change log
 
 ## 0.7.1 / 2019-09-16
 
+* Added PHP 7.4 support - @thekid
 * Fixed wrapped exceptions' stacktraces from appearing. See PR #9 for
   discussions, examples and the (easy) fix.
   (@thekid, @johannes85)
