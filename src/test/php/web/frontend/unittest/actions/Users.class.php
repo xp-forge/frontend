@@ -3,6 +3,7 @@
 use web\Error;
 use web\frontend\View;
 
+#[@handler]
 class Users {
   private $list= [
     1 => ['id' => 1, 'name' => 'Test'],
@@ -46,5 +47,4 @@ class Users {
     }
     return $this->list[$id]['avatar'];  // Raises an exception if key is undefined!
   }
-
 }

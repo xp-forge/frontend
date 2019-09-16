@@ -1,5 +1,6 @@
 <?php namespace web\frontend\unittest\actions;
 
+#[@handler]
 class Home {
 
   #[@get, @$req: request]

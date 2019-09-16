@@ -3,7 +3,7 @@
 use lang\reflect\Package;
 
 /**
- * Creates routing based on handler classes in a given package
+ * Creates routing based on classes in a given package
  *
  * @deprecated Use HandlersIn instead
  */

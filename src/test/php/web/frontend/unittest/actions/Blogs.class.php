@@ -1,8 +1,9 @@
 <?php namespace web\frontend\unittest\actions;
 
+#[@handler('/blogs')]
 class Blogs {
 
-  #[@get('/blogs/{category}/{id:[0-9]+}')]
+  #[@get('/{category}/{id:[0-9]+}')]
   public function article($category, $id) {
     return ['category' => $category, 'article' => (int)$id];
   }

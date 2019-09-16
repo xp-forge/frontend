@@ -26,7 +26,7 @@ class HandlersInTest extends TestCase {
         '#get/users/(?<id>[^/]+)$#',
         '#post/users$#',
         '#get/users$#',
-        '#get.+$#'
+        '#get/?$#'
       ],
       array_keys($delegates->patterns)
     );

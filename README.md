@@ -12,9 +12,10 @@ Frontends based on `xp-forge/web`.
 
 ## Example
 
-Frontend uses classes with methods annotated with HTTP verbs to handle routing. These methods return a context, which is passed along with the template name to the template engine.
+Frontend uses handler classes with methods annotated with HTTP verbs to handle routing. These methods return a context, which is passed along with the template name to the template engine.
 
 ```php
+#[@handler]
 class Home {
 
   #[@get, @$param: param('name')]
