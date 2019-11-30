@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 1.0.1 / 2019-11-30
+
+* Made compatible with XP 10 - @thekid
+
 ## 1.0.0 / 2019-09-16
 
 * Merged PR #10: Handlers. **Heads up**: This deprecates the `ClassesIn`
