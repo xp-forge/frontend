@@ -2,10 +2,10 @@
 
 use lang\IndexOutOfBoundsException;
 use unittest\TestCase;
-use web\{Error, Request, Response};
-use web\frontend\{Frontend, Templates, View};
 use web\frontend\unittest\actions\{Blogs, Home, Users};
+use web\frontend\{Frontend, Templates, View};
 use web\io\{TestInput, TestOutput};
+use web\{Error, Request, Response};
 
 class HandlingTest extends TestCase {
 
@@ -141,18 +141,18 @@ class HandlingTest extends TestCase {
 
   #[@test, @expect(['class' => Error::class, 'withMessage'=> '/Method PATCH not supported by any delegate/'])]
   public function unsupported_verb() {
-    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context, $out) { /* NOOP */ }
-    ]));
+    $fixture= new Frontend(new Users(), new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    });
 
     $this->handle($fixture, 'PATCH', '/users/1', [], 'username=@illegal@');
   }
 
   #[@test, @expect(['class' => Error::class, 'withMessage'=> '/Illegal username ".+"/'])]
   public function exceptions_result_in_internal_server_error() {
-    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context, $out) { /* NOOP */ }
-    ]));
+    $fixture= new Frontend(new Users(), new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    });
 
     $this->handle($fixture, 'POST', '/users', [], 'username=@illegal@');
   }
@@ -171,9 +171,9 @@ class HandlingTest extends TestCase {
 
   #[@test]
   public function can_set_status() {
-    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context, $out) { /* NOOP */ }
-    ]));
+    $fixture= new Frontend(new Users(), new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    });
 
     $res= $this->handle($fixture, 'GET', '/users/1000');
     $this->assertEquals(404, $res->status());
@@ -181,9 +181,9 @@ class HandlingTest extends TestCase {
 
   #[@test]
   public function can_set_header() {
-    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context, $out) { /* NOOP */ }
-    ]));
+    $fixture= new Frontend(new Users(), new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    });
 
     $res= $this->handle($fixture, 'GET', '/users/1');
     $this->assertEquals('1', $res->headers()['X-User-ID']);
@@ -191,9 +191,9 @@ class HandlingTest extends TestCase {
 
   #[@test]
   public function redirect() {
-    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context, $out) { /* NOOP */ }
-    ]));
+    $fixture= new Frontend(new Users(), new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    });
 
     $res= $this->handle($fixture, 'GET', '/users/0');
     $this->assertEquals([302, '/users/1'], [$res->status(), $res->headers()['Location']]);
@@ -236,9 +236,9 @@ class HandlingTest extends TestCase {
 
   #[@test]
   public function exceptions_are_wrapped_in_internal_server_errors() {
-    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context, $out) { /* NOOP */ }
-    ]));
+    $fixture= new Frontend(new Users(), new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    });
 
     try {
       $this->handle($fixture, 'GET', '/users/1/avatar');
@@ -252,9 +252,9 @@ class HandlingTest extends TestCase {
 
   #[@test]
   public function errors_are_transmitted_as_is() {
-    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context, $out) { /* NOOP */ }
-    ]));
+    $fixture= new Frontend(new Users(), new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    });
 
     try {
       $this->handle($fixture, 'GET', '/users/42/avatar');

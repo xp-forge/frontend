@@ -2,17 +2,17 @@
 
 use lang\IllegalArgumentException;
 use unittest\TestCase;
-use web\frontend\{Frontend, Templates};
 use web\frontend\unittest\actions\Users;
+use web\frontend\{Frontend, Templates};
 
 class FrontendTest extends TestCase {
   private $templates;
 
   /** @return void */
   public function setUp() {
-    $this->templates= newinstance(Templates::class, [], [
-      'write' => function($template, $context, $out) { /* NOOP */ }
-    ]);
+    $this->templates= new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    };
   }
 
   #[@test]
