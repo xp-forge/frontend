@@ -54,7 +54,7 @@ class Delegate {
       foreach ($this->method->getParameters() as $param) {
         if ($annotations= $param->getAnnotations()) {
           foreach ($annotations as $from => $value) {
-            $source= isset(self::$SOURCES[$from]) ? self::$SOURCES[$from] : self::$SOURCES['default'];
+            $source= self::$SOURCES[$from] ?? self::$SOURCES['default'];
           }
 
           $name= null === $value ? $param->getName() : $value;
