@@ -1,10 +1,8 @@
 <?php namespace web\frontend;
 
-use lang\ElementNotFoundException;
-use lang\XPClass;
+use lang\{ElementNotFoundException, XPClass};
 use lang\reflect\TargetInvocationException;
-use web\Error;
-use web\Handler;
+use web\{Error, Handler};
 
 class Frontend implements Handler {
   private $delegates, $templates, $base;

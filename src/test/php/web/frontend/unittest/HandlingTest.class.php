@@ -2,17 +2,10 @@
 
 use lang\IndexOutOfBoundsException;
 use unittest\TestCase;
-use web\Error;
-use web\Request;
-use web\Response;
-use web\frontend\Frontend;
-use web\frontend\Templates;
-use web\frontend\View;
-use web\frontend\unittest\actions\Blogs;
-use web\frontend\unittest\actions\Home;
-use web\frontend\unittest\actions\Users;
-use web\io\TestInput;
-use web\io\TestOutput;
+use web\{Error, Request, Response};
+use web\frontend\{Frontend, Templates, View};
+use web\frontend\unittest\actions\{Blogs, Home, Users};
+use web\io\{TestInput, TestOutput};
 
 class HandlingTest extends TestCase {
 
