@@ -1,17 +1,17 @@
 <?php namespace web\frontend\unittest;
 
-use unittest\TestCase;
+use unittest\{Test, TestCase};
 use web\frontend\MethodsIn;
 use web\frontend\unittest\actions\Users;
 
 class MethodsInTest extends TestCase {
 
-  #[@test]
+  #[Test]
   public function can_create() {
     new MethodsIn(new Users());
   }
 
-  #[@test]
+  #[Test]
   public function patterns_sorted_by_length() {
     $delegates= new MethodsIn(new Users());
     $this->assertEquals(

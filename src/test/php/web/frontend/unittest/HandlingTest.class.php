@@ -1,7 +1,7 @@
 <?php namespace web\frontend\unittest;
 
 use lang\IndexOutOfBoundsException;
-use unittest\TestCase;
+use unittest\{Expect, Test, TestCase, Values};
 use web\frontend\unittest\actions\{Blogs, Home, Users};
 use web\frontend\{Frontend, Templates, View};
 use web\io\{TestInput, TestOutput};
@@ -44,7 +44,7 @@ class HandlingTest extends TestCase {
     $this->assertEquals($expected, $actual);
   }
 
-  #[@test]
+  #[Test]
   public function template_name_inferred_from_class_name() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
       'write' => function($template, $context= [], $out) use(&$result) {
@@ -56,7 +56,7 @@ class HandlingTest extends TestCase {
     $this->assertEquals('users', $result);
   }
 
-  #[@test]
+  #[Test]
   public function template_rendered() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
       'write' => function($template, $context= [], $out) {
@@ -68,7 +68,7 @@ class HandlingTest extends TestCase {
     $this->assertNotEquals(false, strpos($res->output()->bytes(), 'Test'));
   }
 
-  #[@test]
+  #[Test]
   public function extract_path_segment() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
       'write' => function($template, $context= [], $out) use(&$result) {
@@ -85,7 +85,7 @@ class HandlingTest extends TestCase {
     );
   }
 
-  #[@test, @values(['/users?max=100&start=1', '/users?start=1&max=100'])]
+  #[Test, Values(['/users?max=100&start=1', '/users?start=1&max=100'])]
   public function use_request_parameters($uri) {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
       'write' => function($template, $context= [], $out) use(&$result) {
@@ -103,7 +103,7 @@ class HandlingTest extends TestCase {
     );
   }
 
-  #[@test]
+  #[Test]
   public function omit_optional_request_parameter() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
       'write' => function($template, $context= [], $out) use(&$result) {
@@ -121,7 +121,7 @@ class HandlingTest extends TestCase {
     );
   }
 
-  #[@test]
+  #[Test]
   public function post() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
       'write' => function($template, $context= [], $out) use(&$result) {
@@ -139,7 +139,7 @@ class HandlingTest extends TestCase {
     );
   }
 
-  #[@test, @expect(['class' => Error::class, 'withMessage'=> '/Method PATCH not supported by any delegate/'])]
+  #[Test, Expect(['class' => Error::class, 'withMessage'=> '/Method PATCH not supported by any delegate/'])]
   public function unsupported_verb() {
     $fixture= new Frontend(new Users(), new class() implements Templates {
       public function write($template, $context, $out) { /* NOOP */ }
@@ -148,7 +148,7 @@ class HandlingTest extends TestCase {
     $this->handle($fixture, 'PATCH', '/users/1', [], 'username=@illegal@');
   }
 
-  #[@test, @expect(['class' => Error::class, 'withMessage'=> '/Illegal username ".+"/'])]
+  #[Test, Expect(['class' => Error::class, 'withMessage'=> '/Illegal username ".+"/'])]
   public function exceptions_result_in_internal_server_error() {
     $fixture= new Frontend(new Users(), new class() implements Templates {
       public function write($template, $context, $out) { /* NOOP */ }
@@ -157,7 +157,7 @@ class HandlingTest extends TestCase {
     $this->handle($fixture, 'POST', '/users', [], 'username=@illegal@');
   }
 
-  #[@test]
+  #[Test]
   public function template_determined_from_view() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
       'write' => function($template, $context= [], $out) use(&$result) {
@@ -169,7 +169,7 @@ class HandlingTest extends TestCase {
     $this->assertEquals('no-user', $result);
   }
 
-  #[@test]
+  #[Test]
   public function can_set_status() {
     $fixture= new Frontend(new Users(), new class() implements Templates {
       public function write($template, $context, $out) { /* NOOP */ }
@@ -179,7 +179,7 @@ class HandlingTest extends TestCase {
     $this->assertEquals(404, $res->status());
   }
 
-  #[@test]
+  #[Test]
   public function can_set_header() {
     $fixture= new Frontend(new Users(), new class() implements Templates {
       public function write($template, $context, $out) { /* NOOP */ }
@@ -189,7 +189,7 @@ class HandlingTest extends TestCase {
     $this->assertEquals('1', $res->headers()['X-User-ID']);
   }
 
-  #[@test]
+  #[Test]
   public function redirect() {
     $fixture= new Frontend(new Users(), new class() implements Templates {
       public function write($template, $context, $out) { /* NOOP */ }
@@ -199,7 +199,7 @@ class HandlingTest extends TestCase {
     $this->assertEquals([302, '/users/1'], [$res->status(), $res->headers()['Location']]);
   }
 
-  #[@test]
+  #[Test]
   public function path_segments() {
     $fixture= new Frontend(new Blogs(), newinstance(Templates::class, [], [
       'write' => function($template, $context, $out) use(&$result) {
@@ -217,7 +217,7 @@ class HandlingTest extends TestCase {
     );
   }
 
-  #[@test]
+  #[Test]
   public function accessing_request() {
     $fixture= new Frontend(new Home(), newinstance(Templates::class, [], [
       'write' => function($template, $context= [], $out) use(&$result) {
@@ -234,7 +234,7 @@ class HandlingTest extends TestCase {
     );
   }
 
-  #[@test]
+  #[Test]
   public function exceptions_are_wrapped_in_internal_server_errors() {
     $fixture= new Frontend(new Users(), new class() implements Templates {
       public function write($template, $context, $out) { /* NOOP */ }
@@ -245,12 +245,12 @@ class HandlingTest extends TestCase {
       $this->fail('No exception raised', null, Error::class);
     } catch (Error $expected) {
       $this->assertEquals(500, $expected->status());
-      $this->assertEquals('Undefined index: avatar', $expected->getMessage());
+      $this->assertTrue((bool)preg_match('/Undefined.+avatar/', $expected->getMessage()));
       $this->assertInstanceOf(IndexOutOfBoundsException::class, $expected->getCause());
     }
   }
 
-  #[@test]
+  #[Test]
   public function errors_are_transmitted_as_is() {
     $fixture= new Frontend(new Users(), new class() implements Templates {
       public function write($template, $context, $out) { /* NOOP */ }

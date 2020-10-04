@@ -1,16 +1,21 @@
 <?php namespace web\frontend\unittest\actions;
 
 use web\Error;
-use web\frontend\View;
+use web\frontend\{View, Handler, Get, Post, Param};
 
-#[@handler]
+#[Handler]
 class Users {
   private $list= [
     1 => ['id' => 1, 'name' => 'Test'],
   ];
 
-  #[@get('/users'), @$start: param, @$max: param]
-  public function all($start= 0, $max= -1) {
+  #[Get('/users')]
+  public function all(
+    #[Param]
+    $start= 0,
+    #[Param]
+    $max= -1
+  ) {
     if (-1 === $max) {
       return ['start' => $start, 'max' => $max, 'list' => array_slice($this->list, $start)];
     } else {
@@ -18,7 +23,7 @@ class Users {
     }
   }
 
-  #[@get('/users/{id}')]
+  #[Get('/users/{id}')]
   public function find($id) {
     if (0 == $id) {
       return View::redirect('/users/'.key($this->list));
@@ -29,8 +34,11 @@ class Users {
     }
   }
 
-  #[@post('/users'), @$username: param]
-  public function create($username) {
+  #[Post('/users')]
+  public function create(
+    #[Param]
+    $username
+  ) {
     if (!preg_match('/^[a-z0-9.]{3,}$/i', $username)) {
       throw new Error(400, 'Illegal username "'.$username.'"');
     }
@@ -40,7 +48,7 @@ class Users {
     return ['created' => $id];
   }
 
-  #[@get('/users/{id}/avatar')]
+  #[Get('/users/{id}/avatar')]
   public function avatar($id) {
     if (!isset($this->list[$id])) {
       throw new Error(404, 'No such user '.$id);

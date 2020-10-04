@@ -1,22 +1,22 @@
 <?php namespace web\frontend\unittest;
 
 use lang\reflect\Package;
-use unittest\TestCase;
+use unittest\{Test, TestCase};
 use web\frontend\HandlersIn;
 
 class HandlersInTest extends TestCase {
 
-  #[@test]
+  #[Test]
   public function can_create_with_string() {
     new HandlersIn('web.frontend.unittest.actions');
   }
 
-  #[@test]
+  #[Test]
   public function can_create_with_package() {
     new HandlersIn(Package::forName('web.frontend.unittest.actions'));
   }
 
-  #[@test]
+  #[Test]
   public function patterns_sorted_by_length() {
     $delegates= new HandlersIn('web.frontend.unittest.actions');
     $this->assertEquals(

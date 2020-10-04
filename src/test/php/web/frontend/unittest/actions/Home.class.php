@@ -1,10 +1,15 @@
 <?php namespace web\frontend\unittest\actions;
 
-#[@handler]
+use web\frontend\{Get, Handler, Request};
+
+#[Handler]
 class Home {
 
-  #[@get, @$req: request]
-  public function get($req) {
+  #[Get]
+  public function get(
+    #[Request]
+    $req
+  ) {
     return ['home' => $req->cookie('test')];
   }
 }
