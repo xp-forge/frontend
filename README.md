@@ -14,11 +14,16 @@ Frontends based on `xp-forge/web`.
 Frontend uses handler classes with methods annotated with HTTP verbs to handle routing. These methods return a context, which is passed along with the template name to the template engine.
 
 ```php
-#[@handler]
+use web\frontend\{Handler, Get, Param};
+
+#[Handler]
 class Home {
 
-  #[@get, @$param: param('name')]
-  public function get($param) {
+  #[Get]
+  public function get(
+    #[Param('name')]
+    $param
+  ) {
     return ['name' => $param ?: 'World'];
   }
 }
