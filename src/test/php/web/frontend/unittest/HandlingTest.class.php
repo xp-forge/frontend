@@ -18,7 +18,7 @@ class HandlingTest extends TestCase {
    * @param  string $body
    * @return web.Response
    */
-  private function handle($fixture, $method, $uri, $headers= [], $body= null) {
+  private function handle($fixture, $method, $uri, $headers= [], $body= '') {
     if (null !== $body) {
       $headers['Content-Type']= 'application/x-www-form-urlencoded';
       $headers['Content-Length']= strlen($body);
