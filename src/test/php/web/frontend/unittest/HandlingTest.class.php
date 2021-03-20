@@ -265,4 +265,17 @@ class HandlingTest extends TestCase {
       $this->assertNull($expected->getCause());
     }
   }
+
+  #[Test]
+  public function content_type_headers() {
+    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+      'write' => function($template, $context= [], $out) use(&$result) {
+        $result= $template;
+      }
+    ]));
+
+    $res= $this->handle($fixture, 'GET', '/users');
+    $this->assertEquals('text/html; charset=utf-8', $res->headers()['Content-Type']);
+    $this->assertEquals('nosniff', $res->headers()['X-Content-Type-Options']);
+  }
 }

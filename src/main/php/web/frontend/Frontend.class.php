@@ -1,6 +1,5 @@
 <?php namespace web\frontend;
 
-use lang\{ElementNotFoundException, XPClass};
 use lang\reflect\TargetInvocationException;
 use web\{Error, Handler};
 

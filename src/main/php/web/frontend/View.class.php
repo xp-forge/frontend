@@ -102,7 +102,9 @@ class View {
       $this->context['base']= $base;
       $this->context['request']= $req;
 
+      // See https://webhint.io/docs/user-guide/hints/hint-x-content-type-options/
       $res->header('Content-Type', 'text/html; charset=utf-8');
+      $res->header('X-Content-Type-Options', 'nosniff');
       $out= $res->stream();
       try {
         $this->templates->write($this->template, $this->context, $out);
