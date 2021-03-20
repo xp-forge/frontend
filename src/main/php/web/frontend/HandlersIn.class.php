@@ -20,7 +20,7 @@ class HandlersIn extends Delegates {
     $p= $package instanceof Package ? $package : Package::forName($package);
     foreach ($p->getClasses() as $class) {
       if ($class->hasAnnotation('handler')) {
-        $this->with($new ? $new($class) : $class->newInstance(), $class->getAnnotation('handler'));
+        $this->with($new ? $new($class) : $class->newInstance(), (string)$class->getAnnotation('handler'));
       }
     }
     uksort($this->patterns, function($a, $b) { return strlen($b) - strlen($a); });

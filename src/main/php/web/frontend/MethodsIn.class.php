@@ -14,7 +14,7 @@ class MethodsIn extends Delegates {
       throw new IllegalArgumentException('Expected an object, have '.$type);
     }
 
-    $this->with($instance, $type->hasAnnotation('handler') ? $type->getAnnotation('handler') : '/');
+    $this->with($instance, $type->hasAnnotation('handler') ? (string)$type->getAnnotation('handler') : '/');
     uksort($this->patterns, function($a, $b) { return strlen($b) - strlen($a); });
   }
 }
