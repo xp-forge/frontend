@@ -3,6 +3,13 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 2.1.0 / 2021-03-20
+
+* Added `X-Content-Type-Options: nosniff` to headers to prevent UAs
+  from performing guesswork. See https://mimesniff.spec.whatwg.org/ and
+  https://webhint.io/docs/user-guide/hints/hint-x-content-type-options/
+  (@thekid)
+
 ## 2.0.0 / 2020-04-10
 
 * Implemented xp-framework/rfc#334: Drop PHP 5.6:
