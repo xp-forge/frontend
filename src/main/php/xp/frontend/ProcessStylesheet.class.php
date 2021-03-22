@@ -8,12 +8,13 @@ class ProcessStylesheet {
   public function process(URI $base, $stream) {
     $bytes= Streams::readAll($stream);
 
-    // Download dependencies
+    // Download dependencies. If the stylesheet itself was read from cache, don't
+    // revalidate all dependencies, instead preferring the cached copy.
     preg_match_all('/url\(([^)]+)\)/', $bytes, $resources, PREG_SET_ORDER);
     foreach ($resources as $resource) {
       $uri= new URI($resource[1]);
       if ($uri->isRelative()) {
-        yield 'fetch' => [$base->resolve($uri), $stream instanceof Transfer, '.../'.$resource[1]];
+        yield 'fetch' => [$base->resolve($uri), !($stream instanceof Cached), '.../'.$resource[1]];
       }
     }
 

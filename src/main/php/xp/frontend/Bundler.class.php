@@ -52,7 +52,7 @@ class Bundler {
     foreach ($dependencies as $dependency) {
       Console::write("\e[37;1m", $dependency->library, "\e[0m@", $dependency->constraint, " => ");
       $version= $this->resolve->version($dependency->library, $dependency->constraint);
-      Console::writeLine(" \e[37;1m", $version, "\e[0m");
+      Console::writeLine("\e[37;1m", $version, "\e[0m");
 
       foreach ($dependency->files as $file) {
         $operations['fetch'](new URI(sprintf('https://cdn.jsdelivr.net/npm/%s@%s/%s', $dependency->library, $version, $file)));

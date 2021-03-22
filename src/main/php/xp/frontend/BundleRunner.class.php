@@ -27,7 +27,11 @@ use util\profiling\Timer;
  *   ```sh
  *   $ xp bundle -c ../composer.json dist
  *   ```
- * 
+ * - Force downloading, do not use cache
+ *   ```sh
+ *   $ xp bundle -f src/main/webapp/static
+ *   ```
+ *
  * This will create `bundle`.js and `bundle`.css from the given libraries and
  * place them in the given target directory.
  */
@@ -54,9 +58,12 @@ class BundleRunner {
   public static function main(array $args): int {
     $config= 'composer.json';
     $target= 'static';
+    $cache= Environment::tempDir();
     for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
       if ('-c' === $args[$i]) {
         $config= $args[++$i];
+      } else if ('-f' === $args[$i]) {
+        $cache= null;
       } else {
         $target= $args[$i];
       }
@@ -76,8 +83,8 @@ class BundleRunner {
       return self::error(1, 'No assets found in '.$config);
     }
 
-    $fetch= new Fetch(Environment::tempDir(), [
-      'cached' => function($r) { Console::write('(cached', $r ? '' : '*', ')'); },
+    $fetch= new Fetch($cache, [
+      'cached' => function($r) { Console::write('(cached', $r ? '' : '*', ') '); },
       'update' => function($t) { Console::writef('%d%s', $t, str_repeat("\x08", strlen($t))); },
       'final'  => function($t) { Console::writef('%s%s', str_repeat(' ', strlen($t)), str_repeat("\x08", strlen($t))); },
     ]);

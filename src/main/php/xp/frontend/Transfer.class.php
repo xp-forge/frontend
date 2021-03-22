@@ -1,29 +1,34 @@
 <?php namespace xp\frontend;
 
-use io\File;
-use io\streams\InputStream;
+use io\streams\{InputStream, OutputStream};
 
 class Transfer implements InputStream {
-  private $transferred= 0;
-  private $in, $file, $progress;
+  private $in, $out;
 
-  public function __construct(InputStream $in, File $file, $progress) {
+  /**
+   * Transfer returns everything read from the given input stream while
+   * simultaneously writing to the given output stream.
+   */
+  public function __construct(InputStream $in, OutputStream $out) {
     $this->in= $in;
-    $this->file= $file;
-    $this->progress= $progress;
+    $this->out= $out;
   }
 
+  /** @return int */
   public function available() { return $this->in->available(); }
 
-  public function close() {
-    $this->progress['final']($this->transferred);
-    $this->in->close();
-  }
+  /** @return void */
+  public function close() { $this->in->close(); }
 
+  /**
+   * Reads from this transfer
+   *
+   * @param  int $limit
+   * @return string
+   */
   public function read($limit= 8192) {
     $chunk= $this->in->read($limit);
-    $this->transferred+= $this->file->write($chunk);
-    $this->progress['update']($this->transferred);
+    $this->out->write($chunk);
     return $chunk;
   }
 }
