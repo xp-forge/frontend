@@ -6,10 +6,10 @@ use util\URI;
 use util\cmd\Console;
 
 class Bundler {
-  private $fetch, $resolve, $handlers, $target;
+  private $cdn, $resolve, $handlers, $target;
 
-  public function __construct(Fetch $fetch, Resolver $resolve, $handlers, Folder $target) {
-    $this->fetch= $fetch;
+  public function __construct(CDN $cdn, Resolver $resolve, $handlers, Folder $target) {
+    $this->cdn= $cdn;
     $this->resolve= $resolve;
     $this->handlers= $handlers;
     $this->target= $target;
@@ -24,7 +24,7 @@ class Bundler {
         $handler= $this->handlers[$type] ?? $this->handlers['*'];
 
         Console::write("> \e[34m[", $type, "]: ", $base ?? (string)$uri, "\e[0m ");
-        $stream= $this->fetch->get($uri, $revalidate);
+        $stream= $this->cdn->fetch($uri, $revalidate);
         $result= $handler->process($uri, $stream);
         Console::writeLine();
 
@@ -55,7 +55,7 @@ class Bundler {
       Console::writeLine("\e[37;1m", $version, "\e[0m");
 
       foreach ($dependency->files as $file) {
-        $operations['fetch'](new URI(sprintf('https://cdn.jsdelivr.net/npm/%s@%s/%s', $dependency->library, $version, $file)));
+        $operations['fetch']($this->cdn->locate($dependency->library, $version, $file));
       }
     }
 

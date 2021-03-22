@@ -96,7 +96,7 @@ class BundleRunner {
     ];
 
     $timer= new Timer();
-    $bundler= new Bundler($fetch, new Resolver($fetch), $handlers, new Folder($target));
+    $bundler= new Bundler(new CDN($fetch), new Resolver($fetch), $handlers, new Folder($target));
     $bundles= 0;
     $pwd= realpath('.');
     try {
