@@ -70,10 +70,21 @@ class BundleRunner {
       'final'  => function($t) { Console::writef('%s%s', str_repeat(' ', strlen($t)), str_repeat("\x08", strlen($t))); },
     ]);
 
-    $bundler= new Bundler($fetch, new Resolver($fetch), new Folder($target));
+    $handlers= [
+      'css' => new ProcessStylesheet(),
+      'js'  => new ProcessJavaScript(),
+      '*'   => new StoreFile(),
+    ];
+
+    $bundler= new Bundler($fetch, new Resolver($fetch), $handlers, new Folder($target));
+    $next= 0;
+    $pwd= realpath('.');
     try {
       foreach ($require as $name => $spec) {
-        $bundler->create($name, new Dependencies($spec));
+        Console::writeLine($next++ ? "\n" : '', "\e[32mGenerating ", $name, " bundle\e[0m");
+        foreach ($bundler->create($name, new Dependencies($spec)) as $file) {
+          Console::writeLine(str_replace($pwd, '', $file->getURI()), ': ', $file->size(), ' bytes');
+        }
       }
       return 0;
     } catch (Throwable $t) {

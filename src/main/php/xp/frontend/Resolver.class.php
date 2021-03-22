@@ -4,14 +4,15 @@ use lang\IllegalArgumentException;
 use text\json\{Json, StreamInput};
 
 class Resolver {
-  private $fetch;
+  private $fetch, $registry;
 
-  public function __construct(Fetch $fetch) {
+  public function __construct(Fetch $fetch, string $registry= 'https://registry.npmjs.org') {
     $this->fetch= $fetch;
+    $this->registry= rtrim($registry, '/').'/';
   }
 
-  public function version(string $library, string $constraint) {
-    $info= Json::read(new StreamInput($this->fetch->get('https://registry.npmjs.org/'.$library)));
+  public function version(string $library, string $constraint): string {
+    $info= Json::read(new StreamInput($this->fetch->get($this->registry.$library)));
 
     // TBI: Create constraints
     if ('^' === $constraint[0]) {
