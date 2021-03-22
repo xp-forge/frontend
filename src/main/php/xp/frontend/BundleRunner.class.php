@@ -1,9 +1,10 @@
 <?php namespace xp\frontend;
 
 use io\Folder;
-use lang\{Environment, Throwable};
+use lang\{Environment, Runtime, Throwable};
 use text\json\{Json, FileInput, StreamInput};
 use util\cmd\Console;
+use util\profiling\Timer;
 
 /**
  * Bundle assets
@@ -32,9 +33,20 @@ use util\cmd\Console;
  */
 class BundleRunner {
 
+  /** Displays success message */
+  private static function success(int $bundles, float $elapsed): int {
+    Console::$out->writeLinef(
+      "\n\e[32mSuccess: %d bundle(s) created in %.3f seconds using %.2f kB memory\e[0m",
+      $bundles,
+      $elapsed,
+      Runtime::getInstance()->peakMemoryUsage() / 1024
+    );
+    return 0;
+  }
+
   /** Displays error message */
   private static function error(int $code, string $message): int {
-    Console::$err->writeLine("\e[31mError: $message\e[0m");
+    Console::$err->writeLinef("\e[31mError: %s\e[0m", $message);
     return $code;
   }
 
@@ -76,17 +88,20 @@ class BundleRunner {
       '*'   => new StoreFile(),
     ];
 
+    $timer= new Timer();
     $bundler= new Bundler($fetch, new Resolver($fetch), $handlers, new Folder($target));
-    $next= 0;
+    $bundles= 0;
     $pwd= realpath('.');
     try {
+      $timer->start();
       foreach ($require as $name => $spec) {
-        Console::writeLine($next++ ? "\n" : '', "\e[32mGenerating ", $name, " bundle\e[0m");
+        Console::writeLine($bundles++ ? "\n" : '', "\e[32mGenerating ", $name, " bundle\e[0m");
         foreach ($bundler->create($name, new Dependencies($spec)) as $file) {
           Console::writeLine(str_replace($pwd, '', $file->getURI()), ': ', $file->size(), ' bytes');
         }
       }
-      return 0;
+
+      return self::success($bundles, $timer->elapsedTime());
     } catch (Throwable $t) {
       return self::error(8, $t->toString());
     }
