@@ -13,7 +13,7 @@ class ProcessStylesheet {
     foreach ($resources as $resource) {
       $uri= new URI($resource[1]);
       if ($uri->isRelative()) {
-        yield 'fetch' => [(string)$base->resolve($uri), $stream instanceof Transfer];
+        yield 'fetch' => [$base->resolve($uri), $stream instanceof Transfer];
       }
     }
 

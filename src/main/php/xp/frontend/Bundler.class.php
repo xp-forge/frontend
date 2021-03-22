@@ -18,12 +18,11 @@ class Bundler {
   public function create(string $name, Dependencies $dependencies): iterable {
     $sources= [];
     $operations= [
-      'fetch' => function($url, $revalidate= true) use(&$sources, &$operations) {
-        $p= strrpos($url, '.') + 1;
-        $type= substr($url, $p, strcspn($url, '?#') - $p);
+      'fetch' => function($uri, $revalidate= true) use(&$sources, &$operations) {
+        $path= $uri->path();
+        $type= substr($path, strrpos($path, '.') + 1);
 
-        Console::write("> \e[34m[", $type, "]: ", $url, "\e[0m ");
-        $uri= new URI($url);
+        Console::write("> \e[34m[", $type, "]: ", (string)$uri, "\e[0m ");
         $stream= $this->fetch->get($uri, $revalidate);
 
         $handler= $this->handlers[$type] ?? $this->handlers['*']; 
@@ -53,8 +52,9 @@ class Bundler {
       Console::write("\e[37;1m", $dependency->library, "\e[0m@", $dependency->constraint, " => ");
       $version= $this->resolve->version($dependency->library, $dependency->constraint);
       Console::writeLine(" \e[37;1m", $version, "\e[0m");
+
       foreach ($dependency->files as $file) {
-        $operations['fetch'](sprintf('https://cdn.jsdelivr.net/npm/%s@%s/%s', $dependency->library, $version, $file));
+        $operations['fetch'](new URI(sprintf('https://cdn.jsdelivr.net/npm/%s@%s/%s', $dependency->library, $version, $file)));
       }
     }
 
