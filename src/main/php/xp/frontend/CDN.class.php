@@ -2,6 +2,12 @@
 
 use util\URI;
 
+/**
+ * CDN from where to download NPM packages from. Uses the jsDelivr open
+ * source content delivery network by default.
+ *
+ * @see  https://github.com/jsdelivr/jsdelivr
+ */
 class CDN {
   private $fetch, $url;
 
