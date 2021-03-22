@@ -5,8 +5,13 @@ use io\streams\InputStream;
 
 class Transfer implements InputStream {
   private $transferred= 0;
+  private $in, $file, $progress;
 
-  public function __construct(private InputStream $in, private File $file, private $progress) { }
+  public function __construct(InputStream $in, File $file, $progress) {
+    $this->in= $in;
+    $this->file= $file;
+    $this->progress= $progress;
+  }
 
   public function available() { return $this->in->available(); }
 
