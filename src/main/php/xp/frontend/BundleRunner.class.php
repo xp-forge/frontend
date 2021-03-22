@@ -102,7 +102,7 @@ class BundleRunner {
     try {
       $timer->start();
       foreach ($require as $name => $spec) {
-        Console::writeLine("\e[32mGenerating ", $name, " bundle\e[0m");
+        Console::writeLine("\e[32mGenerating ", $name, " bundles\e[0m");
         foreach ($bundler->create($name, new Dependencies($spec)) as $file) {
           Console::writeLine(str_replace($pwd, '', $file->getURI()), ': ', $file->size(), ' bytes');
           $bundles++;
