@@ -18,7 +18,10 @@ class Transfer implements InputStream {
   public function available() { return $this->in->available(); }
 
   /** @return void */
-  public function close() { $this->in->close(); }
+  public function close() {
+    $this->in->close();
+    $this->out->close();
+  }
 
   /**
    * Reads from this transfer
