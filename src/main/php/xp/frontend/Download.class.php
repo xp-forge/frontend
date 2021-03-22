@@ -1,24 +1,20 @@
 <?php namespace xp\frontend;
 
-use io\File;
-use io\streams\InputStream;
-
-class Download implements InputStream {
+class Download extends Response {
   private $transferred= 0;
-  private $in, $progress;
 
-  public function __construct(InputStream $in, $progress) {
-    $this->in= $in;
-    $this->progress= $progress;
-  }
-
-  public function available() { return $this->in->available(); }
-
+  /** @return void */
   public function close() {
     $this->progress['final']($this->transferred);
     $this->in->close();
   }
 
+  /**
+   * Reads from this response
+   *
+   * @param  int $limit
+   * @return string
+   */
   public function read($limit= 8192) {
     $chunk= $this->in->read($limit);
     $this->transferred+= strlen($chunk);

@@ -16,11 +16,13 @@ class CDN {
     $this->url= $url;
   }
 
-  public function fetch(URI $url, bool $revalidate= true) {
+  /** Fetches a given URL */
+  public function fetch(URI $url, bool $revalidate= true): Response {
     return $this->fetch->get($url, $revalidate);
   }
 
-  public function locate($library, $version, $file) {
+  /** Locates a file with a given library version */
+  public function locate(string $library, string $version, string $file): URI {
     return new URI(sprintf($this->url, $library, $version, $file));
   }
 }

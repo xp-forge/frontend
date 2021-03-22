@@ -18,12 +18,12 @@ class Bundler {
   public function create(string $name, Dependencies $dependencies): iterable {
     $sources= [];
     $operations= [
-      'fetch' => function($uri, $revalidate= true, $base= null) use(&$sources, &$operations) {
+      'fetch' => function($uri, $revalidate= true, $path= null) use(&$sources, &$operations) {
         $path= $uri->path();
         $type= substr($path, strrpos($path, '.') + 1);
         $handler= $this->handlers[$type] ?? $this->handlers['*'];
 
-        Console::write("> \e[34m[", $type, "]: ", $base ?? (string)$uri, "\e[0m ");
+        Console::write("> \e[34m[", $type, "]: ", $path ?? (string)$uri, "\e[0m ");
         $stream= $this->cdn->fetch($uri, $revalidate);
         $result= $handler->process($uri, $stream);
         Console::writeLine();
