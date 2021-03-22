@@ -1,11 +1,8 @@
 <?php namespace xp\frontend;
 
-use io\streams\{InputStream, Streams, StreamTransfer};
-use io\{File, Folder};
-use lang\{Environment, IllegalArgumentException};
-use peer\http\{HttpConnection, HttpRequest};
+use io\Folder;
+use lang\{Environment, Throwable};
 use text\json\{Json, FileInput, StreamInput};
-use util\URI;
 use util\cmd\Console;
 
 /**
@@ -67,7 +64,20 @@ class BundleRunner {
       return self::error(1, 'No assets found in '.$config);
     }
 
-    Console::writeLine($require);
-    return 0;
+    $fetch= new Fetch(Environment::tempDir(), [
+      'cached' => function($r) { Console::write('(cached', $r ? '' : '*', ')'); },
+      'update' => function($t) { Console::writef('%d%s', $t, str_repeat("\x08", strlen($t))); },
+      'final'  => function($t) { Console::writef('%s%s', str_repeat(' ', strlen($t)), str_repeat("\x08", strlen($t))); },
+    ]);
+
+    $bundler= new Bundler($fetch, new Resolver($fetch), new Folder($target));
+    try {
+      foreach ($require as $name => $spec) {
+        $bundler->create($name, new Dependencies($spec));
+      }
+      return 0;
+    } catch (Throwable $t) {
+      return self::error(8, $t->toString());
+    }
   }
 }
