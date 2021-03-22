@@ -3,6 +3,9 @@
 class Download extends Response {
   private $transferred= 0;
 
+  /** @return bool */
+  public function cached() { return false; }
+
   /** @return void */
   public function close() {
     $this->progress['final']($this->transferred);

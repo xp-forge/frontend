@@ -9,4 +9,7 @@ class Cached extends Response {
     parent::__construct($in, $progress);
     $this->progress['cached']($validated);
   }
+
+  /** @return bool */
+  public function cached() { return true; }
 }

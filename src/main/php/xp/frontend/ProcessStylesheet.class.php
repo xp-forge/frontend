@@ -14,7 +14,7 @@ class ProcessStylesheet {
     foreach ($resources as $resource) {
       $uri= new URI($resource[1]);
       if ($uri->isRelative()) {
-        yield 'fetch' => [$base->resolve($uri), !($stream instanceof Cached), '.../'.$resource[1]];
+        yield 'fetch' => [$base->resolve($uri), !$stream->cached(), '.../'.$resource[1]];
       }
     }
 

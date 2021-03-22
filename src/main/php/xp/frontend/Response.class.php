@@ -11,6 +11,9 @@ abstract class Response implements InputStream {
     $this->progress= $progress;
   }
 
+  /** @return bool */
+  public abstract function cached();
+
   /** @return int */
   public function available() { return $this->in->available(); }
 
