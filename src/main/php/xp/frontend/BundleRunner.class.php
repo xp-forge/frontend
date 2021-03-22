@@ -36,7 +36,7 @@ class BundleRunner {
   /** Displays success message */
   private static function success(int $bundles, float $elapsed): int {
     Console::$out->writeLinef(
-      "\n\e[32mSuccess: %d bundle(s) created in %.3f seconds using %.2f kB memory\e[0m",
+      "\e[32mSuccess: %d bundle(s) created in %.3f seconds using %.2f kB memory\e[0m",
       $bundles,
       $elapsed,
       Runtime::getInstance()->peakMemoryUsage() / 1024
@@ -46,7 +46,7 @@ class BundleRunner {
 
   /** Displays error message */
   private static function error(int $code, string $message): int {
-    Console::$err->writeLinef("\e[31mError: %s\e[0m", $message);
+    Console::$err->writeLinef("\e[31m*** Error: %s\e[0m", $message);
     return $code;
   }
 
@@ -95,10 +95,12 @@ class BundleRunner {
     try {
       $timer->start();
       foreach ($require as $name => $spec) {
-        Console::writeLine($bundles++ ? "\n" : '', "\e[32mGenerating ", $name, " bundle\e[0m");
+        Console::writeLine("\e[32mGenerating ", $name, " bundle\e[0m");
         foreach ($bundler->create($name, new Dependencies($spec)) as $file) {
           Console::writeLine(str_replace($pwd, '', $file->getURI()), ': ', $file->size(), ' bytes');
+          $bundles++;
         }
+        Console::writeLine();
       }
 
       return self::success($bundles, $timer->elapsedTime());

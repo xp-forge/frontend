@@ -18,18 +18,19 @@ class Bundler {
   public function create(string $name, Dependencies $dependencies): iterable {
     $sources= [];
     $operations= [
-      'fetch' => function($uri, $revalidate= true) use(&$sources, &$operations) {
+      'fetch' => function($uri, $revalidate= true, $base= null) use(&$sources, &$operations) {
         $path= $uri->path();
         $type= substr($path, strrpos($path, '.') + 1);
+        $handler= $this->handlers[$type] ?? $this->handlers['*'];
 
-        Console::write("> \e[34m[", $type, "]: ", (string)$uri, "\e[0m ");
+        Console::write("> \e[34m[", $type, "]: ", $base ?? (string)$uri, "\e[0m ");
         $stream= $this->fetch->get($uri, $revalidate);
+        $result= $handler->process($uri, $stream);
+        Console::writeLine();
 
-        $handler= $this->handlers[$type] ?? $this->handlers['*']; 
-        foreach ($handler->process($uri, $stream) as $operation => $arguments) {
+        foreach ($result as $operation => $arguments) {
           $operations[$operation](...$arguments);
         }
-        Console::writeLine();
       },
       'store'  => function($path, $stream) {
         $t= new File($this->target, $path);
