@@ -35,8 +35,11 @@ class Resolver {
    */
   private function select($versions, $lo, $hi) {
     $compare= function($id) use($lo, $hi) {
-      sscanf($id, "%*d.%*d.%*d%[^\r]", $extra);
-      return null === $extra && version_compare($id, $lo, 'ge') && version_compare($id, $hi, 'lt');
+      return
+        3 === sscanf($id, "%*d.%*d.%*d%[^\r]", $extra) &&
+        version_compare($id, $lo, 'ge') &&
+        version_compare($id, $hi, 'lt')
+      ;
     };
     return array_filter($versions, $compare, ARRAY_FILTER_USE_KEY);
   }
@@ -50,11 +53,11 @@ class Resolver {
     $info= Json::read(new StreamInput($this->fetch->get($this->registry.$library)));
 
     if (null === $constraint) { // No constraint, simply find newest version
-      $compare= function($id) {
-        sscanf($id, "%*d.%*d.%*d%[^\r]", $extra);
-        return null === $extra;
-      };
-      $candidates= array_filter($info['versions'], $compare, ARRAY_FILTER_USE_KEY);
+      $candidates= array_filter(
+        $info['versions'],
+        function($id) { return 3 === sscanf($id, "%*d.%*d.%*d%[^\r]", $extra); },
+        ARRAY_FILTER_USE_KEY
+      );
     } else if ('^' === $constraint[0]) { // Don't allow breaking changes
       $c= sscanf($constraint, '^%d.%d.%d');
       $candidates= $this->select(
