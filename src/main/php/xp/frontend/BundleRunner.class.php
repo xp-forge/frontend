@@ -1,6 +1,5 @@
 <?php namespace xp\frontend;
 
-use io\streams\StreamTransfer;
 use io\{File, Folder};
 use lang\{Environment, Runtime, Throwable};
 use text\json\{Json, FileInput, StreamInput};
@@ -118,9 +117,9 @@ class BundleRunner {
 
         // Generate bundles
         foreach ($result->bundles() as $type => $source) {
-          $bundle= new File($target, $name.'.'.$type);
-          with (new StreamTransfer($source, $bundle->out()), function($self) {
-            $self->transferAll();
+          $bundle= with ($source, new File($target, $name.'.'.$type), function($in, $file) {
+            $in->transfer($file->out());
+            return $file;
           });
 
           Console::writeLinef('%s: %.2f kB', str_replace($pwd, '', $bundle->getURI()), $bundle->size() / 1024);
