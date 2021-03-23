@@ -24,7 +24,7 @@ class Dependencies implements \IteratorAggregate {
       yield new Dependency(
         $library,
         in_array($constraint, self::LATEST) ? null : $constraint,
-        array_map('trim', explode('|', $files))
+        array_map('trim', is_array($files) ? $files : explode('|', $files))
       );
     }
   }
