@@ -17,12 +17,13 @@ class Result {
   public function fetch($uri, $revalidate= true, $path= null) {
     $path= $uri->path();
     $type= substr($path, strrpos($path, '.') + 1);
-    $handler= $this->handlers[$type] ?? $this->handlers['*'];
 
     Console::write("> \e[34m[", $type, "]: ", $path ?? (string)$uri, "\e[0m ");
     $stream= $this->cdn->fetch($uri, $revalidate);
-    $handler->process($this, $uri, $stream);
     Console::writeLine();
+
+    $handler= $this->handlers[$type] ?? $this->handlers['*'];
+    $handler->process($this, $uri, $stream);
   }
 
   public function store($path, $stream) {
