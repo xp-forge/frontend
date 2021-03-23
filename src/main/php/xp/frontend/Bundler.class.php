@@ -22,17 +22,13 @@ class Bundler {
    */
   public function create(string $name, Dependencies $dependencies, Folder $target): iterable {
     $result= new Result($this->cdn, $target, $this->handlers);
-
     foreach ($dependencies as $dependency) {
       Console::write("\e[37;1m", $dependency->library, "\e[0m@", $dependency->constraint, " => ");
       $version= $this->resolve->version($dependency->library, $dependency->constraint);
       Console::writeLine("\e[37;1m", $version, "\e[0m");
 
-      foreach ($dependency->files as $file) {
-        $result->fetch($this->cdn->locate($dependency->library, $version, $file));
-      }
+      $result->include($dependency, $version);
     }
-
     return $result->bundles($name);
   }
 }

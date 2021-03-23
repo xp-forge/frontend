@@ -14,6 +14,17 @@ class Result {
     $this->handlers= $handlers;
   }
 
+  /**
+   * Include a given dependency with a given version in this result
+   *
+   * @return void
+   */
+  public function include(Dependency $dependency, string $version) {
+    foreach ($dependency->files as $file) {
+      $this->fetch($this->cdn->locate($dependency->library, $version, $file));
+    }
+  }
+
   public function fetch($uri, $revalidate= true, $path= null) {
     $path= $uri->path();
     $type= substr($path, strrpos($path, '.') + 1);
