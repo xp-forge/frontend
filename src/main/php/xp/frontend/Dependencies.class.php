@@ -1,25 +1,25 @@
 <?php namespace xp\frontend;
 
 class Dependencies implements \IteratorAggregate {
-  private $spec;
+  const LATEST = ['', '*', 'latest'];
 
-  public function __construct(array $spec) {
+  private $spec, $dependencies;
+
+  /** Creates new dependencies */
+  public function __construct(array $spec, array $dependencies) {
     $this->spec= $spec;
+    $this->dependencies= $dependencies;
   }
 
   /** @return iterable */
   public function getIterator() {
-    foreach ($this->spec as $dependency => $files) {
-      $p= strpos($dependency, '@');
-      if (false === $p) {
-        $library= $dependency;
-        $constraint= null;
-      } else {
-        $library= substr($dependency, 0, $p);
-        $constraint= substr($dependency, $p + 1);
-      }
-
-      yield new Dependency($library, $constraint, $files);
+    foreach ($this->spec as $library => $files) {
+      $constraint= $this->dependencies[$library];
+      yield new Dependency(
+        $library,
+        in_array($constraint, self::LATEST) ? null : $constraint,
+        array_map('trim', explode('|', $files))
+      );
     }
   }
 }

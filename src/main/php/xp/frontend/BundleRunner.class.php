@@ -9,23 +9,28 @@ use util\profiling\Timer;
 /**
  * Bundle assets
  * =============
- * Inside your Composer file, add the following alongside "require":
- * `
- *   "require-assets": {
+ * Inside your `package.json`, add the bundle definition along dependencies:
+ *
+ * `{
+ *   "dependencies": {
+ *     "simplemde": "^1.11",
+ *     "transliteration": "^2.1"
+ *   },
+ *   "bundles": {
  *     "bundle": {
- *       "handlebars@^4.7": ["dist/handlebars.min.js"],
- *       "simplemde@^1.11": ["dist/simplemde.min.js", "dist/simplemde.min.css"]
- *       "transliteration@^2.1": ["dist/browser/bundle.umd.min.js"]
+ *       "simplemde": "dist/simplemde.min.js | dist/simplemde.min.css",
+ *       "transliteration": "dist/browser/bundle.umd.min.js"
  *     }
- *   }`
+ *   }
+ * }`
  *
  * - Bundle libraries into the given target directory
  *   ```sh
  *   $ xp bundle src/main/webapp/static
  *   ```
- * - Use supplied configuration file instead of `./composer.json`
+ * - Use supplied configuration file instead of `./package.json`
  *   ```sh
- *   $ xp bundle -c ../composer.json dist
+ *   $ xp bundle -c ../package.json dist
  *   ```
  * - Force downloading, do not use cache
  *   ```sh
@@ -56,7 +61,7 @@ class BundleRunner {
 
   /** Entry point */
   public static function main(array $args): int {
-    $config= 'composer.json';
+    $config= 'package.json';
     $target= 'static';
     $force= false;
     for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
@@ -72,15 +77,16 @@ class BundleRunner {
     if ('-' === $config) {
       $input= new StreamInput(Console::$in->stream());
     } else if (is_dir($config)) {
-      $input= new FileInput($config.DIRECTORY_SEPARATOR.'composer.json');
+      $input= new FileInput($config.DIRECTORY_SEPARATOR.'package.json');
     } else if (is_file($config)) {
       $input= new FileInput($config);
     } else {
       return self::error(2, 'No configuration file found, tried '.$config);
     }
 
-    if (!($require= Json::read($input)['require-assets'] ?? null)) {
-      return self::error(1, 'No assets found in '.$config);
+    $package= Json::read($input);
+    if (!isset($package['bundles'])) {
+      return self::error(1, 'No bundles found in '.$config);
     }
 
     $fetch= new Fetch(Environment::tempDir(), $force, [
@@ -102,12 +108,12 @@ class BundleRunner {
 
     try {
       $timer= (new Timer())->start();
-      foreach ($require as $name => $spec) {
+      foreach ($package['bundles'] as $name => $spec) {
         $result= new Result($cdn, $handlers);
         Console::writeLine("\e[32mGenerating ", $name, " bundles\e[0m");
 
         // Include all dependencies
-        foreach (new Dependencies($spec) as $dependency) {
+        foreach (new Dependencies($spec, $package['dependencies']) as $dependency) {
           Console::write("\e[37;1m", $dependency->library, "\e[0m@", $dependency->constraint, " => ");
           $version= $resolve->version($dependency->library, $dependency->constraint);
           Console::writeLine("\e[37;1m", $version, "\e[0m");
