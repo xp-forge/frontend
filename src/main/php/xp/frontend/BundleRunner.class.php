@@ -1,6 +1,7 @@
 <?php namespace xp\frontend;
 
-use io\Folder;
+use io\streams\StreamTransfer;
+use io\{File, Folder};
 use lang\{Environment, Runtime, Throwable};
 use text\json\{Json, FileInput, StreamInput};
 use util\cmd\Console;
@@ -92,7 +93,7 @@ class BundleRunner {
     $handlers= [
       'css' => new ProcessStylesheet(),
       'js'  => new ProcessJavaScript(),
-      '*'   => new StoreFile(),
+      '*'   => new StoreFile($target),
     ];
 
     $timer= new Timer();
@@ -103,7 +104,7 @@ class BundleRunner {
     try {
       $timer->start();
       foreach ($require as $name => $spec) {
-        $result= new Result($cdn, new Folder($target), $handlers);
+        $result= new Result($cdn, $handlers);
         Console::writeLine("\e[32mGenerating ", $name, " bundles\e[0m");
 
         // Include all dependencies
@@ -116,8 +117,13 @@ class BundleRunner {
         }
 
         // Generate bundles
-        foreach ($result->bundles($name) as $file) {
-          Console::writeLine(str_replace($pwd, '', $file->getURI()), ': ', $file->size(), ' bytes');
+        foreach ($result->bundles() as $type => $source) {
+          $bundle= new File($target, $name.'.'.$type);
+          with (new StreamTransfer($source, $bundle->out()), function($self) {
+            $self->transferAll();
+          });
+
+          Console::writeLine(str_replace($pwd, '', $bundle->getURI()), ': ', $bundle->size(), ' bytes');
           $bundles++;
         }
         Console::writeLine();
