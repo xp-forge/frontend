@@ -123,7 +123,7 @@ class BundleRunner {
             $self->transferAll();
           });
 
-          Console::writeLine(str_replace($pwd, '', $bundle->getURI()), ': ', $bundle->size(), ' bytes');
+          Console::writeLinef('%s: %.2f kB', str_replace($pwd, '', $bundle->getURI()), $bundle->size() / 1024);
           $bundles++;
         }
         Console::writeLine();
