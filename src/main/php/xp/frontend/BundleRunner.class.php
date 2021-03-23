@@ -96,14 +96,14 @@ class BundleRunner {
     ];
 
     $timer= new Timer();
-    $bundler= new Bundler(new CDN($fetch), new Resolver($fetch), $handlers, new Folder($target));
+    $bundler= new Bundler(new CDN($fetch), new Resolver($fetch), $handlers);
     $bundles= 0;
     $pwd= realpath('.');
     try {
       $timer->start();
       foreach ($require as $name => $spec) {
         Console::writeLine("\e[32mGenerating ", $name, " bundles\e[0m");
-        foreach ($bundler->create($name, new Dependencies($spec)) as $file) {
+        foreach ($bundler->create($name, new Dependencies($spec), new Folder($target)) as $file) {
           Console::writeLine(str_replace($pwd, '', $file->getURI()), ': ', $file->size(), ' bytes');
           $bundles++;
         }

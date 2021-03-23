@@ -4,7 +4,7 @@ use util\URI;
 
 class StoreFile {
 
-  public function process(URI $base, $stream) {
-    yield 'store' => [$base->path(), $stream];
+  public function process(Result $result, URI $base, $stream) {
+    $result->store($base->path(), $stream);
   }
 }
