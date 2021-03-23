@@ -2,6 +2,7 @@
 
 use io\streams\MemoryInputStream;
 use unittest\{Assert, Test, Values};
+use util\URI;
 use xp\frontend\{Resolver, Fetch, Cached};
 
 class ResolverTest {
@@ -58,7 +59,7 @@ class ResolverTest {
           }
         }';
 
-        return new Cached(new MemoryInputStream($json), false, ['cached' => function() { }]);
+        return new Cached(new URI($url), new MemoryInputStream($json), false, ['cached' => function() { }]);
       }
     });
     Assert::equals($expected, $r->version('test', $constraint));
