@@ -22,11 +22,11 @@ class Result {
     }
   }
 
-  public function fetch($uri, $revalidate= true, $path= null) {
+  public function fetch($uri, $revalidate= true, $name= null) {
     $path= $uri->path();
     $type= substr($path, strrpos($path, '.') + 1);
 
-    Console::write("> \e[34m[", $type, "]: ", $path ?? (string)$uri, "\e[0m ");
+    Console::write("> \e[34m[", $type, "]: ", $name ?? (string)$uri, "\e[0m ");
     $stream= $this->cdn->fetch($uri, $revalidate);
     Console::writeLine();
 
