@@ -1,19 +1,25 @@
 <?php namespace xp\frontend;
 
-use io\streams\StreamTransfer;
 use io\{File, Folder};
-use util\URI;
 use util\cmd\Console;
 
 class Bundler {
   private $cdn, $resolve, $handlers;
 
-  public function __construct(CDN $cdn, Resolver $resolve, $handlers) {
+  /**
+   * Creates a new bundler. By default, all dependencies are simply downloaded
+   * and stored in the target directory passed to `create()`.
+   */
+  public function __construct(CDN $cdn, Resolver $resolve, array $handlers= []) {
     $this->cdn= $cdn;
     $this->resolve= $resolve;
-    $this->handlers= $handlers;
+    $this->handlers= $handlers + ['*' => new StoreFile()];
   }
 
+  /**
+   * Creates a bundle with the given name, downloading and processing dependencies
+   * into a target folder. Returns created bundles, if any.
+   */
   public function create(string $name, Dependencies $dependencies, Folder $target): iterable {
     $result= new Result($this->cdn, $target, $this->handlers);
 

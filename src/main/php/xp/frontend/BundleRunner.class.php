@@ -92,7 +92,6 @@ class BundleRunner {
     $handlers= [
       'css' => new ProcessStylesheet(),
       'js'  => new ProcessJavaScript(),
-      '*'   => new StoreFile(),
     ];
 
     $timer= new Timer();
