@@ -26,9 +26,8 @@ class Result {
     $path= $uri->path();
     $type= substr($path, strrpos($path, '.') + 1);
 
-    Console::write("  - Fetching \e[34m", $location ? '.../'.$location : (string)$uri, "\e[0m ");
+    Console::writef("\r\e[0K> \e[34m%s\e[0m ", $location ? '.../'.$location : $uri);
     $stream= $this->cdn->fetch($uri, $revalidate);
-    Console::writeLine();
 
     $handler= $this->handlers[$type] ?? $this->handlers['*'];
     $handler->process($this, $stream, $location);

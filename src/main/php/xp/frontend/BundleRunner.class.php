@@ -119,7 +119,7 @@ class BundleRunner {
       $cdn= new CDN($fetch);
       $cwd= new Folder('.');
       foreach ($bundles as $name => $dependencies) {
-        Console::writeLine("\e[32mGenerating ", $name, " bundles\e[0m");
+        Console::writeLine("\e[32mGenerating ", $name, " bundle\e[0m");
         $result= new Result($cdn, $handlers);
         foreach ($dependencies as $dependency) {
           $result->include($dependency);
@@ -131,7 +131,7 @@ class BundleRunner {
             return $file;
           });
           $path= str_replace($cwd->getURI(), '', $bundle->getURI());
-          Console::writeLinef("> \e[37;1m%s\e[0m: %.2f kB", $path, $bundle->size() / 1024);
+          Console::writeLinef("\r\e[0K> %s: \e[33m%.2f kB\e[0m", $path, $bundle->size() / 1024);
         }
       }
 
