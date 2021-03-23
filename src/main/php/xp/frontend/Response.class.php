@@ -1,12 +1,15 @@
 <?php namespace xp\frontend;
 
 use io\streams\InputStream;
+use util\URI;
 
 abstract class Response implements InputStream {
+  public $origin;
   protected $in, $progress;
 
   /** Creates a new response */
-  public function __construct(InputStream $in, $progress) {
+  public function __construct(URI $origin, InputStream $in, $progress) {
+    $this->origin= $origin;
     $this->in= $in;
     $this->progress= $progress;
   }

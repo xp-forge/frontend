@@ -1,11 +1,11 @@
 <?php namespace xp\frontend;
 
-use io\streams\Streams;
+use io\streams\{Streams, InputStream};
 use util\URI;
 
 class ProcessStylesheet {
 
-  public function process(Result $result, URI $base, $stream) {
+  public function process(Result $result, InputStream $stream, URI $uri= null) {
     $bytes= Streams::readAll($stream);
 
     // Download dependencies. If the stylesheet itself was read from cache, don't
@@ -14,7 +14,7 @@ class ProcessStylesheet {
     foreach ($resources as $resource) {
       $uri= new URI($resource[1]);
       if ($uri->isRelative()) {
-        $result->fetch($base->resolve($uri), !$stream->cached(), '.../'.$resource[1]);
+        $result->fetch($stream->origin->resolve($uri), !$stream->cached(), $uri);
       }
     }
 

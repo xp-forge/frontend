@@ -3,6 +3,7 @@
 use io\{File, Folder};
 use lang\IllegalArgumentException;
 use peer\http\HttpConnection;
+use util\URI;
 
 class Fetch {
   const HTTPDATE = 'D, d M Y H:i:s T';
@@ -30,8 +31,10 @@ class Fetch {
    * @return xp.frontend.Response
    */
   public function get($url, $revalidate= true) {
-    $c= new HttpConnection($url);
-    $stored= new File($this->cache, 'fetch-'.md5($url));
+    $uri= $url instanceof URI ? $url : new URI($url);
+    $c= new HttpConnection($uri);
+
+    $stored= new File($this->cache, 'fetch-'.md5($uri));
     if (!$stored->exists() || $this->force) {
       $stored->open(File::WRITE);
       $r= $c->get();
@@ -43,16 +46,16 @@ class Fetch {
     } else {
       $stored->open(File::READ);
       $stored->readLine();
-      return new Cached($stored->in(), false, $this->progress);
+      return new Cached($uri, $stored->in(), false, $this->progress);
     }
 
     $status= $r->statusCode();
     if (200 === $status) {
       $stored->seek(0);
       $stored->writeLine($r->header('ETag')[0]);
-      return new Download(new Transfer($r->in(), $stored->out()), $this->progress);
+      return new Download($uri, new Transfer($r->in(), $stored->out()), $this->progress);
     } else if (304 === $status) {
-      return new Cached($stored->in(), true, $this->progress);
+      return new Cached($uri, $stored->in(), true, $this->progress);
     } else {
       throw new IllegalArgumentException($status.' '.$r->message());
     }

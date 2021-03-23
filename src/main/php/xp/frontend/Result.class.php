@@ -22,16 +22,16 @@ class Result {
     }
   }
 
-  public function fetch($uri, $revalidate= true, $name= null) {
+  public function fetch($uri, $revalidate= true, $location= null) {
     $path= $uri->path();
     $type= substr($path, strrpos($path, '.') + 1);
 
-    Console::write("> \e[34m[", $type, "]: ", $name ?? (string)$uri, "\e[0m ");
+    Console::write("> \e[34m[", $type, "]: ", $location ? '.../'.$location : (string)$uri, "\e[0m ");
     $stream= $this->cdn->fetch($uri, $revalidate);
     Console::writeLine();
 
     $handler= $this->handlers[$type] ?? $this->handlers['*'];
-    $handler->process($this, $uri, $stream);
+    $handler->process($this, $stream, $location);
   }
 
   public function prefix($type, $bytes) {

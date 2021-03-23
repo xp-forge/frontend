@@ -1,6 +1,6 @@
 <?php namespace xp\frontend;
 
-use io\streams\StreamTransfer;
+use io\streams\{StreamTransfer, InputStream};
 use io\{File, Folder};
 use util\URI;
 
@@ -12,8 +12,8 @@ class StoreFile {
     $this->target= $target instanceof Folder ? $target : new Folder($target);
   }
 
-  public function process(Result $result, URI $base, $stream) {
-    $t= new File($this->target, $base->path());
+  public function process(Result $result, InputStream $stream, URI $uri= null) {
+    $t= new File($this->target, $uri->path());
     $f= new Folder($t->getPath());
     $f->exists() || $f->create();
 
