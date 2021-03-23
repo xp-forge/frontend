@@ -17,7 +17,7 @@ use util\profiling\Timer;
  *     "transliteration": "^2.1"
  *   },
  *   "bundles": {
- *     "bundle": {
+ *     "vendor": {
  *       "simplemde": "dist/simplemde.min.js | dist/simplemde.min.css",
  *       "transliteration": "dist/browser/bundle.umd.min.js"
  *     }
@@ -37,7 +37,7 @@ use util\profiling\Timer;
  *   $ xp bundle -f src/main/webapp/static
  *   ```
  *
- * This will create `bundle`.js and `bundle`.css from the given libraries and
+ * This will create `vendor`.js and `vendor`.css from the given libraries and
  * place them in the given target directory.
  */
 class BundleRunner {
