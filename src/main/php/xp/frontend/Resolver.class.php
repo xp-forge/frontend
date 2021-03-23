@@ -26,7 +26,7 @@ class Resolver {
   }
 
   /**
-   * Selects all candidates between given lower and upper bounds
+   * Selects all candidates between given lower and upper bounds.
    *
    * @param  [:var] $versions
    * @param  string $lo
@@ -35,20 +35,26 @@ class Resolver {
    */
   private function select($versions, $lo, $hi) {
     $compare= function($id) use($lo, $hi) {
-      return version_compare($id, $lo, 'ge') && version_compare($id, $hi, 'lt');
+      sscanf($id, "%*d.%*d.%*d%[^\r]", $extra);
+      return null === $extra && version_compare($id, $lo, 'ge') && version_compare($id, $hi, 'lt');
     };
     return array_filter($versions, $compare, ARRAY_FILTER_USE_KEY);
   }
 
   /**
    * Resolves a given library name and version constraint, returning the
-   * matching version number.
+   * matching version number. Ignores all versions with extra after semantic
+   * version number, e.g. `2.8.8-dev` or `1.2.3-beta4`.
    */
   public function version(string $library, string $constraint= null): string {
     $info= Json::read(new StreamInput($this->fetch->get($this->registry.$library)));
 
     if (null === $constraint) { // No constraint, simply find newest version
-      $candidates= $info['versions'];
+      $compare= function($id) {
+        sscanf($id, "%*d.%*d.%*d%[^\r]", $extra);
+        return null === $extra;
+      };
+      $candidates= array_filter($info['versions'], $compare, ARRAY_FILTER_USE_KEY);
     } else if ('^' === $constraint[0]) { // Don't allow breaking changes
       $c= sscanf($constraint, '^%d.%d.%d');
       $candidates= $this->select(
