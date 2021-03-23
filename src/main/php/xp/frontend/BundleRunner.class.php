@@ -119,7 +119,7 @@ class BundleRunner {
       $cdn= new CDN($fetch);
       $cwd= new Folder('.');
       foreach ($bundles as $name => $dependencies) {
-        Console::writeLine("\e[32mGenerating ", $name, " bundle\e[0m");
+        Console::writeLinef("\e[32mGenerating %s bundle\e[0m (dependencies: %d)", $name, sizeof($dependencies));
         $result= new Result($cdn, $handlers);
         foreach ($dependencies as $dependency) {
           $result->include($dependency);
