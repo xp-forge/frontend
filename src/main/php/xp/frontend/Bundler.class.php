@@ -1,6 +1,6 @@
 <?php namespace xp\frontend;
 
-use io\{File, Folder};
+use io\Folder;
 use util\cmd\Console;
 
 class Bundler {
@@ -23,7 +23,6 @@ class Bundler {
   public function create(string $name, Dependencies $dependencies, Folder $target): iterable {
     $result= new Result($this->cdn, $target, $this->handlers);
 
-    // Download all dependencies
     foreach ($dependencies as $dependency) {
       Console::write("\e[37;1m", $dependency->library, "\e[0m@", $dependency->constraint, " => ");
       $version= $this->resolve->version($dependency->library, $dependency->constraint);
@@ -34,15 +33,6 @@ class Bundler {
       }
     }
 
-    // Create bundles from compiled sources
-    foreach ($result->sources as $type => $list) {
-      $bundle= new File($target, $name.'.'.$type);
-      $bundle->open(File::WRITE);
-      foreach ($list as $bytes) {
-        $bundle->write(implode('', $bytes));
-      }
-      $bundle->close();
-      yield $bundle;
-    }
+    return $result->bundles($name);
   }
 }

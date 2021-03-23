@@ -5,8 +5,8 @@ use io\{File, Folder};
 use util\cmd\Console;
 
 class Result {
-  public $sources= [];
   private $cdn, $target, $handlers;
+  private $sources= [];
 
   public function __construct(CDN $cdn, Folder $target, array $handlers) {
     $this->cdn= $cdn;
@@ -42,5 +42,23 @@ class Result {
 
   public function concat($type, $bytes) {
     $this->sources[$type][1][]= $bytes;
+  }
+
+  /**
+   * Creates bundles from source and returns them
+   *
+   * @param  string $name
+   * @return iterable
+   */
+  public function bundles($name) {
+    foreach ($this->sources as $type => $list) {
+      $bundle= new File($this->target, $name.'.'.$type);
+      $bundle->open(File::WRITE);
+      foreach ($list as $bytes) {
+        $bundle->write(implode('', $bytes));
+      }
+      $bundle->close();
+      yield $bundle;
+    }
   }
 }
