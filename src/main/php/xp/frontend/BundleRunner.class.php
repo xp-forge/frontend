@@ -92,17 +92,31 @@ class BundleRunner {
     $handlers= [
       'css' => new ProcessStylesheet(),
       'js'  => new ProcessJavaScript(),
+      '*'   => new StoreFile(),
     ];
 
     $timer= new Timer();
-    $bundler= new Bundler(new CDN($fetch), new Resolver($fetch), $handlers);
+    $cdn= new CDN($fetch);
+    $resolve= new Resolver($fetch);
     $bundles= 0;
     $pwd= realpath('.');
     try {
       $timer->start();
       foreach ($require as $name => $spec) {
+        $result= new Result($cdn, new Folder($target), $handlers);
         Console::writeLine("\e[32mGenerating ", $name, " bundles\e[0m");
-        foreach ($bundler->create($name, new Dependencies($spec), new Folder($target)) as $file) {
+
+        // Include all dependencies
+        foreach (new Dependencies($spec) as $dependency) {
+          Console::write("\e[37;1m", $dependency->library, "\e[0m@", $dependency->constraint, " => ");
+          $version= $resolve->version($dependency->library, $dependency->constraint);
+          Console::writeLine("\e[37;1m", $version, "\e[0m");
+
+          $result->include($dependency, $version);
+        }
+
+        // Generate bundles
+        foreach ($result->bundles($name) as $file) {
           Console::writeLine(str_replace($pwd, '', $file->getURI()), ': ', $file->size(), ' bytes');
           $bundles++;
         }
