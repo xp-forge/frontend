@@ -13,7 +13,7 @@ class Dependencies implements \IteratorAggregate {
       $p= strpos($dependency, '@');
       if (false === $p) {
         $library= $dependency;
-        $constraint= 'latest';
+        $constraint= null;
       } else {
         $library= substr($dependency, 0, $p);
         $constraint= substr($dependency, $p + 1);
