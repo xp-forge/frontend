@@ -98,7 +98,7 @@ class BundleRunner {
     $cdn= new CDN($fetch);
     $resolve= new Resolver($fetch);
     $bundles= 0;
-    $pwd= realpath('.');
+    $pwd= new Folder('.');
 
     try {
       $timer= (new Timer())->start();
@@ -123,7 +123,7 @@ class BundleRunner {
           });
           $bundles++;
 
-          Console::writeLinef('%s: %.2f kB', str_replace($pwd, '', $bundle->getURI()), $bundle->size() / 1024);
+          Console::writeLinef('%s: %.2f kB', str_replace($pwd->getURI(), '', $bundle->getURI()), $bundle->size() / 1024);
         }
         Console::writeLine();
       }
