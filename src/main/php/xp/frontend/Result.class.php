@@ -16,9 +16,9 @@ class Result {
    *
    * @return void
    */
-  public function include(Dependency $dependency, string $version) {
+  public function include(Dependency $dependency) {
     foreach ($dependency->files as $file) {
-      $this->fetch($this->cdn->locate($dependency->library, $version, $file));
+      $this->fetch($this->cdn->locate($dependency->library, $dependency->version, $file));
     }
   }
 
@@ -26,7 +26,7 @@ class Result {
     $path= $uri->path();
     $type= substr($path, strrpos($path, '.') + 1);
 
-    Console::write("> \e[34m[", $type, "]: ", $location ? '.../'.$location : (string)$uri, "\e[0m ");
+    Console::write("  - Fetch \e[34m", $location ? '.../'.$location : (string)$uri, "\e[0m ");
     $stream= $this->cdn->fetch($uri, $revalidate);
     Console::writeLine();
 

@@ -2,6 +2,7 @@
 
 class Dependency {
   public $library, $constraint, $files;
+  public $version= null;
 
   /**
    * Creates a new dependency
@@ -14,5 +15,11 @@ class Dependency {
     $this->library= $library;
     $this->constraint= $constraint;
     $this->files= $files;
+  }
+
+  /** Resolves this dependency's version */
+  public function resolve(string $version): self {
+    $this->version= $version;
+    return $this;
   }
 }
