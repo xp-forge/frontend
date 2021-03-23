@@ -95,13 +95,13 @@ class BundleRunner {
       '*'   => new StoreFile($target),
     ];
 
-    $timer= new Timer();
     $cdn= new CDN($fetch);
     $resolve= new Resolver($fetch);
     $bundles= 0;
     $pwd= realpath('.');
+
     try {
-      $timer->start();
+      $timer= (new Timer())->start();
       foreach ($require as $name => $spec) {
         $result= new Result($cdn, $handlers);
         Console::writeLine("\e[32mGenerating ", $name, " bundles\e[0m");
@@ -121,9 +121,9 @@ class BundleRunner {
             $in->transfer($file->out());
             return $file;
           });
+          $bundles++;
 
           Console::writeLinef('%s: %.2f kB', str_replace($pwd, '', $bundle->getURI()), $bundle->size() / 1024);
-          $bundles++;
         }
         Console::writeLine();
       }
