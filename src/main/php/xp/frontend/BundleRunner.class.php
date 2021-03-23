@@ -45,7 +45,7 @@ class BundleRunner {
   /** Displays success message */
   private static function success(int $bundles, float $elapsed): int {
     Console::$out->writeLinef(
-      "\e[32mSuccess: %d bundle(s) created in %.3f seconds using %.2f kB memory\e[0m",
+      "\e[32mBundle operations: %d bundle(s) created in %.3f seconds using %.2f kB memory\e[0m",
       $bundles,
       $elapsed,
       Runtime::getInstance()->peakMemoryUsage() / 1024
@@ -114,7 +114,6 @@ class BundleRunner {
           Console::writeLine("\e[33m", $dep->version, "\e[0m)");
         }
       }
-      Console::writeLine();
 
       // Download dependencies
       $cdn= new CDN($fetch);
@@ -134,7 +133,6 @@ class BundleRunner {
           $path= str_replace($cwd->getURI(), '', $bundle->getURI());
           Console::writeLinef("> \e[37;1m%s\e[0m: %.2f kB", $path, $bundle->size() / 1024);
         }
-        Console::writeLine();
       }
 
       return self::success(sizeof($bundles), $timer->elapsedTime());
