@@ -18,7 +18,7 @@ class CDN {
 
   /** Fetches a given URL */
   public function fetch(URI $url, bool $revalidate= true): Response {
-    return $this->fetch->get($url, $revalidate);
+    return $this->fetch->get($url, [], $revalidate);
   }
 
   /** Locates a file with a given library version */

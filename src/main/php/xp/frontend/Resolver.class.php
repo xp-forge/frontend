@@ -14,6 +14,7 @@ use text\json\{Json, StreamInput};
  * - `^1.3.2`: >=1.3.2 <2.0.0
  *
  * @see  https://getcomposer.org/doc/articles/versions.md
+ * @see  https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
  * @test web.frontend.unittest.bundler.ResolverTest
  */
 class Resolver {
@@ -50,7 +51,9 @@ class Resolver {
    * version number, e.g. `2.8.8-dev` or `1.2.3-beta4`.
    */
   public function version(string $library, string $constraint= null): string {
-    $info= Json::read(new StreamInput($this->fetch->get($this->registry.$library)));
+    $info= Json::read(new StreamInput($this->fetch->get($this->registry.$library, [
+      'Accept' => 'application/vnd.npm.install-v1+json; q=1.0, application/json; q=0.8, */*'
+    ])));
 
     if (null === $constraint) { // No constraint, simply find newest version
       $candidates= array_filter(

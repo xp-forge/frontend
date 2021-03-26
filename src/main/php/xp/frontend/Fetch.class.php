@@ -27,10 +27,11 @@ class Fetch {
    * Fetches a response
    *
    * @param  string|util.URI $url
+   * @param  [:string] $headers
    * @param  bool $revalidate
    * @return xp.frontend.Response
    */
-  public function get($url, $revalidate= true) {
+  public function get($url, $headers= [], $revalidate= true) {
     $uri= $url instanceof URI ? $url : new URI($url);
     $c= new HttpConnection($uri);
 
@@ -42,7 +43,10 @@ class Fetch {
       $stored->open(File::READWRITE);
       $stored->seek(0);
       $etag= $stored->readLine();
-      $r= $c->get('', ['If-None-Match' => $etag, 'If-Modified-Since' => gmdate(self::HTTPDATE, $stored->lastModified())]);
+      $r= $c->get('', $headers + [
+        'If-None-Match'     => $etag,
+        'If-Modified-Since' => gmdate(self::HTTPDATE, $stored->lastModified())
+      ]);
     } else {
       $stored->open(File::READ);
       $stored->readLine();
@@ -52,6 +56,7 @@ class Fetch {
     $status= $r->statusCode();
     if (200 === $status) {
       $stored->seek(0);
+      $stored->truncate($r->header('Content-Length')[0] ?? 0);
       $stored->writeLine($r->header('ETag')[0]);
       return new Download($uri, new Transfer($r->in(), $stored->out()), $this->progress);
     } else if (304 === $status) {
