@@ -35,7 +35,7 @@ class ResolverTest {
   #[Test, Values('matched')]
   public function version($constraint, $expected) {
     $r= new Resolver(new class('.', false, null) extends Fetch {
-      public function get($url, $revalidate= true) {
+      public function get($url, $headers= [], $revalidate= true) {
         $json= '{
           "versions" : {
             "2.1.0-dev"      : { },
