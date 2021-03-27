@@ -42,11 +42,11 @@ class Result {
   }
 
   /**
-   * Creates bundles from source and returns them
+   * Returns sources
    *
    * @return iterable
    */
-  public function bundles() {
+  public function sources() {
     foreach ($this->sources as $type => $list) {
       yield $type => new Source($list);
     }

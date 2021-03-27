@@ -125,7 +125,7 @@ class BundleRunner {
           $result->include($dependency);
         }
 
-        foreach ($result->bundles() as $type => $source) {
+        foreach ($result->sources() as $type => $source) {
           $bundle= with ($source, new Bundle($target, $name.'.'.$type), function($in, $target) {
             $in->transfer($target);
             return $target;
