@@ -14,14 +14,14 @@ use text\json\{Json, StreamInput};
  * - `^1.3.2`: >=1.3.2 <2.0.0
  *
  * @see  https://getcomposer.org/doc/articles/versions.md
- * @see  https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
+ * @see  https://github.com/jsdelivr/data.jsdelivr.com
  * @test web.frontend.unittest.bundler.ResolverTest
  */
 class Resolver {
   private $fetch, $registry;
 
   /** Creates a new resolver */
-  public function __construct(Fetch $fetch, string $registry= 'https://registry.npmjs.org') {
+  public function __construct(Fetch $fetch, string $registry= 'https://data.jsdelivr.com/v1/package/npm') {
     $this->fetch= $fetch;
     $this->registry= rtrim($registry, '/').'/';
   }
@@ -42,7 +42,7 @@ class Resolver {
         version_compare($id, $hi, 'lt')
       ;
     };
-    return array_filter($versions, $compare, ARRAY_FILTER_USE_KEY);
+    return array_filter($versions, $compare);
   }
 
   /**
@@ -51,15 +51,12 @@ class Resolver {
    * version number, e.g. `2.8.8-dev` or `1.2.3-beta4`.
    */
   public function version(string $library, string $constraint= null): string {
-    $info= Json::read(new StreamInput($this->fetch->get($this->registry.$library, [
-      'Accept' => 'application/vnd.npm.install-v1+json; q=1.0, application/json; q=0.8, */*'
-    ])));
+    $info= Json::read(new StreamInput($this->fetch->get($this->registry.$library)));
 
     if (null === $constraint) { // No constraint, simply find newest version
       $candidates= array_filter(
         $info['versions'],
-        function($id) { return 3 === sscanf($id, "%*d.%*d.%*d%[^\r]", $extra); },
-        ARRAY_FILTER_USE_KEY
+        function($id) { return 3 === sscanf($id, "%*d.%*d.%*d%[^\r]", $extra); }
       );
     } else if ('^' === $constraint[0]) { // Don't allow breaking changes
       $c= sscanf($constraint, '^%d.%d.%d');
@@ -83,20 +80,20 @@ class Resolver {
         null === $c[1] ? sprintf('%d.0.0', $c[0] + 1) : sprintf('%d.%d.0', $c[0], $c[1] + 1)
       );
     } else { // Direct version
-      if (isset($info['versions'][$constraint])) return $constraint;
+      if (in_array($constraint, $info['versions'])) return $constraint;
       $candidates= [];
     }
 
     // Find newest applicable version
     if ($candidates) {
-      uksort($candidates, function($a, $b) { return version_compare($b, $a); });
-      return key($candidates);
+      usort($candidates, function($a, $b) { return version_compare($b, $a); });
+      return $candidates[0];
     }
 
     throw new IllegalArgumentException(sprintf(
       'Unmatched version constraint %s, have [%s]',
       $constraint,
-      implode(', ', array_keys($info['versions']))
+      implode(', ', $info['versions'])
     ));
   }
 }
