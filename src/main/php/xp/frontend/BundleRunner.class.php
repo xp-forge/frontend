@@ -126,12 +126,15 @@ class BundleRunner {
         }
 
         foreach ($result->bundles() as $type => $source) {
-          $bundle= with ($source, new File($target, $name.'.'.$type), function($in, $file) {
-            $in->transfer($file->out());
-            return $file;
+          $bundle= with ($source, new Bundle($target, $name.'.'.$type), function($in, $target) {
+            $in->transfer($target);
+            return $target;
           });
-          $path= str_replace($cwd->getURI(), '', $bundle->getURI());
-          Console::writeLinef("\r\e[0K> %s: \e[33m%.2f kB\e[0m", $path, $bundle->size() / 1024);
+
+          foreach ($bundle->files() as $file) {
+            $path= str_replace($cwd->getURI(), '', $file->getURI());
+            Console::writeLinef("\r\e[0K> %s: \e[33m%.2f kB\e[0m", $path, $file->size() / 1024);
+          }
         }
       }
 
