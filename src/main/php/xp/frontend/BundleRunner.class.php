@@ -37,8 +37,8 @@ use util\profiling\Timer;
  *   $ xp bundle -f src/main/webapp/static
  *   ```
  *
- * This will create `vendor`.js and `vendor`.css from the given libraries and
- * place them in the given target directory.
+ * This will create `vendor`.js and `vendor`.css (as well as gzipped versions)
+ * from the given libraries and place them in the given target directory.
  */
 class BundleRunner {
 
