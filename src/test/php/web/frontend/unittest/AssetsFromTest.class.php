@@ -31,16 +31,16 @@ class AssetsFromTest {
   /**
    * Serve a GET request from the specified files
    *
-   * @param  [:string] $files
+   * @param  web.frontend.AssetsFrom $assets
    * @param  string $path
    * @param  [:string] $headers
    * @return web.Response
    */
-  private function serve($files, $path, $headers= []) {
+  private function serve($assets, $path, $headers= []) {
     $req= new Request(new TestInput('GET', $path, $headers));
     $res= new Response(new TestOutput());
 
-    (new AssetsFrom($this->folderWith($files)))->handle($req, $res);
+    $assets->handle($req, $res);
     return $res;
   }
 
@@ -93,7 +93,9 @@ class AssetsFromTest {
   #[Test, Values([null, 'deflate', 'gzip, deflate'])]
   public function directly_serves_file($for) {
     $files= ['fixture.css' => self::CONTENTS];
-    $res= $this->serve($files, '/fixture.css', ['Accept-Encoding' => $for]);
+    $res= $this->serve(new AssetsFrom($this->folderWith($files)), '/fixture.css', [
+      'Accept-Encoding' => $for
+    ]);
 
     Assert::equals(200, $res->status());
     Assert::equals('text/css', $res->headers()['Content-Type']);
@@ -103,7 +105,7 @@ class AssetsFromTest {
 
   #[Test, Values([[['fixture.css' => self::CONTENTS]], [['fixture.css.gz' => self::COMPRESSED]]])]
   public function handles_conditional_requests($files) {
-    $res= $this->serve($files, '/fixture.css', [
+    $res= $this->serve(new AssetsFrom($this->folderWith($files)), '/fixture.css', [
       'Accept-Encoding'   => 'gzip, deflate, br',
       'If-Modified-Since' => gmdate('D, d M Y H:i:s T', time() + 86400)
     ]);
@@ -114,7 +116,7 @@ class AssetsFromTest {
   #[Test]
   public function returns_error_when_file_is_not_found() {
     $files= ['fixture.css' => self::CONTENTS];
-    $res= $this->serve($files, '/nonexistant.css');
+    $res= $this->serve(new AssetsFrom($this->folderWith($files)), '/nonexistant.css');
 
     Assert::equals(404, $res->status());
   }
@@ -122,7 +124,9 @@ class AssetsFromTest {
   #[Test, Values([['fixture.css.gz', 'gzip'], ['fixture.css.br', 'br'], ['fixture.css.dfl', 'deflate'], ['fixture.css.bz2', 'bzip2']])]
   public function serves_compressed_when_gz_file_present($file, $encoding) {
     $files= [$file => self::COMPRESSED];
-    $res= $this->serve($files, '/fixture.css', ['Accept-Encoding' => 'gzip, bzip2, deflate, br']);
+    $res= $this->serve(new AssetsFrom($this->folderWith($files)), '/fixture.css', [
+      'Accept-Encoding' => 'gzip, bzip2, deflate, br'
+    ]);
 
     Assert::equals(200, $res->status());
     Assert::equals('text/css', $res->headers()['Content-Type']);
@@ -133,7 +137,9 @@ class AssetsFromTest {
   #[Test]
   public function prefers_gzip_compressed_when_gz_file_present() {
     $files= ['fixture.css' => self::CONTENTS, 'fixture.css.gz' => self::COMPRESSED];
-    $res= $this->serve($files, '/fixture.css', ['Accept-Encoding' => 'gzip, br']);
+    $res= $this->serve(new AssetsFrom($this->folderWith($files)), '/fixture.css', [
+      'Accept-Encoding' => 'gzip, br'
+    ]);
 
     Assert::equals(200, $res->status());
     Assert::equals('text/css', $res->headers()['Content-Type']);
@@ -144,7 +150,9 @@ class AssetsFromTest {
   #[Test]
   public function prefers_uncompressed_for_identity() {
     $files= ['fixture.css' => self::CONTENTS, 'fixture.css.gz' => self::COMPRESSED];
-    $res= $this->serve($files, '/fixture.css', ['Accept-Encoding' => 'identity;q=1.0, gzip']);
+    $res= $this->serve(new AssetsFrom($this->folderWith($files)), '/fixture.css', [
+      'Accept-Encoding' => 'identity;q=1.0, gzip'
+    ]);
 
     Assert::equals(200, $res->status());
     Assert::equals('text/css', $res->headers()['Content-Type']);
@@ -155,7 +163,9 @@ class AssetsFromTest {
   #[Test, Values([null, 'deflate', 'br, deflate;q=0.5', 'test'])]
   public function prefers_uncompressed_without_browser_support($for) {
     $files= ['fixture.css' => self::CONTENTS, 'fixture.css.gz' => self::COMPRESSED];
-    $res= $this->serve($files, '/fixture.css', ['Accept-Encoding' => $for]);
+    $res= $this->serve(new AssetsFrom($this->folderWith($files)), '/fixture.css', [
+      'Accept-Encoding' => $for
+    ]);
 
     Assert::equals(200, $res->status());
     Assert::equals('text/css', $res->headers()['Content-Type']);
@@ -166,7 +176,9 @@ class AssetsFromTest {
   #[Test, Values([null, 'deflate', 'br, deflate;q=0.5', 'test'])]
   public function returns_error_without_browser_support($for) {
     $files= ['fixture.css.gz' => self::COMPRESSED];
-    $res= $this->serve($files, '/fixture.css', ['Accept-Encoding' => $for]);
+    $res= $this->serve(new AssetsFrom($this->folderWith($files)), '/fixture.css', [
+      'Accept-Encoding' => $for
+    ]);
 
     Assert::equals(404, $res->status());
   }
