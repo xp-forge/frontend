@@ -3,6 +3,8 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Merged PR #13: Add `web.handler.AssetsFrom` to serve frontend assets.
+  (@thekid)
 * Merged PR #12: Add `xp bundle` subcommand. This tool can compile NPM
   libraries into bundled frontend assets and serves as a lightweight
   alternative to a more complicated npm & webpack build system.
