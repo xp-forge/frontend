@@ -281,27 +281,25 @@ class HandlingTest extends TestCase {
 
   #[Test]
   public function defaults_to_no_caching() {
-    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+    $fixture= new Frontend(new Blogs(), newinstance(Templates::class, [], [
       'write' => function($template, $context= [], $out) {
         // NOOP
       }
     ]));
 
-    $res= $this->handle($fixture, 'GET', '/users');
+    $res= $this->handle($fixture, 'GET', '/blogs');
     $this->assertEquals('no-cache', $res->headers()['Cache-Control']);
   }
 
   #[Test]
   public function view_can_set_caching() {
-    $users= new Users();
-    $users->list[1]= ['id' => 1, 'name' => 'Test', 'avatar' => 'PNG...'];
-    $fixture= new Frontend($users, newinstance(Templates::class, [], [
+    $fixture= new Frontend(new Blogs(), newinstance(Templates::class, [], [
       'write' => function($template, $context= [], $out) {
         // NOOP
       }
     ]));
 
-    $res= $this->handle($fixture, 'GET', '/users/1/avatar');
+    $res= $this->handle($fixture, 'GET', '/blogs/development/1');
     $this->assertEquals('max-age=2419200, must-revalidate', $res->headers()['Cache-Control']);
   }
 }
