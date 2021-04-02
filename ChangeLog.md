@@ -3,6 +3,11 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Merged PR #12: Add `xp bundle` subcommand. This tool can compile NPM
+  libraries into bundled frontend assets and serves as a lightweight
+  alternative to a more complicated npm & webpack build system.
+  (@thekid)
+
 ## 2.1.0 / 2021-03-20
 
 * Added `X-Content-Type-Options: nosniff` to headers to prevent UAs
