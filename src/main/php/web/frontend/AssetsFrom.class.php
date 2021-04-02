@@ -29,11 +29,9 @@ class AssetsFrom implements Handler {
    * a given maximum age (in seconds) for the cache control header.
    *
    * @param  io.Path|io.Folder|string $path
-   * @param  int $cacheFor
    */
-  public function __construct($path, $cacheFor= 2419200) {
+  public function __construct($path) {
     $this->path= $path instanceof Path ? $path : new Path($path);
-    $this->cacheFor= $cacheFor;
   }
 
   /**
@@ -106,7 +104,6 @@ class AssetsFrom implements Handler {
     $response->answer(200, 'OK');
     $response->header('Last-Modified', gmdate('D, d M Y H:i:s T', $modified));
     $response->header('X-Content-Type-Options', 'nosniff');
-    $response->header('Cache-Control', 'max-age='.$this->cacheFor.', must-revalidate');
     $response->transfer($file->in(), MimeType::getByFileName($path), $file->size());
   }
 }
