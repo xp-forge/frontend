@@ -116,7 +116,7 @@ class AssetsFrom implements Handler {
     $response->answer(200, 'OK');
     $response->header('Last-Modified', gmdate('D, d M Y H:i:s T', $modified));
     $response->header('X-Content-Type-Options', 'nosniff');
-    $headers= $this->headers instanceof \Closure ? ($this->headers)($file) : $this->headers;
+    $headers= is_callable($this->headers) ? ($this->headers)($file) : $this->headers;
     foreach ($headers as $name => $value) {
       $response->header($name, $value);
     }

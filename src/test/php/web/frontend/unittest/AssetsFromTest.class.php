@@ -59,8 +59,15 @@ class AssetsFromTest {
   /** @return iterable */
   private function headers() {
     yield [['Cache-Control' => 'no-cache']];
+
     yield [function($file) {
       if (strstr($file->filename, 'fixture')) {
+        yield 'Cache-Control' => 'no-cache';
+      }
+    }];
+
+    yield [new class() {
+      public function __invoke($file) {
         yield 'Cache-Control' => 'no-cache';
       }
     }];
