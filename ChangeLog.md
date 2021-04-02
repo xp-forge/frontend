@@ -3,6 +3,9 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Merged PR #14: Set Cache-Control to *no-cache* & allow overwriting via
+  `View::cache()`
+  (@thekid)
 * Merged PR #13: Add `web.handler.AssetsFrom` to serve frontend assets.
   (@thekid)
 * Merged PR #12: Add `xp bundle` subcommand. This tool can compile NPM
