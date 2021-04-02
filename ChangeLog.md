@@ -3,6 +3,8 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 2.2.0 / 2021-04-02
+
 * Merged PR #14: Set Cache-Control to *no-cache* & allow overwriting via
   `View::cache()`
   (@thekid)
