@@ -23,6 +23,7 @@ class AssetsFrom implements Handler {
   ];
 
   private $path;
+  private $headers= [];
 
   /**
    * Instantiate an asset handler. Serves assets from the given path, using
@@ -32,6 +33,17 @@ class AssetsFrom implements Handler {
    */
   public function __construct($path) {
     $this->path= $path instanceof Path ? $path : new Path($path);
+  }
+
+  /**
+   * Adds headers, either from an array or a function.
+   *
+   * @param  [:string]|function(io.File): iterable $headers
+   * @return self
+   */
+  public function with($headers) {
+    $this->headers= $headers;
+    return $this;
   }
 
   /**
@@ -104,6 +116,11 @@ class AssetsFrom implements Handler {
     $response->answer(200, 'OK');
     $response->header('Last-Modified', gmdate('D, d M Y H:i:s T', $modified));
     $response->header('X-Content-Type-Options', 'nosniff');
+    $headers= $this->headers instanceof \Closure ? ($this->headers)($file) : $this->headers;
+    foreach ($headers as $name => $value) {
+      $response->header($name, $value);
+    }
+
     $response->transfer($file->in(), MimeType::getByFileName($path), $file->size());
   }
 }

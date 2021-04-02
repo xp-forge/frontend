@@ -56,6 +56,16 @@ class AssetsFromTest {
     Assert::equals("\r\n\r\n$bytes", strstr($res->output()->bytes(), "\r\n\r\n"));
   }
 
+  /** @return iterable */
+  private function headers() {
+    yield [['Cache-Control' => 'no-cache']];
+    yield [function($file) {
+      if (strstr($file->filename, 'fixture')) {
+        yield 'Cache-Control' => 'no-cache';
+      }
+    }];
+  }
+
   #[Test]
   public function can_create() {
     new AssetsFrom('.');
@@ -181,6 +191,43 @@ class AssetsFromTest {
     ]);
 
     Assert::equals(404, $res->status());
+  }
+
+  #[Test, Values('headers')]
+  public function adding_headers($headers) {
+    $files= ['fixture.css' => self::CONTENTS];
+    $res= $this->serve(
+      (new AssetsFrom($this->folderWith($files)))->with($headers),
+      '/fixture.css'
+    );
+
+    Assert::equals(200, $res->status());
+    Assert::equals('no-cache', $res->headers()['Cache-Control']);
+  }
+
+  #[Test, Values('headers')]
+  public function headers_are_not_added_when_file_does_not_exist($headers) {
+    $files= [];
+    $res= $this->serve(
+      (new AssetsFrom($this->folderWith($files)))->with($headers),
+      '/fixture.css'
+    );
+
+    Assert::equals(404, $res->status());
+    Assert::false(isset($res->headers()['Cache-Control']));
+  }
+
+  #[Test, Values('headers')]
+  public function headers_are_not_added_for_conditional($headers) {
+    $files= ['fixture.css' => self::CONTENTS];
+    $res= $this->serve(
+      (new AssetsFrom($this->folderWith($files)))->with($headers),
+      '/fixture.css',
+      ['If-Modified-Since' => gmdate('D, d M Y H:i:s T', time() + 86400)]
+    );
+
+    Assert::equals(304, $res->status());
+    Assert::false(isset($res->headers()['Cache-Control']));
   }
 
   #[After]
