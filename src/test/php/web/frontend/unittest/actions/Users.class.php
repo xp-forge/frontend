@@ -5,7 +5,7 @@ use web\frontend\{View, Handler, Get, Post, Param};
 
 #[Handler]
 class Users {
-  private $list= [
+  public $list= [
     1 => ['id' => 1, 'name' => 'Test'],
   ];
 
@@ -53,6 +53,6 @@ class Users {
     if (!isset($this->list[$id])) {
       throw new Error(404, 'No such user '.$id);
     }
-    return $this->list[$id]['avatar'];  // Raises an exception if key is undefined!
+    return View::named('svg')->with(['image' => $this->list[$id]['avatar']])->cache('max-age=2419200, must-revalidate');
   }
 }

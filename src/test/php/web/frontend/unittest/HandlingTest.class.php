@@ -269,13 +269,39 @@ class HandlingTest extends TestCase {
   #[Test]
   public function content_type_headers() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) use(&$result) {
-        $result= $template;
+      'write' => function($template, $context= [], $out) {
+        // NOOP
       }
     ]));
 
     $res= $this->handle($fixture, 'GET', '/users');
     $this->assertEquals('text/html; charset=utf-8', $res->headers()['Content-Type']);
     $this->assertEquals('nosniff', $res->headers()['X-Content-Type-Options']);
+  }
+
+  #[Test]
+  public function defaults_to_no_caching() {
+    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+      'write' => function($template, $context= [], $out) {
+        // NOOP
+      }
+    ]));
+
+    $res= $this->handle($fixture, 'GET', '/users');
+    $this->assertEquals('no-cache', $res->headers()['Cache-Control']);
+  }
+
+  #[Test]
+  public function view_can_set_caching() {
+    $users= new Users();
+    $users->list[1]= ['id' => 1, 'name' => 'Test', 'avatar' => 'PNG...'];
+    $fixture= new Frontend($users, newinstance(Templates::class, [], [
+      'write' => function($template, $context= [], $out) {
+        // NOOP
+      }
+    ]));
+
+    $res= $this->handle($fixture, 'GET', '/users/1/avatar');
+    $this->assertEquals('max-age=2419200, must-revalidate', $res->headers()['Cache-Control']);
   }
 }

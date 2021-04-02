@@ -5,7 +5,7 @@ class View {
   public $templates;
   public $status= 200;
   public $context= [];
-  public $headers= [];
+  public $headers= ['Cache-Control' => 'no-cache'];
 
   /** @param string $template */
   private function __construct($template) {
@@ -78,6 +78,17 @@ class View {
    */
   public function using($templates) {
     $this->templates= $templates;
+    return $this;
+  }
+
+  /**
+   * Sets `Cache-Control` to header, which defaults to "no-cache"
+   *
+   * @param  string $control Header value
+   * @return self
+   */
+  public function cache($control) {
+    $this->headers['Cache-Control']= $control;
     return $this;
   }
 
