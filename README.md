@@ -67,20 +67,18 @@ Finally, wiring it together is done in the application class, as follows:
 
 ```php
 use web\Application;
-use web\frontend\{Frontend, Templates};
-use web\handler\FilesFrom;
-use io\Path;
+use web\frontend\{AssetsFrom, Frontend, Templates};
 
 class Site extends Application {
 
   /** @return [:var] */
   public function routes() {
-    $files= new FilesFrom(new Path($this->environment->webroot(), 'src/main/webapp'));
-    $templates= new TemplateEngine(new Path($this->environment->webroot(), 'src/main/handlebars'));
+    $assets= new AssetsFrom($this->environment->path('src/main/webapp'));
+    $templates= new TemplateEngine($this->environment->path('src/main/handlebars'));
 
     return [
-      '/favicon.ico' => $files,
-      '/static'      => $files,
+      '/favicon.ico' => $assets,
+      '/static'      => $assets,
       '/'            => new Frontend(new Home(), $templates)
     ];
   }
