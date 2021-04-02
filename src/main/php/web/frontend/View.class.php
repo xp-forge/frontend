@@ -84,6 +84,7 @@ class View {
   /**
    * Sets `Cache-Control` to header, which defaults to "no-cache"
    *
+   * @see    https://developer.mozilla.org/de/docs/Web/HTTP/Headers/Cache-Control
    * @param  string $control Header value
    * @return self
    */
