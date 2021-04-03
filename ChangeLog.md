@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Merged PR #16: Introduce globals, which are passed to the template
+  context
+  (@thekid)
+
 ## 2.2.0 / 2021-04-02
 
 * Merged PR #14: Set Cache-Control to *no-cache* & allow overwriting via
