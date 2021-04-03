@@ -4,19 +4,20 @@ use lang\reflect\TargetInvocationException;
 use web\{Error, Handler};
 
 class Frontend implements Handler {
-  private $delegates, $templates, $base;
+  private $delegates, $templates;
+  public $globals;
 
   /**
    * Instantiates a new frontend
    *
    * @param  web.frontend.Delegates|object $arg
    * @param  web.frontend.Templates $templates
-   * @param  string $base
+   * @param  [:var] $globals
    */
-  public function __construct($arg, Templates $templates, $base= '') {
+  public function __construct($arg, Templates $templates, $globals= []) {
     $this->delegates= $arg instanceof Delegates ? $arg : new MethodsIn($arg);
     $this->templates= $templates;
-    $this->base= rtrim($base, '/');
+    $this->globals= is_string($globals) ? ['base' => rtrim($globals, '/')] : $globals;
   }
 
   /**
@@ -51,7 +52,7 @@ class Frontend implements Handler {
         }
       }
 
-      $delegate->invoke($args, $this->templates)->transfer($req, $res, $this->base);
+      $delegate->invoke($args, $this->templates)->transfer($req, $res, $this->globals);
     } catch (TargetInvocationException $e) {
       $cause= $e->getCause();
       if ($cause instanceof Error) {
