@@ -5,10 +5,12 @@ use lang\Closeable;
 
 class Source implements Closeable {
   private $list;
+  public $hash;
 
   /** Creates a new source */
-  public function __construct(array $list) {
+  public function __construct(array $list, string $hash) {
     $this->list= $list;
+    $this->hash= $hash;
   }
 
   /** Transfers this source to an output stream */

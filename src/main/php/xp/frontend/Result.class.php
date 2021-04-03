@@ -3,8 +3,11 @@
 use util\cmd\Console;
 
 class Result {
+  const HASH = 'sha1';
+
   private $cdn, $handlers;
   private $sources= [];
+  private $hashes= [];
 
   public function __construct(CDN $cdn, array $handlers) {
     $this->cdn= $cdn;
@@ -35,10 +38,12 @@ class Result {
 
   public function prefix($type, $bytes) {
     $this->sources[$type][0][]= $bytes;
+    hash_update($this->hashes[$type] ?? $this->hashes[$type]= hash_init(self::HASH), $bytes);
   }
 
   public function concat($type, $bytes) {
     $this->sources[$type][1][]= $bytes;
+    hash_update($this->hashes[$type] ?? $this->hashes[$type]= hash_init(self::HASH), $bytes);
   }
 
   /**
@@ -48,7 +53,7 @@ class Result {
    */
   public function sources() {
     foreach ($this->sources as $type => $list) {
-      yield $type => new Source($list);
+      yield $type => new Source($list, hash_final($this->hashes[$type]));
     }
   }
 }
