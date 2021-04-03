@@ -1,5 +1,6 @@
 <?php namespace web\frontend;
 
+use io\File;
 use text\json\{Json, Input, FileInput};
 
 /**

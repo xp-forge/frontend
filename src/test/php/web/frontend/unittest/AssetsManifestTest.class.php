@@ -1,5 +1,6 @@
 <?php namespace web\frontend\unittest;
 
+use io\File;
 use lang\FormatException;
 use text\json\StringInput;
 use unittest\{Test, Values, Expect, TestCase};
@@ -52,6 +53,14 @@ class AssetsManifestTest extends TestCase {
     $this->assertEquals(
       'max-age=31536000, immutable',
       $this->fixture('{"vendor.css" : "vendor.f6cad2a.css"}')->immutable('vendor.f6cad2a.css.gz')
+    );
+  }
+
+  #[Test]
+  public function immutable_file() {
+    $this->assertEquals(
+      'max-age=31536000, immutable',
+      $this->fixture('{"vendor.css" : "vendor.f6cad2a.css"}')->immutable(new File('vendor.f6cad2a.css'))
     );
   }
 
