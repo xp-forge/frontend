@@ -98,10 +98,10 @@ class View {
    *
    * @param  web.Request $req
    * @param  web.Response $res
-   * @param  string $base
+   * @param  [:var] $globals
    * @return void
    */
-  public function transfer($req, $res, $base) {
+  public function transfer($req, $res, $globals) {
     $res->answer($this->status);
     foreach ($this->headers as $name => $value) {
       $res->header($name, $value);
@@ -111,7 +111,7 @@ class View {
       $res->header('Content-Length', 0);
       $res->flush();
     } else {
-      $this->context['base']= $base;
+      $this->context+= $globals;
       $this->context['request']= $req;
 
       // See https://webhint.io/docs/user-guide/hints/hint-x-content-type-options/

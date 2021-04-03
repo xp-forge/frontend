@@ -78,7 +78,7 @@ class HandlingTest extends TestCase {
 
     $this->handle($fixture, 'GET', '/users/1');
     $this->assertContext(
-      ['id' => 1, 'name' => 'Test', 'base' => '', 'request' => [
+      ['id' => 1, 'name' => 'Test', 'request' => [
         'params' => []
       ]],
       $result
@@ -96,7 +96,7 @@ class HandlingTest extends TestCase {
     $return= ['start' => '1', 'max' => '100', 'list' => []];
     $this->handle($fixture, 'GET', $uri);
     $this->assertContext(
-      array_merge($return, ['base' => '', 'request' => [
+      array_merge($return, ['request' => [
         'params' => ['max' => '100', 'start' => '1']
       ]]),
       $result
@@ -114,7 +114,7 @@ class HandlingTest extends TestCase {
     $return= ['start' => 0, 'max' => -1, 'list' => [['id' => 1, 'name' => 'Test']]];
     $this->handle($fixture, 'GET', '/users');
     $this->assertContext(
-      array_merge($return, ['base' => '', 'request' => [
+      array_merge($return, ['request' => [
         'params' => []
       ]]),
       $result
@@ -132,7 +132,7 @@ class HandlingTest extends TestCase {
     $return= ['created' => 2];
     $this->handle($fixture, 'POST', '/users', [], 'username=New');
     $this->assertContext(
-      array_merge($return, ['base' => '', 'request' => [
+      array_merge($return, ['request' => [
         'params' => ['username' => 'New']
       ]]),
       $result
@@ -210,9 +210,39 @@ class HandlingTest extends TestCase {
     $return= ['category' => 'development', 'article' => 1];
     $res= $this->handle($fixture, 'GET', '/blogs/development/1');
     $this->assertContext(
-      array_merge($return, ['base' => '', 'request' => [
-        'params' => []
-      ]]),
+      $return + ['request' => ['params' => []]],
+      $result
+    );
+  }
+
+  #[Test]
+  public function globals_included() {
+    $globals= ['base' => '/', 'fingerprint' => '99b3825'];
+    $fixture= new Frontend(new Home(), newinstance(Templates::class, [], [
+      'write' => function($template, $context= [], $out) use(&$result) {
+        $result= $context;
+      }
+    ]), $globals);
+
+    $this->handle($fixture, 'GET', '/');
+    $this->assertContext(
+      $globals + ['home' => null, 'request' => ['params' => []]],
+      $result
+    );
+  }
+
+  #[Test]
+  public function globals_overwritten_by_context() {
+    $globals= ['home' => '(overwritten)'];
+    $fixture= new Frontend(new Home(), newinstance(Templates::class, [], [
+      'write' => function($template, $context= [], $out) use(&$result) {
+        $result= $context;
+      }
+    ]), $globals);
+
+    $this->handle($fixture, 'GET', '/');
+    $this->assertContext(
+      ['home' => null, 'request' => ['params' => []]],
       $result
     );
   }
@@ -227,9 +257,7 @@ class HandlingTest extends TestCase {
 
     $this->handle($fixture, 'GET', '/', ['Cookie' => 'test=Works']);
     $this->assertContext(
-      ['home' => 'Works', 'base' => '', 'request' => [
-        'params' => []
-      ]],
+      ['home' => 'Works', 'request' => ['params' => []]],
       $result
     );
   }
