@@ -24,4 +24,20 @@ class FrontendTest extends TestCase {
   public function first_argument_must_be_object() {
     new Frontend(null, $this->templates);
   }
+
+  #[Test]
+  public function globals_empty_by_default() {
+    $this->assertEquals([], (new Frontend(new Users(), $this->templates))->globals);
+  }
+
+  #[Test]
+  public function globals_passed_to_constructor() {
+    $globals= ['base' => '/', 'fingerprint' => '99b3825'];
+    $this->assertEquals($globals, (new Frontend(new Users(), $this->templates, $globals))->globals);
+  }
+
+  #[Test]
+  public function base_passed_to_constructor() {
+    $this->assertEquals(['base' => ''], (new Frontend(new Users(), $this->templates, '/'))->globals);
+  }
 }
