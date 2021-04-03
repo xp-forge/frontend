@@ -57,7 +57,7 @@ class Fetch {
     if (200 === $status) {
       $stored->seek(0);
       $stored->truncate($r->header('Content-Length')[0] ?? 0);
-      $stored->writeLine($r->header('ETag')[0]);
+      $stored->writeLine($r->header('ETag')[0] ?? '');
       return new Download($uri, new Transfer($r->in(), $stored->out()), $this->progress);
     } else if (304 === $status) {
       return new Cached($uri, $stored->in(), true, $this->progress);
