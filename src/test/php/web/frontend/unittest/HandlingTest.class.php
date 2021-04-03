@@ -209,10 +209,7 @@ class HandlingTest extends TestCase {
 
     $return= ['category' => 'development', 'article' => 1];
     $res= $this->handle($fixture, 'GET', '/blogs/development/1');
-    $this->assertContext(
-      $return + ['request' => ['params' => []]],
-      $result
-    );
+    $this->assertContext($return + ['request' => ['params' => []]], $result);
   }
 
   #[Test]
@@ -225,10 +222,7 @@ class HandlingTest extends TestCase {
     ]), $globals);
 
     $this->handle($fixture, 'GET', '/');
-    $this->assertContext(
-      $globals + ['home' => null, 'request' => ['params' => []]],
-      $result
-    );
+    $this->assertContext($globals + ['home' => null, 'request' => ['params' => []]], $result);
   }
 
   #[Test]
@@ -241,10 +235,7 @@ class HandlingTest extends TestCase {
     ]), $globals);
 
     $this->handle($fixture, 'GET', '/');
-    $this->assertContext(
-      ['home' => null, 'request' => ['params' => []]],
-      $result
-    );
+    $this->assertContext(['home' => null, 'request' => ['params' => []]], $result);
   }
 
   #[Test]
@@ -256,10 +247,7 @@ class HandlingTest extends TestCase {
     ]));
 
     $this->handle($fixture, 'GET', '/', ['Cookie' => 'test=Works']);
-    $this->assertContext(
-      ['home' => 'Works', 'request' => ['params' => []]],
-      $result
-    );
+    $this->assertContext(['home' => 'Works', 'request' => ['params' => []]], $result);
   }
 
   #[Test]
