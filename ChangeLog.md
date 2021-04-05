@@ -3,6 +3,8 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 2.3.0 / 2021-04-05
+
 * Merged PR #17: Implement asset fingerprinting. This makes the bundler
   generate assets named `[name].[contenthash].[extension]`, which can
   then be delivered with *immutable* caching, see
