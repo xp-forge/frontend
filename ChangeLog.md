@@ -3,8 +3,14 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Merged PR #17: Implement asset fingerprinting. This makes the bundler
+  generate assets named `[name].[contenthash].[extension]`, which can
+  then be delivered with *immutable* caching, see
+  https://webhint.io/docs/user-guide/hints/hint-http-cache/
+  (@thekid)
 * Merged PR #16: Introduce globals, which are passed to the template
-  context
+  context. This is a prerequisite for being able to pass the asset
+  manifest to the frontend, see #15.
   (@thekid)
 
 ## 2.2.0 / 2021-04-02
