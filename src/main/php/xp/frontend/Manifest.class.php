@@ -22,10 +22,11 @@ class Manifest {
    *
    * @param  string $compound
    * @param  string $resolved
-   * @return void
+   * @return string
    */
   public function associate($compound, $resolved) {
     $this->out[$compound]= $resolved;
+    return $resolved;
   }
 
   /**

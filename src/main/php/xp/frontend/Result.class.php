@@ -21,19 +21,16 @@ class Result {
    */
   public function include(Dependency $dependency) {
     foreach ($dependency->files as $file) {
-      $this->fetch($this->cdn->locate($dependency->library, $dependency->version, $file));
+      $uri= $this->cdn->locate($dependency->library, $dependency->version, $file);
+      $path= $uri->path();
+      $handler= $this->handlers[substr($path, strrpos($path, '.') + 1)] ?? $this->handlers['*'];
+      $handler->process($this, $this->fetch($uri), $uri);
     }
   }
 
   public function fetch($uri, $revalidate= true, $location= null) {
-    $path= $uri->path();
-    $type= substr($path, strrpos($path, '.') + 1);
-
-    Console::writef("\r\e[0K> \e[34m%s\e[0m ", $location ? '.../'.$location : $uri);
-    $stream= $this->cdn->fetch($uri, $revalidate);
-
-    $handler= $this->handlers[$type] ?? $this->handlers['*'];
-    $handler->process($this, $stream, $location);
+    Console::writef("\r\e[0K> \e[34m%s\e[0m ", $location ? '…/'.$location : $uri);
+    return $this->cdn->fetch($uri, $revalidate);
   }
 
   public function prefix($type, $bytes) {

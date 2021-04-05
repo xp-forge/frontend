@@ -97,15 +97,16 @@ class BundleRunner {
       return self::error(1, 'No bundles found in '.$config);
     }
 
+    $files= $manifest ? new WithFingerprints($target, $manifest) : new UsingFilenames($target);
     $fetch= new Fetch(Environment::tempDir(), $force, [
       'cached' => function($r) { Console::write('(cached', $r ? '' : '*', ') '); },
       'update' => function($t) { Console::writef('%d%s', $t, str_repeat("\x08", strlen($t))); },
       'final'  => function($t) { Console::writef('%s%s', str_repeat(' ', strlen($t)), str_repeat("\x08", strlen($t))); },
     ]);
     $handlers= [
-      'css' => new ProcessStylesheet(),
+      'css' => new ProcessStylesheet($files),
       'js'  => new ProcessJavaScript(),
-      '*'   => new StoreFile($target),
+      '*'   => new StoreFile($files),
     ];
 
     try {
@@ -134,12 +135,9 @@ class BundleRunner {
         }
 
         foreach ($result->sources() as $type => $source) {
-          $compound= rtrim(strtr($name, ['[contenthash]' => '']), '.').'.'.$type;
-          $resolved= rtrim(strtr($name, ['[contenthash]' => substr($source->hash, 0, 7)]), '.').'.'.$type;
-          $manifest && $manifest->associate($compound, $resolved);
-          $bundle= with ($source, new Bundle($target, $resolved), function($in, $target) {
+          $bundle= new Bundle($target, $files->resolve($name, $type, $source->hash));
+          with ($source, $bundle, function($in, $target) {
             $in->transfer($target);
-            return $target;
           });
 
           foreach ($bundle->files() as $file) {
