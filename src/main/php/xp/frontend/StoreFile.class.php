@@ -1,24 +1,17 @@
 <?php namespace xp\frontend;
 
-use io\streams\{StreamTransfer, InputStream};
-use io\{File, Folder};
+use io\streams\InputStream;
 use util\URI;
 
 class StoreFile {
-  private $target;
+  private $files;
 
-  /** @param string|io.Folder $target */
-  public function __construct($target) {
-    $this->target= $target instanceof Folder ? $target : new Folder($target);
+  /** @param xp.frontend.Files */
+  public function __construct($files) {
+    $this->files= $files;
   }
 
   public function process(Result $result, InputStream $stream, URI $uri= null) {
-    $t= new File($this->target, $uri->path());
-    $f= new Folder($t->getPath());
-    $f->exists() || $f->create();
-
-    with (new StreamTransfer($stream, $t->out()), function($self) {
-      $self->transferAll();
-    });
+    $this->files->store($stream, $uri->path());
   }
 }

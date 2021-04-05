@@ -28,6 +28,10 @@ use util\profiling\Timer;
  *   ```sh
  *   $ xp bundle src/main/webapp/static
  *   ```
+ * - Create an asset manifest
+ *   ```sh
+ *   $ xp bundle -m manifest.json src/main/webapp/static
+ *   ```
  * - Use supplied configuration file instead of `./package.json`
  *   ```sh
  *   $ xp bundle -c ../package.json dist
@@ -43,10 +47,11 @@ use util\profiling\Timer;
 class BundleRunner {
 
   /** Displays success message */
-  private static function success(int $bundles, float $elapsed): int {
+  private static function success(int $bundles, bool $manifest, float $elapsed): int {
     Console::$out->writeLinef(
-      "\e[32mBundle operations: %d bundle(s) created in %.3f seconds using %.2f kB memory\e[0m",
+      "\e[32mBundle operations: %d bundle(s)%s created in %.3f seconds using %.2f kB memory\e[0m",
       $bundles,
+      $manifest ? ' + manifest' : '',
       $elapsed,
       Runtime::getInstance()->peakMemoryUsage() / 1024
     );
@@ -62,11 +67,14 @@ class BundleRunner {
   /** Entry point */
   public static function main(array $args): int {
     $config= 'package.json';
-    $target= 'static';
+    $manifest= null;
     $force= false;
+    $target= 'static';
     for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
       if ('-c' === $args[$i]) {
         $config= $args[++$i];
+      } else if ('-m' === $args[$i]) {
+        $manifest= new Manifest($args[++$i]);
       } else if ('-f' === $args[$i]) {
         $force= true;
       } else {
@@ -89,15 +97,16 @@ class BundleRunner {
       return self::error(1, 'No bundles found in '.$config);
     }
 
+    $files= $manifest ? new WithFingerprints($target, $manifest) : new UsingFilenames($target);
     $fetch= new Fetch(Environment::tempDir(), $force, [
       'cached' => function($r) { Console::write('(cached', $r ? '' : '*', ') '); },
       'update' => function($t) { Console::writef('%d%s', $t, str_repeat("\x08", strlen($t))); },
       'final'  => function($t) { Console::writef('%s%s', str_repeat(' ', strlen($t)), str_repeat("\x08", strlen($t))); },
     ]);
     $handlers= [
-      'css' => new ProcessStylesheet(),
+      'css' => new ProcessStylesheet($files),
       'js'  => new ProcessJavaScript(),
-      '*'   => new StoreFile($target),
+      '*'   => new StoreFile($files),
     ];
 
     try {
@@ -126,19 +135,34 @@ class BundleRunner {
         }
 
         foreach ($result->sources() as $type => $source) {
-          $bundle= with ($source, new Bundle($target, $name.'.'.$type), function($in, $target) {
+          $bundle= new Bundle($target, $files->resolve($name, $type, $source->hash));
+          with ($source, $bundle, function($in, $target) {
             $in->transfer($target);
-            return $target;
           });
 
           foreach ($bundle->files() as $file) {
-            $path= str_replace($cwd->getURI(), '', $file->getURI());
+            $path= str_replace($cwd->getURI(), '', realpath($file->getURI()));
             Console::writeLinef("\r\e[0K> %s: \e[33m%.2f kB\e[0m", $path, $file->size() / 1024);
           }
         }
       }
 
-      return self::success(sizeof($bundles), $timer->elapsedTime());
+      // Clean up previous versions of our bundles
+      if ($manifest) {
+        Console::writeLinef("\e[32mCleaning up previous versions\e[0m");
+        foreach ($manifest->removed() as $remove) {
+          $bundle= new Bundle($target, $remove);
+          $bundle->close();
+          foreach ($bundle->files() as $file) {
+            $path= str_replace($cwd->getURI(), '', realpath($file->getURI()));
+            $file->exists() && $file->unlink();
+            Console::writeLinef("\r\e[0K> %s: \e[33m(deleted)\e[0m", $path);
+          }
+        }
+        $manifest->save();
+      }
+
+      return self::success(sizeof($bundles), isset($manifest), $timer->elapsedTime());
     } catch (Throwable $t) {
       return self::error(8, $t->toString());
     }
