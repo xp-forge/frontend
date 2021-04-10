@@ -2,6 +2,7 @@
 
 use io\File;
 use text\json\{Json, Input, FileInput};
+use util\URI;
 
 /**
  * Assets manifest 
@@ -21,14 +22,18 @@ class AssetsManifest {
    * Returns an immutable cache header if a file is contained in this
    * manifest.
    *
-   * @param  io.Path|io.File|string $file
+   * @param  io.Path|io.File|util.URI|string $file
    * @return ?string
    */
-  public function immutable($file) {
-    $compare= $file instanceof File ? $file->filename : (string)$file;
-    foreach ($this->assets as $resolved) {
-      if (0 === strpos($compare, $resolved)) return 'max-age=31536000, immutable';
+  public function immutable($path) {
+    if ($path instanceof URI) {
+      $compare= basename($path->path());
+    } else if ($path instanceof File) {
+      $compare= $path->filename;
+    } else {
+      $compare= (string)$path;
     }
-    return null;
+
+    return in_array($compare, $this->assets) ? 'max-age=31536000, immutable' : null;
   }
 }
