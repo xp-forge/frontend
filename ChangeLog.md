@@ -3,6 +3,15 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 3.0.0 / ????-??-??
+
+* **Heads up**: Dropped support for `xp-forge/web` version 1. This
+  library now requires at least version 2.9.0!
+  (@thekid)
+* Merged PR #18: Extend AssetsFrom handler from web.handlers.FilesFrom,
+  enabling asynchronous asset downloads
+  (@thekid)
+
 ## 2.3.1 / 2021-04-10
 
 * Added `Vary: Accept-Encoding` to prevent CDNs from caching incorrectly,
