@@ -124,6 +124,15 @@ class AssetsFromTest {
     $this->assertFile($files['fixture.css'], $res);
   }
 
+  #[Test]
+  public function includes_vary_header() {
+    $files= ['fixture.css' => self::CONTENTS];
+    $res= $this->serve(new AssetsFrom($this->folderWith($files)), '/fixture.css');
+
+    Assert::equals(200, $res->status());
+    Assert::equals('Accept-Encoding', $res->headers()['Vary']);
+  }
+
   #[Test, Values([[['fixture.css' => self::CONTENTS]], [['fixture.css.gz' => self::COMPRESSED]]])]
   public function handles_conditional_requests($files) {
     $res= $this->serve(new AssetsFrom($this->folderWith($files)), '/fixture.css', [
