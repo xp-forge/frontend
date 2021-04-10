@@ -109,3 +109,9 @@ use web\frontend\{Frontend, HandlersIn};
 // ...inside the routes() method, as seen above:
 new Frontend(new HandlersIn('de.thekid.example.handlers'), $templates);
 ```
+
+## Performance
+
+When using the production servers, the application's code is only compiled and its setup only runs once. This gives us lightning-fast response times:
+
+![Network console screenshot](https://user-images.githubusercontent.com/696742/114273532-adc30b00-9a1a-11eb-9267-e0ceda8d64e2.png)
