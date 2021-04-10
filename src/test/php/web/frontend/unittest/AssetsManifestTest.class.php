@@ -4,6 +4,7 @@ use io\File;
 use lang\FormatException;
 use text\json\StringInput;
 use unittest\{Test, Values, Expect, TestCase};
+use util\URI;
 use web\frontend\AssetsManifest;
 
 class AssetsManifestTest extends TestCase {
@@ -49,14 +50,6 @@ class AssetsManifestTest extends TestCase {
   }
 
   #[Test]
-  public function immutable_gzipped_asset() {
-    $this->assertEquals(
-      'max-age=31536000, immutable',
-      $this->fixture('{"vendor.css" : "vendor.f6cad2a.css"}')->immutable('vendor.f6cad2a.css.gz')
-    );
-  }
-
-  #[Test]
   public function immutable_file() {
     $this->assertEquals(
       'max-age=31536000, immutable',
@@ -65,9 +58,24 @@ class AssetsManifestTest extends TestCase {
   }
 
   #[Test]
+  public function immutable_uri() {
+    $this->assertEquals(
+      'max-age=31536000, immutable',
+      $this->fixture('{"vendor.css" : "vendor.f6cad2a.css"}')->immutable(new URI('/assets/vendor.f6cad2a.css'))
+    );
+  }
+
+  #[Test]
   public function regular_asset() {
     $this->assertNull(
       $this->fixture('{"vendor.css" : "vendor.f6cad2a.css"}')->immutable('style.css')
+    );
+  }
+
+  #[Test]
+  public function regular_gzipped_asset() {
+    $this->assertNull(
+      $this->fixture('{"vendor.css" : "vendor.f6cad2a.css"}')->immutable('vendor.f6cad2a.css.gz')
     );
   }
 }
