@@ -95,6 +95,7 @@ class AssetsFrom implements Handler {
       $target= new Path($this->path, $path.(self::EXTENSIONS[$encoding] ?? '*'));
       if ($target->exists()) {
         $file= $target->asFile();
+        $response->header('Vary', 'Accept-Encoding');
         '*' === $encoding || $response->header('Content-Encoding', $encoding);
         break;
       }

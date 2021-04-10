@@ -3,6 +3,12 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 2.3.1 / 2021-04-10
+
+* Added `Vary: Accept-Encoding` to prevent CDNs from caching incorrectly,
+  see https://blog.stackpath.com/accept-encoding-vary-important/
+  (@thekid)
+
 ## 2.3.0 / 2021-04-05
 
 * Merged PR #17: Implement asset fingerprinting. This makes the bundler
