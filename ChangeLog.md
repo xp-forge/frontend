@@ -3,7 +3,7 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
-## 3.0.0 / ????-??-??
+## 3.0.0 / 2021-04-10
 
 * Removed deprecated *ClassesIn* replaced by `web.frontend.HandlersIn`
   back in version 1.0.0 of this library.
