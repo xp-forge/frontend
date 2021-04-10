@@ -2,7 +2,7 @@
 
 use io\Path;
 use util\MimeType;
-use web\{Handler, Headers};
+use web\handler\FilesFrom;
 
 /**
  * Serves assets from a given path. Checks for files with extensions matching
@@ -12,7 +12,7 @@ use web\{Handler, Headers};
  * @test web.frontend.unittest.AssetsFromTest
  * @see  https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding
  */
-class AssetsFrom implements Handler {
+class AssetsFrom extends FilesFrom {
   const EXTENSIONS = [
     'br'       => '.br',
     'gzip'     => '.gz',
@@ -21,30 +21,6 @@ class AssetsFrom implements Handler {
     'identity' => '',
     '*'        => ''
   ];
-
-  private $path;
-  private $headers= [];
-
-  /**
-   * Instantiate an asset handler. Serves assets from the given path, using
-   * a given maximum age (in seconds) for the cache control header.
-   *
-   * @param  io.Path|io.Folder|string $path
-   */
-  public function __construct($path) {
-    $this->path= $path instanceof Path ? $path : new Path($path);
-  }
-
-  /**
-   * Adds headers, either from an array or a function.
-   *
-   * @param  [:string]|function(io.File): iterable $headers
-   * @return self
-   */
-  public function with($headers) {
-    $this->headers= $headers;
-    return $this;
-  }
 
   /**
    * Returns encodings accepted by the client ordered by given qvalues.
@@ -82,7 +58,7 @@ class AssetsFrom implements Handler {
 
   /**
    * Handling implementation, serves files including handling of conditional
-   * `If-Modified-Since` logic.
+   * `If-Modified-Since` logic and partial requests.
    *
    * @param  web.Request $request
    * @param  web.Response $response
@@ -90,37 +66,20 @@ class AssetsFrom implements Handler {
    */
   public function handle($request, $response) {
     $path= $request->uri()->path();
-    $file= null;
+    $base= $this->path();
+
+    // Check all variants in Accept-Encoding, including `*`
     foreach (self::accepted($request->header('Accept-Encoding', '')) as $encoding => $q) {
-      $target= new Path($this->path, $path.(self::EXTENSIONS[$encoding] ?? '*'));
+      $target= new Path($base, $path.(self::EXTENSIONS[$encoding] ?? '*'));
       if ($target->exists()) {
-        $file= $target->asFile();
+        $response->header('Vary', 'Accept-Encoding');
         '*' === $encoding || $response->header('Content-Encoding', $encoding);
-        break;
+
+        return $this->serve($request, $response, $target->asFile(), MimeType::getByFileName($path));
       }
     }
 
-    if (null === $file) {
-      $response->answer(404, 'Not Found');
-      $response->send('The asset \''.$path.'\' was not found', 'text/plain');
-      return;
-    }
-
-    $modified= $file->lastModified();
-    if (($conditional= $request->header('If-Modified-Since')) && $modified <= strtotime($conditional)) {
-      $response->answer(304, 'Not Modified');
-      $response->flush();
-      return;
-    }
-
-    $response->answer(200, 'OK');
-    $response->header('Last-Modified', gmdate('D, d M Y H:i:s T', $modified));
-    $response->header('X-Content-Type-Options', 'nosniff');
-    $headers= is_callable($this->headers) ? ($this->headers)($file) : $this->headers;
-    foreach ($headers as $name => $value) {
-      $response->header($name, $value);
-    }
-
-    $response->transfer($file->in(), MimeType::getByFileName($path), $file->size());
+    // No target exists, generate a 404
+    return $this->serve($request, $response, null);
   }
 }

@@ -40,8 +40,12 @@ class AssetsFromTest {
     $req= new Request(new TestInput('GET', $path, $headers));
     $res= new Response(new TestOutput());
 
-    $assets->handle($req, $res);
-    return $res;
+    try {
+      foreach ($assets->handle($req, $res) ?? [] as $_) { }
+      return $res;
+    } finally {
+      $res->end();
+    }
   }
 
   /**
@@ -60,14 +64,14 @@ class AssetsFromTest {
   private function headers() {
     yield [['Cache-Control' => 'no-cache']];
 
-    yield [function($file) {
+    yield [function($uri, $file, $mime) {
       if (strstr($file->filename, 'fixture')) {
         yield 'Cache-Control' => 'no-cache';
       }
     }];
 
     yield [new class() {
-      public function __invoke($file) {
+      public function __invoke($uri, $file, $mime) {
         yield 'Cache-Control' => 'no-cache';
       }
     }];
