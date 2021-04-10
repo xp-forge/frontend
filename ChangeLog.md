@@ -5,6 +5,9 @@ Web frontends change log
 
 ## 3.0.0 / ????-??-??
 
+* Removed deprecated *ClassesIn* replaced by `web.frontend.HandlersIn`
+  back in version 1.0.0 of this library.
+  (@thekid
 * **Heads up**: Dropped support for `xp-forge/web` version 1. This
   library now requires at least version 2.9.0!
   (@thekid)
