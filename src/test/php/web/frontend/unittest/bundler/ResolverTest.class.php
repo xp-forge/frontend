@@ -38,7 +38,7 @@ class ResolverTest {
   #[Test, Values('matched')]
   public function version($constraint, $expected) {
     $r= new Resolver(new class('.', false, null) extends Fetch {
-      public function get($url, $headers= [], $revalidate= true) {
+      public function get($url, $headers= [], $revalidate= true, $progress= []) {
         $json= '{
           "versions" : [
             "2.1.0-dev",
@@ -62,7 +62,7 @@ class ResolverTest {
           ]
         }';
 
-        return new Cached(new URI($url), new MemoryInputStream($json), false, ['cached' => function() { }]);
+        return new Cached(new URI($url), new MemoryInputStream($json), false, $progress);
       }
     });
     Assert::equals($expected, $r->version('test', $constraint));
