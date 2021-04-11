@@ -151,6 +151,13 @@ class AssetsFromTest {
     Assert::equals(404, $res->status());
   }
 
+  #[Test]
+  public function returns_error_when_folder_is_accessed() {
+    $res= $this->serve(new AssetsFrom($this->folderWith([])), '/');
+
+    Assert::equals(404, $res->status());
+  }
+
   #[Test, Values([['fixture.css.gz', 'gzip'], ['fixture.css.br', 'br'], ['fixture.css.dfl', 'deflate'], ['fixture.css.bz2', 'bzip2']])]
   public function serves_compressed_when_gz_file_present($file, $encoding) {
     $files= [$file => self::COMPRESSED];

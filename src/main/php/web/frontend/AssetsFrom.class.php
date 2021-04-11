@@ -71,7 +71,7 @@ class AssetsFrom extends FilesFrom {
     // Check all variants in Accept-Encoding, including `*`
     foreach (self::accepted($request->header('Accept-Encoding', '')) as $encoding => $q) {
       $target= new Path($base, $path.(self::EXTENSIONS[$encoding] ?? '*'));
-      if ($target->exists()) {
+      if ($target->exists() && $target->isFile()) {
         $response->header('Vary', 'Accept-Encoding');
         '*' === $encoding || $response->header('Content-Encoding', $encoding);
 

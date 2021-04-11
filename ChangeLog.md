@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 3.0.1 / 2021-04-11
+
+* Fixed issue #19: Raise 404 if folder is accessed - @thekid
+
 ## 3.0.0 / 2021-04-10
 
 * Removed deprecated *ClassesIn* replaced by `web.frontend.HandlersIn`
