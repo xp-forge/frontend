@@ -125,16 +125,15 @@ class BundleRunner {
         foreach ($spec as $source => $names) {
           $sources= array_map('trim', is_array($names) ? $names : explode('|', $names));
 
-          if ('.' === $source[0]) {
-            Console::writeLinef("  - Resolving \e[32m%s\e[0m (\e[33mlocal %s\e[0m)", $source, $relative);
-            $bundles[$name][]= new LocalDependency($relative->resolve($source), $sources);
-          } else {
-            $constraint= $package['dependencies'][$source];
+          if ($constraint= $package['dependencies'][$source] ?? null) {
             Console::writef("  - Resolving \e[32mnpm/%s\e[0m (\e[33m%s\e[0m => ", $source, $constraint);
             $version= $resolve->version($source, $constraint);
             Console::writeLine("\e[33m", $version, "\e[0m)");
 
             $bundles[$name][]= new LibraryDependency($source, $version, $sources);
+          } else {
+            Console::writeLinef("  - Resolving \e[32m%s\e[0m (\e[33mlocal %s\e[0m)", $source, $relative);
+            $bundles[$name][]= new LocalDependency($relative->resolve($source), $sources);
           }
         }
       }
