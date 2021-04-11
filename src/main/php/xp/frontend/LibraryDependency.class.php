@@ -1,7 +1,7 @@
 <?php namespace xp\frontend;
 
 class LibraryDependency extends Dependency {
-  public $library, $version, $files;
+  private $library, $version, $files;
 
   /**
    * Creates a new dependency

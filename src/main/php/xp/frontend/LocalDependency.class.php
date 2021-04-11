@@ -3,7 +3,7 @@
 use io\Path;
 
 class LocalDependency extends Dependency {
-  public $folder, $files;
+  private $folder, $files;
 
   /**
    * Creates a new dependency
