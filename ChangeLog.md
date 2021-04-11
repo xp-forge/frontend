@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 3.1.0 / 2021-04-11
+
+* Merged PR #20: Add ability to bundle local files - @thekid
+
 ## 3.0.1 / 2021-04-11
 
 * Fixed issue #19: Raise 404 if folder is accessed - @thekid
