@@ -22,8 +22,7 @@ class Result {
   public function include(Dependency $dependency) {
     foreach ($dependency->files as $file) {
       $uri= $this->cdn->locate($dependency->library, $dependency->version, $file);
-      $path= $uri->path();
-      $handler= $this->handlers[substr($path, strrpos($path, '.') + 1)] ?? $this->handlers['*'];
+      $handler= $this->handlers[substr($file, strrpos($file, '.') + 1)] ?? $this->handlers['*'];
       $handler->process($this, $this->fetch($uri), $uri);
     }
   }
