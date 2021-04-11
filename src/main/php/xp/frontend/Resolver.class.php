@@ -14,10 +14,13 @@ use text\json\{Json, StreamInput};
  * - `^1.3.2`: >=1.3.2 <2.0.0
  *
  * @see  https://getcomposer.org/doc/articles/versions.md
+ * @see  https://docs.npmjs.com/cli/v6/configuring-npm/package-json
  * @see  https://github.com/jsdelivr/data.jsdelivr.com
  * @test web.frontend.unittest.bundler.ResolverTest
  */
 class Resolver {
+  const LATEST = ['', '*', 'latest'];
+
   private $fetch, $registry;
 
   /** Creates a new resolver */
@@ -50,10 +53,10 @@ class Resolver {
    * matching version number. Ignores all versions with extra after semantic
    * version number, e.g. `2.8.8-dev` or `1.2.3-beta4`.
    */
-  public function version(string $library, string $constraint= null): string {
+  public function version(string $library, string $constraint): string {
     $info= Json::read(new StreamInput($this->fetch->get($this->registry.$library)));
 
-    if (null === $constraint) { // No constraint, simply find newest version
+    if (in_array($constraint, self::LATEST)) {
       $candidates= array_filter(
         $info['versions'],
         function($id) { return 3 === sscanf($id, "%*d.%*d.%*d%[^\r]", $extra); }

@@ -9,7 +9,10 @@ class ResolverTest {
 
   /** @return iterable */
   private function matched() {
-    yield [null, '2.0.0'];
+    yield ['', '2.0.0'];
+    yield ['*', '2.0.0'];
+    yield ['latest', '2.0.0'];
+
     yield ['2.0.0', '2.0.0'];
     yield ['1.7.3', '1.7.3'];
     yield ['2.0.0-beta.192', '2.0.0-beta.192'];
@@ -35,7 +38,7 @@ class ResolverTest {
   #[Test, Values('matched')]
   public function version($constraint, $expected) {
     $r= new Resolver(new class('.', false, null) extends Fetch {
-      public function get($url, $headers= [], $revalidate= true) {
+      public function get($url, $headers= [], $revalidate= true, $progress= []) {
         $json= '{
           "versions" : [
             "2.1.0-dev",
@@ -59,7 +62,7 @@ class ResolverTest {
           ]
         }';
 
-        return new Cached(new URI($url), new MemoryInputStream($json), false, ['cached' => function() { }]);
+        return new Cached(new URI($url), new MemoryInputStream($json), false, $progress);
       }
     });
     Assert::equals($expected, $r->version('test', $constraint));
