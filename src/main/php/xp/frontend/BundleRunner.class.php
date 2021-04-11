@@ -1,6 +1,6 @@
 <?php namespace xp\frontend;
 
-use io\{File, Folder};
+use io\{File, Folder, Path};
 use lang\{Environment, Runtime, Throwable};
 use text\json\{Json, FileInput, StreamInput};
 use util\cmd\Console;
@@ -84,10 +84,13 @@ class BundleRunner {
 
     if ('-' === $config) {
       $input= new StreamInput(Console::$in->stream());
+      $relative= new Path('.');
     } else if (is_dir($config)) {
       $input= new FileInput($config.DIRECTORY_SEPARATOR.'package.json');
+      $relative= new Path($config);
     } else if (is_file($config)) {
       $input= new FileInput($config);
+      $relative= new Path(dirname($config));
     } else {
       return self::error(2, 'No configuration file found, tried '.$config);
     }
@@ -98,11 +101,13 @@ class BundleRunner {
     }
 
     $files= $manifest ? new WithFingerprints($target, $manifest) : new UsingFilenames($target);
-    $fetch= new Fetch(Environment::tempDir(), $force, [
+    $fetch= new Fetch(Environment::tempDir(), $force);
+    $progress= [
+      'start'  => function($r) { Console::writef("\r\e[0K> \e[34m%s\e[0m ", $r); },
       'cached' => function($r) { Console::write('(cached', $r ? '' : '*', ') '); },
       'update' => function($t) { Console::writef('%d%s', $t, str_repeat("\x08", strlen($t))); },
       'final'  => function($t) { Console::writef('%s%s', str_repeat(' ', strlen($t)), str_repeat("\x08", strlen($t))); },
-    ]);
+    ];
     $handlers= [
       'css' => new ProcessStylesheet($files),
       'js'  => new ProcessJavaScript(),
@@ -117,15 +122,25 @@ class BundleRunner {
       Console::writeLine("\e[32mResolving package versions\e[0m");
       $resolve= new Resolver($fetch);
       foreach ($package['bundles'] as $name => $spec) {
-        foreach (new Dependencies($spec, $package['dependencies']) as $dep) {
-          Console::writef("  - Resolving \e[32mnpm/%s\e[0m (\e[33m%s\e[0m => ", $dep->library, $dep->constraint);
-          $bundles[$name][]= $dep->resolve($resolve->version($dep->library, $dep->constraint));
-          Console::writeLine("\e[33m", $dep->version, "\e[0m)");
+        foreach ($spec as $source => $names) {
+          $sources= array_map('trim', is_array($names) ? $names : explode('|', $names));
+
+          if ('.' === $source[0]) {
+            Console::writeLinef("  - Resolving \e[32m%s\e[0m (\e[33mlocal %s\e[0m)", $source, $relative);
+            $bundles[$name][]= new LocalDependency($relative->resolve($source), $sources);
+          } else {
+            $constraint= $package['dependencies'][$source];
+            Console::writef("  - Resolving \e[32mnpm/%s\e[0m (\e[33m%s\e[0m => ", $source, $constraint);
+            $version= $resolve->version($source, $constraint);
+            Console::writeLine("\e[33m", $version, "\e[0m)");
+
+            $bundles[$name][]= new LibraryDependency($source, $version, $sources);
+          }
         }
       }
 
       // Download dependencies
-      $cdn= new CDN($fetch);
+      $cdn= new CDN($fetch, null, $progress);
       $cwd= new Folder('.');
       foreach ($bundles as $name => $dependencies) {
         Console::writeLinef("\e[32mGenerating %s bundle\e[0m (dependencies: %d)", $name, sizeof($dependencies));

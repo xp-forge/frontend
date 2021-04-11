@@ -9,7 +9,10 @@ class ResolverTest {
 
   /** @return iterable */
   private function matched() {
-    yield [null, '2.0.0'];
+    yield ['', '2.0.0'];
+    yield ['*', '2.0.0'];
+    yield ['latest', '2.0.0'];
+
     yield ['2.0.0', '2.0.0'];
     yield ['1.7.3', '1.7.3'];
     yield ['2.0.0-beta.192', '2.0.0-beta.192'];

@@ -8,7 +8,7 @@ class Download extends Response {
 
   /** @return void */
   public function close() {
-    $this->progress['final']($this->transferred);
+    if ($f= $this->progress['final'] ?? null) $f($this->transferred);
     $this->in->close();
   }
 
@@ -21,7 +21,7 @@ class Download extends Response {
   public function read($limit= 8192) {
     $chunk= $this->in->read($limit);
     $this->transferred+= strlen($chunk);
-    $this->progress['update']($this->transferred);
+    if ($f= $this->progress['update'] ?? null) $f($this->transferred);
     return $chunk;
   }
 }

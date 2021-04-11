@@ -20,15 +20,15 @@ class Result {
    * @return void
    */
   public function include(Dependency $dependency) {
-    foreach ($dependency->files as $file) {
-      $uri= $this->cdn->locate($dependency->library, $dependency->version, $file);
+    foreach ($dependency->files() as $file => $fetch) {
+      $stream= $fetch($this->cdn);
+
       $handler= $this->handlers[substr($file, strrpos($file, '.') + 1)] ?? $this->handlers['*'];
-      $handler->process($this, $this->fetch($uri), $uri);
+      $handler->process($this, $stream, $stream->origin);
     }
   }
 
-  public function fetch($uri, $revalidate= true, $location= null) {
-    Console::writef("\r\e[0K> \e[34m%s\e[0m ", $location ? '…/'.$location : $uri);
+  public function fetch($uri, $revalidate= true) {
     return $this->cdn->fetch($uri, $revalidate);
   }
 

@@ -22,7 +22,7 @@ class ProcessStylesheet {
       $uri= new URI(trim($resource[1], '"\''));
       if ($uri->isRelative()) {
         $file= $this->files->store(
-          $result->fetch($stream->origin->resolve($uri), !$stream->cached(), $uri),
+          $result->fetch($stream->origin->resolve($uri), !$stream->cached()),
           $uri->path()
         );
 
