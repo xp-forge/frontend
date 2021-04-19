@@ -21,7 +21,7 @@ class Bundle implements OutputStream {
   public function __construct($path, $name) {
     $this->output[]= $this->output(new File($path, $name));
     if (self::$zlib) {
-      $this->output[]= new GzCompressingOutputStream($this->output(new File($path, $name.'.gz')));
+      $this->output[]= new GzCompressingOutputStream($this->output(new File($path, $name.'.gz')), 9);
     }
   }
 

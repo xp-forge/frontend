@@ -3,6 +3,12 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 3.2.0 / 2021-04-19
+
+* Used a compression level of 9 when compressing assets. Implements
+  feature request #21.
+  (@thekid)
+
 ## 3.1.0 / 2021-04-11
 
 * Merged PR #20: Add ability to bundle local files - @thekid
