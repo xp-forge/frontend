@@ -4,12 +4,13 @@ use io\File;
 use io\streams\{OutputStream, GzCompressingOutputStream};
 
 class Bundle implements OutputStream {
-  private static $zlib;
+  private static $zlib, $brotli;
   private $files= [];
   private $output= [];
 
   static function __static() {
     self::$zlib= extension_loaded('zlib');
+    self::$brotli= extension_loaded('brotli');
   }
 
   /**
@@ -22,6 +23,9 @@ class Bundle implements OutputStream {
     $this->output[]= $this->output(new File($path, $name));
     if (self::$zlib) {
       $this->output[]= new GzCompressingOutputStream($this->output(new File($path, $name.'.gz')), 9);
+    }
+    if (self::$brotli) {
+      $this->output[]= new BrCompressingOutputStream($this->output(new File($path, $name.'.br')), 11); 
     }
   }
 
