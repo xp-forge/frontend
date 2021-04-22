@@ -88,26 +88,34 @@ class AssetsFromTest {
   }
 
   #[Test]
-  public function typical_ua_header_accepted() {
+  public function typical_ua_header_negotiated() {
     Assert::equals(
-      ['gzip' => 0.99, 'deflate' => 0.98, 'br' => 0.97, '*' => 0.01],
-      AssetsFrom::accepted('gzip, deflate, br')
+      ['br' => 1.04, 'gzip' => 1.02, 'deflate' => 1.01, '*' => 0.01],
+      (new AssetsFrom('.'))->negotiate('gzip, deflate, br')
+    );
+  }
+
+  #[Test]
+  public function typical_ua_header_preferring_gzip() {
+    Assert::equals(
+      ['gzip' => 1.02, 'br' => 1.01, 'deflate' => 1.0, '*' => 0.01],
+      (new AssetsFrom('.'))->preferring(['gzip', 'br'])->negotiate('gzip, deflate, br')
     );
   }
 
   #[Test]
   public function identity_accepted() {
     Assert::equals(
-      ['identity' => 0.99, '*' => 0.01],
-      AssetsFrom::accepted('identity')
+      ['identity' => 1.0, '*' => 0.01],
+      (new AssetsFrom('.'))->negotiate('identity')
     );
   }
 
   #[Test]
   public function header_with_qvalues_accepted() {
     Assert::equals(
-      ['gzip' => 1.0, 'deflate' => 0.99, '*' => 0.5],
-      AssetsFrom::accepted('deflate, gzip;q=1.0, *;q=0.5')
+      ['deflate' => 1.01, 'gzip' => 1.0, '*' => 0.5],
+      (new AssetsFrom('.'))->negotiate('deflate, gzip;q=1.0, *;q=0.5')
     );
   }
 
@@ -159,7 +167,7 @@ class AssetsFromTest {
   }
 
   #[Test, Values([['fixture.css.gz', 'gzip'], ['fixture.css.br', 'br'], ['fixture.css.dfl', 'deflate'], ['fixture.css.bz2', 'bzip2']])]
-  public function serves_compressed_when_gz_file_present($file, $encoding) {
+  public function serves_compressed_when_file_present($file, $encoding) {
     $files= [$file => self::COMPRESSED];
     $res= $this->serve(new AssetsFrom($this->folderWith($files)), '/fixture.css', [
       'Accept-Encoding' => 'gzip, bzip2, deflate, br'
@@ -185,10 +193,23 @@ class AssetsFromTest {
   }
 
   #[Test]
+  public function prefers_brotli_compressed_when_gz_and_br_files_present() {
+    $files= ['fixture.css' => self::CONTENTS, 'fixture.css.gz' => self::COMPRESSED, 'fixture.css.br' => self::COMPRESSED];
+    $res= $this->serve(new AssetsFrom($this->folderWith($files)), '/fixture.css', [
+      'Accept-Encoding' => 'gzip, br'
+    ]);
+
+    Assert::equals(200, $res->status());
+    Assert::equals('text/css', $res->headers()['Content-Type']);
+    Assert::equals('br', $res->headers()['Content-Encoding']);
+    $this->assertFile($files['fixture.css.br'], $res);
+  }
+
+  #[Test]
   public function prefers_uncompressed_for_identity() {
     $files= ['fixture.css' => self::CONTENTS, 'fixture.css.gz' => self::COMPRESSED];
     $res= $this->serve(new AssetsFrom($this->folderWith($files)), '/fixture.css', [
-      'Accept-Encoding' => 'identity;q=1.0, gzip'
+      'Accept-Encoding' => 'identity;q=1.0, gzip;q=0.9'
     ]);
 
     Assert::equals(200, $res->status());
