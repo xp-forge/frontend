@@ -3,8 +3,11 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
-## 3.2.0 / 2021-04-19
+## 3.2.0 / 2021-04-22
 
+* Merged PR #22: If brotli extension is available, also compress to .br
+  files - they're signifantly smaller!
+  (@thekid)
 * Used a compression level of 9 when compressing assets. Implements
   feature request #21.
   (@thekid)
