@@ -14,7 +14,7 @@ use web\handler\FilesFrom;
  * @see  https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding
  */
 class AssetsFrom extends FilesFrom {
-  const PREFERENCE= ['br', 'bzip2', 'gzip'];
+  const PREFERENCE= ['br', 'bzip2', 'gzip', 'deflate'];
   const ENCODINGS= [
     'br'       => '.br',
     'bzip2'    => '.bz2',

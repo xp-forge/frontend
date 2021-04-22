@@ -90,7 +90,7 @@ class AssetsFromTest {
   #[Test]
   public function typical_ua_header_negotiated() {
     Assert::equals(
-      ['br' => 1.03, 'gzip' => 1.01, 'deflate' => 1.0, '*' => 0.01],
+      ['br' => 1.04, 'gzip' => 1.02, 'deflate' => 1.01, '*' => 0.01],
       (new AssetsFrom('.'))->negotiate('gzip, deflate, br')
     );
   }
@@ -114,7 +114,7 @@ class AssetsFromTest {
   #[Test]
   public function header_with_qvalues_accepted() {
     Assert::equals(
-      ['deflate' => 1.0, 'gzip' => 1.0, '*' => 0.5],
+      ['deflate' => 1.01, 'gzip' => 1.0, '*' => 0.5],
       (new AssetsFrom('.'))->negotiate('deflate, gzip;q=1.0, *;q=0.5')
     );
   }
