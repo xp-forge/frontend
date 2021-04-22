@@ -10,34 +10,60 @@ use web\handler\FilesFrom;
  * the original file name.
  *
  * @test web.frontend.unittest.AssetsFromTest
+ * @see  https://www.rootusers.com/gzip-vs-bzip2-vs-xz-performance-comparison/
  * @see  https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding
  */
 class AssetsFrom extends FilesFrom {
-  const EXTENSIONS = [
+  const PREFERENCE= ['br', 'bzip2', 'gzip'];
+  const ENCODINGS= [
     'br'       => '.br',
+    'bzip2'    => '.bz2',
     'gzip'     => '.gz',
     'deflate'  => '.dfl',
-    'bzip2'    => '.bz2',
     'identity' => '',
     '*'        => ''
   ];
 
+  private $preference;
+
+  /** @param io.Path|io.Folder|string $path */
+  public function __construct($path) {
+    parent::__construct($path);
+    $this->preferring(self::PREFERENCE);
+  }
+
   /**
-   * Returns encodings accepted by the client ordered by given qvalues.
+   * Change encoding preference
+   *
+   * @param  string[] $encodings
+   * @return self
+   */
+  public function preferring($encodings) {
+    $this->preference= [];
+    $p= sizeof($encodings);
+    foreach ($encodings as $encoding) {
+      $this->preference[$encoding]= 0.01 * $p--;
+    }
+    return $this; 
+  }
+
+
+  /**
+   * Negotiate encodings accepted by the client ordered by given qvalues.
    * Guarantees a "*" value to exist, which selects the uncompressed file.
    *
-   * @param  string $header
+   * @param  string $header Accept-Encoding header sent by client
    * @return [:float]
    * @see    https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding
    */
-  public static function accepted($header) {
+  public function negotiate($header) {
     $r= [];
     $o= 0;
     $s= 1.0;
     while ($o < strlen($header)) {
       $o+= ' ' === $header[$o];
       $p= strcspn($header, ',;', $o);
-      $value= substr($header, $o, $p);
+      $encoding= substr($header, $o, $p);
       $o+= $p;
 
       if (';' === ($header[$o] ?? null)) {
@@ -45,10 +71,10 @@ class AssetsFrom extends FilesFrom {
         sscanf(substr($header, $o + 1, $p - 1), 'q=%f', $q);
         $o+= $p;
       } else {
-        $q= $s-= 0.01;
+        $q= $s + ($this->preference[$encoding] ?? 0.0);
       }
       $o++;
-      $r[$value]= $q;
+      $r[$encoding]= $q;
     }
 
     $r+= ['*' => 0.01];
@@ -69,8 +95,8 @@ class AssetsFrom extends FilesFrom {
     $base= $this->path();
 
     // Check all variants in Accept-Encoding, including `*`
-    foreach (self::accepted($request->header('Accept-Encoding', '')) as $encoding => $q) {
-      $target= new Path($base, $path.(self::EXTENSIONS[$encoding] ?? '*'));
+    foreach ($this->negotiate($request->header('Accept-Encoding', '')) as $encoding => $q) {
+      $target= new Path($base, $path.(self::ENCODINGS[$encoding] ?? '*'));
       if ($target->exists() && $target->isFile()) {
         $response->header('Vary', 'Accept-Encoding');
         '*' === $encoding || $response->header('Content-Encoding', $encoding);
