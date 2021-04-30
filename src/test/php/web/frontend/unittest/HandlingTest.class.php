@@ -291,7 +291,7 @@ class HandlingTest extends TestCase {
     ]));
 
     $res= $this->handle($fixture, 'GET', '/users');
-    $this->assertEquals('text/html; charset=utf-8', $res->headers()['Content-Type']);
+    $this->assertEquals('text/html; charset='.\xp::ENCODING, $res->headers()['Content-Type']);
     $this->assertEquals('nosniff', $res->headers()['X-Content-Type-Options']);
   }
 
