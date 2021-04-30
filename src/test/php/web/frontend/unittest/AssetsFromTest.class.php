@@ -77,6 +77,19 @@ class AssetsFromTest {
     }];
   }
 
+  /** @return iterable */
+  private function types() {
+    yield ['fixture.gif', 'image/gif'];
+    yield ['fixture.png', 'image/png'];
+    yield ['fixture.ico', 'image/x-icon'];
+    yield ['fixture.svg', 'image/svg+xml; charset='.\xp::ENCODING];
+    yield ['fixture.css', 'text/css; charset='.\xp::ENCODING];
+    yield ['fixture.html', 'text/html; charset='.\xp::ENCODING];
+    yield ['fixture.js', 'application/javascript; charset='.\xp::ENCODING];
+    yield ['fixture.json', 'application/json; charset='.\xp::ENCODING];
+    yield ['fixture.rss', 'application/rss+xml; charset='.\xp::ENCODING];
+  }
+
   #[Test]
   public function can_create() {
     new AssetsFrom('.');
@@ -119,6 +132,11 @@ class AssetsFromTest {
     );
   }
 
+  #[Test, Values('types')]
+  public function mime($file, $expected) {
+    Assert::equals($expected, (new AssetsFrom('.'))->mime($file));
+  }
+
   #[Test, Values([null, 'deflate', 'gzip, deflate'])]
   public function directly_serves_file($for) {
     $files= ['fixture.css' => self::CONTENTS];
@@ -127,17 +145,14 @@ class AssetsFromTest {
     ]);
 
     Assert::equals(200, $res->status());
-    Assert::equals('text/css', $res->headers()['Content-Type']);
+    Assert::equals('text/css; charset='.\xp::ENCODING, $res->headers()['Content-Type']);
     Assert::false(isset($res->headers()['Content-Encoding']));
     $this->assertFile($files['fixture.css'], $res);
   }
 
   #[Test]
   public function includes_vary_header() {
-    $files= ['fixture.css' => self::CONTENTS];
-    $res= $this->serve(new AssetsFrom($this->folderWith($files)), '/fixture.css');
-
-    Assert::equals(200, $res->status());
+    $res= $this->serve(new AssetsFrom($this->folderWith(['fixture.css' => '...'])), '/fixture.css');
     Assert::equals('Accept-Encoding', $res->headers()['Vary']);
   }
 
@@ -173,8 +188,6 @@ class AssetsFromTest {
       'Accept-Encoding' => 'gzip, bzip2, deflate, br'
     ]);
 
-    Assert::equals(200, $res->status());
-    Assert::equals('text/css', $res->headers()['Content-Type']);
     Assert::equals($encoding, $res->headers()['Content-Encoding']);
     $this->assertFile($files[$file], $res);
   }
@@ -186,8 +199,6 @@ class AssetsFromTest {
       'Accept-Encoding' => 'gzip, br'
     ]);
 
-    Assert::equals(200, $res->status());
-    Assert::equals('text/css', $res->headers()['Content-Type']);
     Assert::equals('gzip', $res->headers()['Content-Encoding']);
     $this->assertFile($files['fixture.css.gz'], $res);
   }
@@ -199,8 +210,6 @@ class AssetsFromTest {
       'Accept-Encoding' => 'gzip, br'
     ]);
 
-    Assert::equals(200, $res->status());
-    Assert::equals('text/css', $res->headers()['Content-Type']);
     Assert::equals('br', $res->headers()['Content-Encoding']);
     $this->assertFile($files['fixture.css.br'], $res);
   }
@@ -212,8 +221,6 @@ class AssetsFromTest {
       'Accept-Encoding' => 'identity;q=1.0, gzip;q=0.9'
     ]);
 
-    Assert::equals(200, $res->status());
-    Assert::equals('text/css', $res->headers()['Content-Type']);
     Assert::equals('identity', $res->headers()['Content-Encoding']);
     $this->assertFile($files['fixture.css'], $res);
   }
@@ -225,8 +232,6 @@ class AssetsFromTest {
       'Accept-Encoding' => $for
     ]);
 
-    Assert::equals(200, $res->status());
-    Assert::equals('text/css', $res->headers()['Content-Type']);
     Assert::false(isset($res->headers()['Content-Encoding']));
     $this->assertFile($files['fixture.css'], $res);
   }
@@ -249,7 +254,6 @@ class AssetsFromTest {
       '/fixture.css'
     );
 
-    Assert::equals(200, $res->status());
     Assert::equals('no-cache', $res->headers()['Cache-Control']);
   }
 

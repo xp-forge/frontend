@@ -47,7 +47,6 @@ class AssetsFrom extends FilesFrom {
     return $this; 
   }
 
-
   /**
    * Negotiate encodings accepted by the client ordered by given qvalues.
    * Guarantees a "*" value to exist, which selects the uncompressed file.
@@ -83,6 +82,23 @@ class AssetsFrom extends FilesFrom {
   }
 
   /**
+   * Determines the mime type for a given path, adding charset to mime type for
+   * JavaScript, JSON, XML and all text types using the `util.MimeType` class.
+   *
+   * @see    https://webhint.io/docs/user-guide/hints/hint-content-type/
+   * @see    https://stackoverflow.com/q/3272534
+   * @param  string $path
+   * @return string
+   */
+  public function mime($path) {
+    $mime= MimeType::getByFileName($path);
+    if (preg_match('#^(text/.*|image/svg\+xml|application/(javascript|json|xml|.+\+(json|xml)))$#', $mime)) {
+      $mime.= '; charset='.\xp::ENCODING;
+    }
+    return $mime;
+  }
+
+  /**
    * Handling implementation, serves files including handling of conditional
    * `If-Modified-Since` logic and partial requests.
    *
@@ -101,7 +117,7 @@ class AssetsFrom extends FilesFrom {
         $response->header('Vary', 'Accept-Encoding');
         '*' === $encoding || $response->header('Content-Encoding', $encoding);
 
-        return $this->serve($request, $response, $target->asFile(), MimeType::getByFileName($path));
+        return $this->serve($request, $response, $target->asFile(), $this->mime($path));
       }
     }
 
