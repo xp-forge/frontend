@@ -3,6 +3,12 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 3.3.0 / 2021-04-30
+
+* Added `charset=utf-8` parameter to `Content-Type` header for all text,
+  XML, JSON and JavaScript files. Implements suggestion in #23.
+  (@thekid)
+
 ## 3.2.0 / 2021-04-22
 
 * Merged PR #22: If brotli extension is available, also compress to .br
