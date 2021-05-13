@@ -104,26 +104,54 @@ $assets= (new AssetsFrom($path))->with([
 ]);
 ```
 
-### Asset fingerprinting
-
-Generated assets can be fingerprinted by embedding a version identifier in the filename, e.g. *[file].[version].[ext]*. Every time their contents change, the version changes, and with it the filename. These assets can then be regarded "immutable", and served with an "infinite" maximum age. Bundlers (like Webpack or the one built-in to this library) will create an *asset manifest* along with these assets.
-
-```php
-$manifest= new AssetsManifest($path->resolve('static/manifest.json'));
-$assets= new AssetsFrom($path)->with(fn($uri) => [
-  'Cache-Control' => $manifest->immutable($uri) ?? 'max-age=2419200, must-revalidate'
-]);
-```
-
 ### Compression
 
-Assets can also be delivered in compressed forms to save bandwidth. The typical bundled JavaScript library can be megabytes in raw size! By using e.g. [Brotli](https://github.com/kjdev/php-ext-brotli), this can be drastically reduced to a couple hundred kilobytes.
+Assets can also be delivered in compressed forms to save bandwidth. The typical bundled JavaScript library can be megabytes in raw size! By using e.g. Brotli, this can be drastically reduced to a couple hundred kilobytes.
 
 * The request URI is mapped to the asset file name
 * If the clients sends an `Accept-Encoding` header, it is parsed and the client preference negotiated
 * The server tries *[file]*.br (for Brotli), *[file]*.bz2 (for BZip2), *[file]*.gz (for GZip) and *[file]*.dfl (for Deflate), and only sends the uncompressed version if none exists nor is acceptable.
 
 *Note: Assets are not compressed on the fly as this would cause unnecessary server load.*
+
+### Asset fingerprinting
+
+Generated assets can be fingerprinted by embedding a version identifier in the filename, e.g. *[file].[version].[ext]*. Every time their contents change, the version changes, and with it the filename. These assets can then be regarded "immutable", and served with an "infinite" maximum age. Bundlers (like Webpack or the one built-in to this library) will create an *asset manifest* along with these assets.
+
+```php
+$manifest= new AssetsManifest($path->resolve('manifest.json'));
+$assets= new AssetsFrom($path)->with(fn($uri) => [
+  'Cache-Control' => $manifest->immutable($uri) ?? 'max-age=2419200, must-revalidate'
+]);
+```
+
+### The built-in bundler
+
+This library comes with a `bundle` subcommand, which can generated JavaScript and CSS bundles from dependencies tracked in `package.json`.
+
+```json
+{
+  "dependencies": {
+    "simplemde": "^1.11",
+    "transliteration": "^2.1"
+  },
+  "bundles": {
+    "vendor": {
+      "simplemde": "dist/simplemde.min.js | dist/simplemde.min.css",
+      "transliteration": "dist/browser/bundle.umd.min.js"
+    }
+  }
+}
+```
+
+To create the bundles and the assets manifest, run the following:
+
+```bash
+$ xp bundle -m src/main/webapp/manifest.json src/main/webapp/static
+# ...
+```
+
+This will create *vendor.js* and *vendor.css* files as well as compressed versions (*if the zlib and [brotli](https://github.com/kjdev/php-ext-brotli) PHP extensions are available*). 
 
 ## Performance
 
