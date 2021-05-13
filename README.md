@@ -99,6 +99,8 @@ Assets are delivered by the `AssetsFrom` handler as seen above. It takes care of
 Assets can be delivered with a `Cache-Control` header by passing it to the `with` function. In this example, assets are cached for 28 days, but clients are asked to revalidate using conditional requests before using their cached copy.
 
 ```php
+use web\frontend\AssetsFrom;
+
 $assets= (new AssetsFrom($path))->with([
   'Cache-Control' => 'max-age=2419200, must-revalidate'
 ]);
@@ -116,14 +118,34 @@ Assets can also be delivered in compressed forms to save bandwidth. The typical 
 
 ### Asset fingerprinting
 
-Generated assets can be fingerprinted by embedding a version identifier in the filename, e.g. *[file].[version].[ext]*. Every time their contents change, the version changes, and with it the filename. These assets can then be regarded "immutable", and served with an "infinite" maximum age. Bundlers (like Webpack or the one built-in to this library) will create an *asset manifest* along with these assets.
+Generated assets can be fingerprinted by embedding a version identifier in the filename, e.g. *[file].[version].[ext]*. Every time their contents change, the version (or *fingerprint*) changes, and with it the filename. These assets can then be regarded "immutable", and served with an "infinite" maximum age. Bundlers (like Webpack or the one built-in to this library) will create an *asset manifest* along with these assets.
 
 ```php
+use web\frontend\{AssetsFrom, AssetsManifest};
+
 $manifest= new AssetsManifest($path->resolve('manifest.json'));
 $assets= new AssetsFrom($path)->with(fn($uri) => [
   'Cache-Control' => $manifest->immutable($uri) ?? 'max-age=2419200, must-revalidate'
 ]);
 ```
+
+Because mapping the filenames happens in the template engine, the manifest must also be passed there:
+
+
+```php
+use web\frontend\Handlebars;
+use web\frontend\helpers\Assets;
+
+$templates= new Handlebars($path, [new Assets($manifest)]);
+```
+
+The handlebars code then uses the *asset* helper to lookup the filename including the fingerprint:
+
+```handlebars
+<link href="/static/{{asset 'vendor.css'}}" rel="stylesheet">
+```
+
+*This way, we don't have to commit changes to our handlebars file every time the assets are changed, which may happen often!*
 
 ### The built-in bundler
 
@@ -151,7 +173,7 @@ $ xp bundle -m src/main/webapp/manifest.json src/main/webapp/static
 # ...
 ```
 
-This will create *vendor.js* and *vendor.css* files as well as compressed versions (*if the zlib and [brotli](https://github.com/kjdev/php-ext-brotli) PHP extensions are available*). 
+This will create *vendor.[hash].js* and *vendor.[hash].css* files as well as compressed versions (*if the zlib and [brotli](https://github.com/kjdev/php-ext-brotli) PHP extensions are available*) and the assets manifest, which maps the file names without hashes to the file name with hashes.
 
 ## Performance
 
