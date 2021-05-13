@@ -116,7 +116,7 @@ The above method routes will only accept `GET` requests. `POST` request methods 
 
 ## Serving assets
 
-Assets are delivered by the `AssetsFrom` handler as seen above. It takes care of content types, handling conditional and range requests for partial content, as well as handling compression.
+Assets are delivered by the `AssetsFrom` handler as seen above. It takes care of content types, handling conditional and range requests for partial content, as well as compression.
 
 ### Caching
 
@@ -132,7 +132,7 @@ $assets= (new AssetsFrom($path))->with([
 
 ### Compression
 
-Assets can also be delivered in compressed forms to save bandwidth. The typical bundled JavaScript library can be megabytes in raw size! By using e.g. Brotli, this can be drastically reduced to a couple hundred kilobytes.
+Assets can also be delivered in compressed forms to save bandwidth. The typical bundled JavaScript library can be megabytes in raw size! By using e.g. Brotli, this can be drastically reduced to a couple of hundred kilobytes.
 
 * The request URI is mapped to the asset file name
 * If the clients sends an `Accept-Encoding` header, it is parsed and the client preference negotiated
