@@ -18,44 +18,23 @@ Frontend uses handler classes with methods annotated with HTTP verbs to handle r
 use web\frontend\{Handler, Get, Param};
 
 #[Handler]
-class Home {
+class Hello {
 
   #[Get]
-  public function get(
-    #[Param('name')]
-    $param
-  ) {
+  public function greet(#[Param('name')] $param) {
     return ['name' => $param ?: 'World'];
   }
 }
 ```
 
-For the above class, the template engine will receive *home* as template name and the returned map as context. The implementation below uses the [xp-forge/handlebars](https://github.com/xp-forge/handlebars) library to transform the templates.
-
-```php
-use com\handlebarsjs\{HandlebarsEngine, FilesIn};
-use io\Path;
-use web\frontend\Templates;
-
-class TemplateEngine implements Templates {
-  private $backing;
-
-  public function __construct(Path $templates) {
-    $this->backing= (new HandlebarsEngine())->withTemplates(new FilesIn($templates));
-  }
-
-  public function write($name, $context, $out) {
-    $this->backing->write($this->backing->load($name), $context, $out);
-  }
-}
-```
+For the above class, the template engine will receive *home* as template name and the returned map as context. This library contains only the skeleton for templating - the [xp-forge/handlebars-templates](https://github.com/xp-forge/handlebars-templates) implements it.
 
 The handlebars template is quite straight-forward:
 
 ```handlebars
 <html>
   <head>
-    <title>Hello {{name}}</title>
+    <title>Hello World</title>
   </head>
   <body>
     <h1>Hello {{name}}</h1>
@@ -67,7 +46,7 @@ Finally, wiring it together is done in the application class, as follows:
 
 ```php
 use web\Application;
-use web\frontend\{AssetsFrom, Frontend, Templates};
+use web\frontend\{AssetsFrom, Frontend, Templates, Handlebars};
 
 class Site extends Application {
 
@@ -79,25 +58,35 @@ class Site extends Application {
     return [
       '/favicon.ico' => $assets,
       '/static'      => $assets,
-      '/'            => new Frontend(new Home(), $templates)
+      '/'            => new Frontend(new Hello(), $templates)
     ];
   }
 }
 ```
 
-To run it, use `xp -supervise web Site`, which will serve the site at http://localhost:8080/. Find and clone the example code [here](https://gist.github.com/thekid/8ce84b0d0de8fce5b6dd5faa22e1d716).
+To run it, use `xp -supervise web Site`, which will serve the site at http://localhost:8080/.
+
+## Serving assets
+
+Assets are delivered by the `AssetsFrom` handler as seen above. It takes care of handling conditional and range requests for partial content, as well as handling compression.
+
+* The request URI is mapped to the asset file name
+* If the clients sends an `Accept-Encoding` header, it is parsed and the client preference negotiated
+* The server tries [file].br (for Brotli), [file].bz2 (for BZip2), [file].gz (for GZip) an [file].dfl (for Deflate), and only sends the uncompressed version if none exists nor is acceptable.
+
+*Note: Assets are not compressed on the fly as this would cause unnecessary server load.*
 
 ## Organizing your code
 
-In real-life situations, you will not want to put all of your code into the `Home` class. In order to separate code out into various classes, place all handler classes inside a dedicated package:
+In real-life situations, you will not want to put all of your code into the `Hello` class. In order to separate code out into various classes, place all handler classes inside a dedicated package:
 
 ```bash
 @FileSystemCL<./src/main/php>
-package de.thekid.example.handlers {
+package de.thekid.example.web {
 
-  public class de.thekid.example.handlers.Home
-  public class de.thekid.example.handlers.User
-  public class de.thekid.example.handlers.Group
+  public class de.thekid.example.web.Home
+  public class de.thekid.example.web.User
+  public class de.thekid.example.web.Group
 }
 ```
 
@@ -107,7 +96,7 @@ Then use the delegation API provided by the `HandlersIn` class:
 use web\frontend\{Frontend, HandlersIn};
 
 // ...inside the routes() method, as seen above:
-new Frontend(new HandlersIn('de.thekid.example.handlers'), $templates);
+new Frontend(new HandlersIn('de.thekid.example.web'), $templates);
 ```
 
 ## Performance
