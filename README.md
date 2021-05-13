@@ -68,11 +68,36 @@ To run it, use `xp -supervise web Site`, which will serve the site at http://loc
 
 ## Serving assets
 
-Assets are delivered by the `AssetsFrom` handler as seen above. It takes care of handling conditional and range requests for partial content, as well as handling compression.
+Assets are delivered by the `AssetsFrom` handler as seen above. It takes care of content types, handling conditional and range requests for partial content, as well as handling compression.
+
+### Caching
+
+Assets can be delivered with a `Cache-Control` header by passing it to the `with` function. In this example, assets are cached for 28 days, but clients are asked to revalidate using conditional requests before using their cached copy.
+
+```php
+$assets= (new AssetsFrom($path))->with([
+  'Cache-Control' => 'max-age=2419200, must-revalidate'
+]);
+```
+
+### Asset fingerprinting
+
+Generated assets can be fingerprinted by embedding a version identifier in the filename, e.g. *[file].[version].[ext]*. Every time their contents change, the version changes, and with it the filename. These assets can then be regarded "immutable", and served with an "infinite" maximum age. Bundlers (like Webpack or the one built-in to this library) will create an *asset manifest* along with these assets.
+
+```php
+$manifest= new AssetsManifest($this->environment->path('src/main/webapp/static/manifest.json'));
+$assets= new AssetsFrom($this->environment->path('src/main/webapp'))->with(fn($uri) => [
+  'Cache-Control' => $manifest->immutable($uri) ?? 'max-age=2419200, must-revalidate'
+]);
+```
+
+### Compression
+
+Assets can also be delivered in compressed forms to save bandwidth. The typical bundled JavaScript library can be megabytes in raw size! By using e.g. Brotli, this can be drastically reduced to a couple hundred kilobytes.
 
 * The request URI is mapped to the asset file name
 * If the clients sends an `Accept-Encoding` header, it is parsed and the client preference negotiated
-* The server tries [file].br (for Brotli), [file].bz2 (for BZip2), [file].gz (for GZip) an [file].dfl (for Deflate), and only sends the uncompressed version if none exists nor is acceptable.
+* The server tries *[file]*.br (for Brotli), *[file]*.bz2 (for BZip2), *[file]*.gz (for GZip) and *[file]*.dfl (for Deflate), and only sends the uncompressed version if none exists nor is acceptable.
 
 *Note: Assets are not compressed on the fly as this would cause unnecessary server load.*
 
