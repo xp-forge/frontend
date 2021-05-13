@@ -114,6 +114,19 @@ class Hello {
 
 The above method routes will only accept `GET` requests. `POST` request methods can be annotated with `Post`, `PUT` with `Put`, and so on.
 
+Route methods can return `web.frontend.View` instances to have more control over the response:
+
+```php
+// Equivalent of the above world() method's return value
+return View::named('hello')->with(['greet' => 'World']);
+
+// Redirecting to either paths or absolute URIs
+return View::redirect('/hello/World');
+
+// Add caching, here: for 7 days
+return View::named('hello')->with($greeting)->cache('max-age=604800, must-revalidate');
+```
+
 ## Serving assets
 
 Assets are delivered by the `AssetsFrom` handler as seen above. It takes care of content types, handling conditional and range requests for partial content, as well as compression.
