@@ -47,7 +47,7 @@ Finally, wiring it together is done in the application class, as follows:
 
 ```php
 use web\Application;
-use web\frontend\{AssetsFrom, Frontend, Templates, Handlebars};
+use web\frontend\{AssetsFrom, Frontend, Handlebars};
 
 class Site extends Application {
 
