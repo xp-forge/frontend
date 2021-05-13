@@ -90,6 +90,30 @@ use web\frontend\{Frontend, HandlersIn};
 new Frontend(new HandlersIn('org.example.example.web'), $templates);
 ```
 
+## Handling routes and methods
+
+The `Handler` annotation can include a path which is used as a prefix for all method routes in a handler class. Placeholders can be used to select method parameters from the request URI.
+
+```php
+use web\frontend\{Handler, Get};
+
+#[Handler('/hello')]
+class Hello {
+
+  #[Get]
+  public function world() {
+    return ['greet' => 'World'];
+  }
+
+  #[Get('/{name}')]
+  public function person(string $name) {
+    return ['greet' => $name];
+  }
+}
+```
+
+The above method routes will only accept `GET` requests. `POST` request methods can be annotated with `Post`, `PUT` with `Put`, and so on.
+
 ## Serving assets
 
 Assets are delivered by the `AssetsFrom` handler as seen above. It takes care of content types, handling conditional and range requests for partial content, as well as handling compression.
