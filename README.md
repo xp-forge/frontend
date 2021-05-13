@@ -32,7 +32,8 @@ For the above class, the template engine will receive *home* as template name an
 The handlebars template is quite straight-forward:
 
 ```handlebars
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <title>Hello World</title>
   </head>
