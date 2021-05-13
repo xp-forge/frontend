@@ -173,7 +173,7 @@ The handlebars code then uses the *asset* helper to lookup the filename includin
 
 ### The built-in bundler
 
-This library comes with a `bundle` subcommand, which can generated JavaScript and CSS bundles from dependencies tracked in `package.json`.
+Bundling assets makes sense from a security standpoint, but also to reduce HTTP requests. This library comes with a `bundle` subcommand, which can generated JavaScript and CSS bundles from dependencies tracked in `package.json`.
 
 ```json
 {
