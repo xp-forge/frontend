@@ -67,6 +67,29 @@ class Site extends Application {
 
 To run it, use `xp -supervise web Site`, which will serve the site at http://localhost:8080/.
 
+## Organizing your code
+
+In real-life situations, you will not want to put all of your code into the `Hello` class. In order to separate code out into various classes, place all handler classes inside a dedicated package:
+
+```bash
+@FileSystemCL<./src/main/php>
+package org.example.example.web {
+
+  public class org.example.example.web.Home
+  public class org.example.example.web.User
+  public class org.example.example.web.Group
+}
+```
+
+Then use the delegation API provided by the `HandlersIn` class:
+
+```php
+use web\frontend\{Frontend, HandlersIn};
+
+// ...inside the routes() method, as seen above:
+new Frontend(new HandlersIn('org.example.example.web'), $templates);
+```
+
 ## Serving assets
 
 Assets are delivered by the `AssetsFrom` handler as seen above. It takes care of content types, handling conditional and range requests for partial content, as well as handling compression.
@@ -101,29 +124,6 @@ Assets can also be delivered in compressed forms to save bandwidth. The typical 
 * The server tries *[file]*.br (for Brotli), *[file]*.bz2 (for BZip2), *[file]*.gz (for GZip) and *[file]*.dfl (for Deflate), and only sends the uncompressed version if none exists nor is acceptable.
 
 *Note: Assets are not compressed on the fly as this would cause unnecessary server load.*
-
-## Organizing your code
-
-In real-life situations, you will not want to put all of your code into the `Hello` class. In order to separate code out into various classes, place all handler classes inside a dedicated package:
-
-```bash
-@FileSystemCL<./src/main/php>
-package de.thekid.example.web {
-
-  public class de.thekid.example.web.Home
-  public class de.thekid.example.web.User
-  public class de.thekid.example.web.Group
-}
-```
-
-Then use the delegation API provided by the `HandlersIn` class:
-
-```php
-use web\frontend\{Frontend, HandlersIn};
-
-// ...inside the routes() method, as seen above:
-new Frontend(new HandlersIn('de.thekid.example.web'), $templates);
-```
 
 ## Performance
 
