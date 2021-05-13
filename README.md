@@ -34,12 +34,12 @@ The handlebars template is quite straight-forward:
 ```handlebars
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Hello World</title>
-  </head>
-  <body>
-    <h1>Hello {{name}}</h1>
-  </body>
+<head>
+  <title>Hello World</title>
+</head>
+<body>
+  <h1>Hello {{name}}</h1>
+</body>
 </html>
 ```
 
