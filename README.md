@@ -197,7 +197,7 @@ $ xp bundle -m src/main/webapp/manifest.json src/main/webapp/static
 # ...
 ```
 
-This will create *vendor.[finerprint].js* and *vendor.[finerprint].css* files as well as compressed versions (*if the zlib and [brotli](https://github.com/kjdev/php-ext-brotli) PHP extensions are available*) and the assets manifest, which maps the file names without finerprints to those with.
+This will create *vendor.[fingerprint].js* and *vendor.[fingerprint].css* files as well as compressed versions (*if the zlib and [brotli](https://github.com/kjdev/php-ext-brotli) PHP extensions are available*) and the assets manifest, which maps the file names without fingerprints to those with.
 
 ## Performance
 
