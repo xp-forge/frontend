@@ -8,7 +8,7 @@ Web frontends
 [![Supports PHP 8.0+](https://raw.githubusercontent.com/xp-framework/web/master/static/php-8_0plus.svg)](http://php.net/)
 [![Latest Stable Version](https://poser.pugx.org/xp-forge/frontend/version.png)](https://packagist.org/packages/xp-forge/frontend)
 
-Frontends based on `xp-forge/web`.
+Frontends based on `xp-forge/web`, using annotation-based routing.
 
 ## Example
 
