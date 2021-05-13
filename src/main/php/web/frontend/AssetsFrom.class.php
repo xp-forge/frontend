@@ -10,6 +10,7 @@ use web\handler\FilesFrom;
  * the original file name.
  *
  * @test web.frontend.unittest.AssetsFromTest
+ * @see  https://webhint.io/docs/user-guide/hints/hint-http-compression/
  * @see  https://www.rootusers.com/gzip-vs-bzip2-vs-xz-performance-comparison/
  * @see  https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding
  */
