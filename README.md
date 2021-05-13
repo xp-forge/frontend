@@ -85,15 +85,15 @@ $assets= (new AssetsFrom($path))->with([
 Generated assets can be fingerprinted by embedding a version identifier in the filename, e.g. *[file].[version].[ext]*. Every time their contents change, the version changes, and with it the filename. These assets can then be regarded "immutable", and served with an "infinite" maximum age. Bundlers (like Webpack or the one built-in to this library) will create an *asset manifest* along with these assets.
 
 ```php
-$manifest= new AssetsManifest($this->environment->path('src/main/webapp/static/manifest.json'));
-$assets= new AssetsFrom($this->environment->path('src/main/webapp'))->with(fn($uri) => [
+$manifest= new AssetsManifest($path->resolve('static/manifest.json'));
+$assets= new AssetsFrom($path)->with(fn($uri) => [
   'Cache-Control' => $manifest->immutable($uri) ?? 'max-age=2419200, must-revalidate'
 ]);
 ```
 
 ### Compression
 
-Assets can also be delivered in compressed forms to save bandwidth. The typical bundled JavaScript library can be megabytes in raw size! By using e.g. Brotli, this can be drastically reduced to a couple hundred kilobytes.
+Assets can also be delivered in compressed forms to save bandwidth. The typical bundled JavaScript library can be megabytes in raw size! By using e.g. [Brotli](https://github.com/kjdev/php-ext-brotli), this can be drastically reduced to a couple hundred kilobytes.
 
 * The request URI is mapped to the asset file name
 * If the clients sends an `Accept-Encoding` header, it is parsed and the client preference negotiated
