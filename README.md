@@ -53,7 +53,7 @@ class Site extends Application {
   /** @return [:var] */
   public function routes() {
     $assets= new AssetsFrom($this->environment->path('src/main/webapp'));
-    $templates= new TemplateEngine($this->environment->path('src/main/handlebars'));
+    $templates= new Handlebars($this->environment->path('src/main/handlebars'));
 
     return [
       '/favicon.ico' => $assets,
