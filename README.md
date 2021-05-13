@@ -173,7 +173,7 @@ $ xp bundle -m src/main/webapp/manifest.json src/main/webapp/static
 # ...
 ```
 
-This will create *vendor.[hash].js* and *vendor.[hash].css* files as well as compressed versions (*if the zlib and [brotli](https://github.com/kjdev/php-ext-brotli) PHP extensions are available*) and the assets manifest, which maps the file names without hashes to the file name with hashes.
+This will create *vendor.[finerprint].js* and *vendor.[finerprint].css* files as well as compressed versions (*if the zlib and [brotli](https://github.com/kjdev/php-ext-brotli) PHP extensions are available*) and the assets manifest, which maps the file names without finerprints to those with.
 
 ## Performance
 
