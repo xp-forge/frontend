@@ -26,7 +26,7 @@ class Hello {
   }
 }
 ```
-*Note: For PHP 7, the `Param` annotation must be on a line by itself!*
+*Note: For PHP 7, the `Param` annotation must be on a line by itself, [see here](https://gist.github.com/thekid/8ce84b0d0de8fce5b6dd5faa22e1d716#file-home-class-php)!*
 
 For the above class, the template engine will receive *home* as template name and the returned map as context. This library contains only the skeleton for templating - the [xp-forge/handlebars-templates](https://github.com/xp-forge/handlebars-templates) library implements it.
 
@@ -124,8 +124,12 @@ return View::named('hello')->with(['greet' => 'World']);
 // Redirecting to either paths or absolute URIs
 return View::redirect('/hello/World');
 
-// Add caching, here: for 7 days
-return View::named('hello')->with($greeting)->cache('max-age=604800, must-revalidate');
+// Add headers and caching, here: for 7 days
+return View::named('blog')
+  ->with($article)
+  ->header('Last-Modified', gmdate('D, d M Y H:i:s T', $modified))
+  ->cache('max-age=604800, must-revalidate')
+;
 ```
 
 ## Serving assets
