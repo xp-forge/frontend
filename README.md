@@ -26,8 +26,9 @@ class Hello {
   }
 }
 ```
+*Note: For PHP 7, the `Param` annotation must be on a line by itself!*
 
-For the above class, the template engine will receive *home* as template name and the returned map as context. This library contains only the skeleton for templating - the [xp-forge/handlebars-templates](https://github.com/xp-forge/handlebars-templates) implements it.
+For the above class, the template engine will receive *home* as template name and the returned map as context. This library contains only the skeleton for templating - the [xp-forge/handlebars-templates](https://github.com/xp-forge/handlebars-templates) library implements it.
 
 The handlebars template is quite straight-forward:
 
