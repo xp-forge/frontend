@@ -45,11 +45,7 @@ class Frontend implements Handler {
     try {
       $args= [];
       foreach ($delegate->parameters() as $name => $source) {
-        if (isset($matches[$name])) {
-          $args[]= $matches[$name];
-        } else {
-          $args[]= $source($req, $name);
-        }
+        $args[]= $matches[$name] ?? $source($req, $name);
       }
 
       $delegate->invoke($args, $this->templates)->transfer($req, $res, $this->globals);
