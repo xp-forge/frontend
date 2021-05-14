@@ -28,7 +28,7 @@ class Hello {
 ```
 *Note: For PHP 7, the `Param` annotation must be on a line by itself, [see here](https://gist.github.com/thekid/8ce84b0d0de8fce5b6dd5faa22e1d716#file-home-class-php)!*
 
-For the above class, the template engine will receive *home* as template name and the returned map as context. This library contains only the skeleton for templating - the [xp-forge/handlebars-templates](https://github.com/xp-forge/handlebars-templates) library implements it.
+For the above class, the template engine will receive *home* as template name and the returned map as context. This library contains only the skeleton for templating - the [xp-forge/handlebars-templates](https://github.com/xp-forge/handlebars-templates) library implements it. For the rest of the examples, we'll be using it.
 
 The handlebars template is quite straight-forward:
 
@@ -36,6 +36,7 @@ The handlebars template is quite straight-forward:
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hello World</title>
 </head>
 <body>
