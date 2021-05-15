@@ -22,6 +22,14 @@ class ExceptionsTest {
     (new Exceptions())->handle(new IllegalArgumentException('test'));
   }
 
+  #[Test, Expect(class: Error::class, withMessage: 'test')]
+  public function callable_returning_null_will_raise() {
+    (new Exceptions())
+      ->mapping(IllegalArgumentException::class, function($e) { return null; })
+      ->handle(new IllegalArgumentException('test'))
+    ;
+  }
+
   #[Test]
   public function mapping_web_error_uses_its_statuscode() {
     $view= (new Exceptions())

@@ -53,7 +53,7 @@ class Exceptions implements Errors {
    */
   public function handle($cause) {
     foreach ($this->mapping as $type => $mapping) {
-      if ($cause instanceof $type) return $mapping($cause)->with(['cause' => $cause]);
+      if ($cause instanceof $type && ($view= $mapping($cause))) return $view->with(['cause' => $cause]);
     }
 
     // Unhanded, raise error and display default error page
