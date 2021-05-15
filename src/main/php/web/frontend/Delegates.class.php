@@ -37,11 +37,12 @@ class Delegates {
   }
 
   /**
-   * Returns target for a given HTTP verb and path
+   * Returns target delegate and matches for a given HTTP verb and path, or
+   * NULL if not such target exists
    *
    * @param  string $verb
    * @param  string $path
-   * @return web.frontend.Delegate or NULL
+   * @return ?var[]
    */
   public function target($verb, $path) {
     $match= $verb.$path;

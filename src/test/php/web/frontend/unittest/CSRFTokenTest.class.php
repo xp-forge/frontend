@@ -46,12 +46,12 @@ class CSRFTokenTest extends TestCase {
     $this->execute('GET', '/users');
   }
 
-  #[Test, Expect(class: Error::class, withMessage: '/Missing CSRF token for .+Users::create/')]
+  #[Test, Expect(class: Error::class, withMessage: '/Incorrect CSRF token for .+Users::create/')]
   public function raises_error_when_missing() {
     $this->execute('POST', '/users', 'username=test');
   }
 
-  #[Test, Expect(class: Error::class, withMessage: '/Missing CSRF token for .+Users::create/')]
+  #[Test, Expect(class: Error::class, withMessage: '/Incorrect CSRF token for .+Users::create/')]
   public function raises_error_when_incorrect() {
     $this->execute('POST', '/users', 'token=INCORRECT&username=test');
   }

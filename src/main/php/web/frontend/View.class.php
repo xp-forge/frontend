@@ -13,7 +13,7 @@ class View {
   }
 
   /**
-   * Sets template to use.
+   * Sets template to use
    *
    * @param  string $template
    * @return self
@@ -33,6 +33,21 @@ class View {
     $self->status= 302;
     $self->headers['Location']= $url;
     $self->context= null;
+    return $self;
+  }
+
+  /**
+   * Creates an error view with a given status and template. The template
+   * will be named *errors/{template}* or *errors/{status}* if its name
+   * is omitted.
+   *
+   * @param  int $status
+   * @param  ?string $template
+   * @return self
+   */
+  public static function error(int $status, $template= null) {
+    $self= new self('errors/'.($template ?? $status));
+    $self->status= $status;
     return $self;
   }
 
@@ -66,7 +81,7 @@ class View {
    * @return self
    */
   public function with($context) {
-    $this->context= $context;
+    $this->context+= $context;
     return $this;
   }
 
@@ -98,7 +113,6 @@ class View {
    *
    * @param  web.Request $req
    * @param  web.Response $res
-   * @param  [:var] $globals
    * @return void
    */
   public function transfer($req, $res, $globals) {

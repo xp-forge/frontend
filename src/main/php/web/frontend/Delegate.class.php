@@ -61,8 +61,7 @@ class Delegate {
           if ($param->isOptional()) {
             $default= $param->getDefaultValue();
             $this->parameters[$name]= function($req, $name) use($source, $default) {
-              $r= $source($req, $name);
-              return null === $r ? $default : $r;
+              return $source($req, $name) ?? $default;
             };
           } else {
             $this->parameters[$name]= $source;
@@ -79,17 +78,16 @@ class Delegate {
    * Invokes this delegate
    *
    * @param  var[] $args
-   * @param  web.frontend.Templates $templates
    * @return web.frontend.View
    * @throws lang.reflect.TargetInvocationException
    */
-  public function invoke($args, $templates) {
+  public function invoke($args) {
     $result= $this->method->invoke($this->instance, $args);
     if ($result instanceof View) {
-      $result->template || $result->template= $this->group();
-      return $result->using($templates);
+      $result->template ?? $result->template= $this->group();
+      return $result;
     } else {
-      return View::named($this->group())->with($result)->using($templates);
+      return View::named($this->group())->with($result);
     }
   }
 }

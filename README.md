@@ -75,11 +75,11 @@ In real-life situations, you will not want to put all of your code into the `Hel
 
 ```bash
 @FileSystemCL<./src/main/php>
-package org.example.example.web {
+package org.example.web {
 
-  public class org.example.example.web.Home
-  public class org.example.example.web.User
-  public class org.example.example.web.Group
+  public class org.example.web.Home
+  public class org.example.web.User
+  public class org.example.web.Group
 }
 ```
 
@@ -89,7 +89,7 @@ Then use the delegation API provided by the `HandlersIn` class:
 use web\frontend\{Frontend, HandlersIn};
 
 // ...inside the routes() method, as seen above:
-new Frontend(new HandlersIn('org.example.example.web'), $templates);
+new Frontend(new HandlersIn('org.example.web'), $templates);
 ```
 
 ## Handling routes and methods
@@ -220,6 +220,24 @@ $ xp bundle -m src/main/webapp/manifest.json src/main/webapp/static
 ```
 
 This will create *vendor.[fingerprint].js* and *vendor.[fingerprint].css* files as well as compressed versions (*if the zlib and [brotli](https://github.com/kjdev/php-ext-brotli) PHP extensions are available*) and the assets manifest, which maps the file names without fingerprints to those with.
+
+## Error handling
+
+By default, errors and exceptions will yield in a minimalistic error page with the corresponding error code (*defaulting to 500 Internal Server Error*) shown. Exceptions can be handled by a closure, a status code or by default, and decide to return a view of their own. This view is loaded from the *errors/* subfolder and passed a context of `['cause' => $exception]`.
+
+```php
+use web\frontend\{HandlersIn, FrontendIn, Exceptions};
+use org\example\{InvalidOrder, LinkExpired};
+use lang\Throwable;
+
+$frontend= (new Frontend(new HandlersIn('org.example.web'), $templates))
+  ->handling((new Exceptions())
+    ->catch(InvalidOrder::class, fn($e) => View::error(503, 'invalid-order')),
+    ->catch(LinkExpired::class, 404) // uses template "error/404"
+    ->catch(Throwable::class)        // catch-all, errors/{status} for web.Error, errors/500 for others
+  )
+;
+```
 
 ## Performance
 
