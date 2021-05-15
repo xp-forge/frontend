@@ -1,7 +1,7 @@
 <?php namespace web\frontend\unittest;
 
 use lang\IllegalArgumentException;
-use unittest\{Assert, Before, Expect, Test};
+use unittest\{Assert, Before, Expect, Test, Values};
 use web\frontend\unittest\actions\Users;
 use web\frontend\{Frontend, Exceptions, RaiseErrors, Templates};
 
@@ -32,13 +32,13 @@ class FrontendTest {
 
   #[Test]
   public function globals_passed_to_constructor() {
-    $globals= ['base' => '/', 'fingerprint' => '99b3825'];
+    $globals= ['base' => '', 'fingerprint' => '99b3825'];
     Assert::equals($globals, (new Frontend(new Users(), $this->templates, $globals))->globals);
   }
 
-  #[Test]
-  public function base_passed_to_constructor() {
-    Assert::equals(['base' => ''], (new Frontend(new Users(), $this->templates, '/'))->globals);
+  #[Test, Values([['/', ''], ['/test', '/test'], ['/test/', '/test']])]
+  public function base_passed_to_constructor($arg, $base) {
+    Assert::equals(['base' => $base], (new Frontend(new Users(), $this->templates, $arg))->globals);
   }
 
   #[Test]
