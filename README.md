@@ -195,7 +195,7 @@ The handlebars code then uses the *asset* helper to lookup the filename includin
 
 ### The built-in bundler
 
-Bundling assets makes sense from a security standpoint, but also to reduce HTTP requests. This library comes with a `bundle` subcommand, which can generated JavaScript and CSS bundles from dependencies tracked in `package.json`.
+Bundling assets makes sense from a security standpoint, but also to reduce HTTP requests. This library comes with a `bundle` subcommand, which can generate JavaScript and CSS bundles from dependencies tracked in `package.json`.
 
 ```json
 {
@@ -212,7 +212,7 @@ Bundling assets makes sense from a security standpoint, but also to reduce HTTP 
 }
 ```
 
-To create the bundles and the assets manifest, run the following:
+To create the bundles to the *src/main/webapp/static* directory and the assets manifest, run the following:
 
 ```bash
 $ xp bundle -m src/main/webapp/manifest.json src/main/webapp/static
