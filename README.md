@@ -30,7 +30,7 @@ class Hello {
 
 For the above class, the template engine will receive *home* as template name and the returned map as context. This library contains only the skeleton for templating - the [xp-forge/handlebars-templates](https://github.com/xp-forge/handlebars-templates) library implements it. For the rest of the examples, we'll be using it.
 
-The handlebars template is quite straight-forward:
+The handlebars template *hello.handlebars* (calculated from the lowercase version of the above handler class' name) is quite straight-forward:
 
 ```handlebars
 <!DOCTYPE html>
