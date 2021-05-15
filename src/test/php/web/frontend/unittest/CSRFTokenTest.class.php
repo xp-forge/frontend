@@ -30,7 +30,7 @@ class CSRFTokenTest extends TestCase {
   private function execute($method, $uri, $payload= null) {
     $headers= $payload ? ['Content-Type' => 'application/x-www-form-urlencoded'] : [];
 
-    $req= new Request(new TestInput($method, $uri, $headers, $payload));
+    $req= new Request(new TestInput($method, $uri, $headers, (string)$payload));
     $res= new Response(new TestOutput());
 
     $this->fixture->handle($req->pass('token', self::TOKEN), $res);
