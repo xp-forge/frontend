@@ -40,13 +40,13 @@ class Frontend implements Handler {
   }
 
   /**
-   * Determines target, handling errors while going along.
+   * Determines view to be displayed, handling errors while going along.
    *
    * @param  web.Request $req
    * @param  web.Response $res
-   * @return web.frontend.Target
+   * @return web.frontend.View
    */
-  private function target($req, $res) {
+  private function view($req, $res) {
     static $CSRF_EXEMPT= ['get' => true, 'head' => true];
 
     $method= strtolower($req->method());
@@ -82,7 +82,6 @@ class Frontend implements Handler {
    */
   public function handle($req, $res) {
     $res->header('Server', 'XP/Frontend');
-
-    $this->target($req, $res)->transfer($req, $res, $this->globals);
+    $this->view($req, $res)->transfer($req, $res, $this->globals);
   }
 }
