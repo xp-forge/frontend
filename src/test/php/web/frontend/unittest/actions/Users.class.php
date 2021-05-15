@@ -9,6 +9,7 @@ class Users {
     1 => ['id' => 1, 'name' => 'Test'],
   ];
 
+
   #[Get('/users')]
   public function all(
     #[Param]
