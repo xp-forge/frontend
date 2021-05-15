@@ -233,10 +233,29 @@ use lang\Throwable;
 $frontend= (new Frontend(new HandlersIn('org.example.web'), $templates))
   ->handling((new Exceptions())
     ->catch(InvalidOrder::class, fn($e) => View::error(503, 'invalid-order')),
-    ->catch(LinkExpired::class, 404) // uses template "error/404"
+    ->catch(LinkExpired::class, 404) // uses template "errors/404"
     ->catch(Throwable::class)        // catch-all, errors/{status} for web.Error, errors/500 for others
   )
 ;
+```
+
+Using our handlebars engine from above, the template *errors/404.handlebars* could look like this:
+
+```handlebars
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Error 404</title>
+</head>
+<body>
+  <h1>Not found</h1>
+  <p>{{cause.message}}</p>
+
+  {{! Log errors !}}
+  {{log request.uri "~" cause level="error"}}
+</body>
+</html>
 ```
 
 ## Performance
