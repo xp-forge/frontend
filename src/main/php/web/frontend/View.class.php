@@ -113,7 +113,6 @@ class View {
    *
    * @param  web.Request $req
    * @param  web.Response $res
-   * @param  [:var] $globals
    * @return void
    */
   public function transfer($req, $res, $globals) {

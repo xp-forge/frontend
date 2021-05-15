@@ -47,6 +47,12 @@ class FrontendTest {
   }
 
   #[Test]
+  public function passed_exception_handling() {
+    $h= new Exceptions();
+    Assert::equals($h, (new Frontend(new Users(), $this->templates, [], $h))->errors());
+  }
+
+  #[Test]
   public function changed_exception_handling() {
     $h= new Exceptions();
     Assert::equals($h, (new Frontend(new Users(), $this->templates))->handling($h)->errors());

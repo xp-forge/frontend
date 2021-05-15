@@ -10,13 +10,13 @@ use web\Error;
  * $handler= new Exceptions();
  *
  * // Use errors/{status} for web.Error instances, errors/500 for others
- * $handler->mapping(Throwable::class);
+ * $handler->catch(Throwable::class);
  *
  * // Always use errors/503 for all SQLExceptions
- * $handler->mapping(SQLException::class, 503);
+ * $handler->catch(SQLException::class, 503);
  *
  * // Supply a handler function returning a view
- * $handler->mapping(InvalidOrder::class, fn($e) => View::error(404, 'invalid-order'));
+ * $handler->catch(InvalidOrder::class, fn($e) => View::error(404, 'invalid-order'));
  * ```
  *
  * @test  web.frontend.unittest.ExceptionsTest
@@ -31,7 +31,7 @@ class Exceptions implements Errors {
    * @param  ?int|callable $handler
    * @return self
    */
-  public function mapping($type, $handler= null) {
+  public function catch($type, $handler= null) {
     if (null === $handler) {
       $this->mapping[$type]= function($cause) { return View::error($cause instanceof Error ? $cause->status() : 500); };
     } else if (is_int($handler)) {

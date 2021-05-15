@@ -25,7 +25,7 @@ class ExceptionsTest {
   #[Test, Expect(class: Error::class, withMessage: 'test')]
   public function callable_returning_null_will_raise() {
     (new Exceptions())
-      ->mapping(IllegalArgumentException::class, function($e) { return null; })
+      ->catch(IllegalArgumentException::class, function($e) { return null; })
       ->handle(new IllegalArgumentException('test'))
     ;
   }
@@ -33,7 +33,7 @@ class ExceptionsTest {
   #[Test]
   public function mapping_web_error_uses_its_statuscode() {
     $view= (new Exceptions())
-      ->mapping(Error::class)
+      ->catch(Error::class)
       ->handle(new Error(404, 'test'))
     ;
     Assert::equals([404, 'errors/404'], [$view->status, $view->template]);
@@ -42,7 +42,7 @@ class ExceptionsTest {
   #[Test]
   public function mapping_exception_uses_500_as_statuscode() {
     $view= (new Exceptions())
-      ->mapping(IllegalArgumentException::class)
+      ->catch(IllegalArgumentException::class)
       ->handle(new IllegalArgumentException('test'))
     ;
     Assert::equals([500, 'errors/500'], [$view->status, $view->template]);
@@ -51,7 +51,7 @@ class ExceptionsTest {
   #[Test]
   public function mapping_exception_to_statuscode() {
     $view= (new Exceptions())
-      ->mapping(IllegalArgumentException::class, 400)
+      ->catch(IllegalArgumentException::class, 400)
       ->handle(new IllegalArgumentException('test'))
     ;
     Assert::equals([400, 'errors/400'], [$view->status, $view->template]);
@@ -60,7 +60,7 @@ class ExceptionsTest {
   #[Test]
   public function mapping_exception_to_callable() {
     $view= (new Exceptions())
-      ->mapping(IllegalArgumentException::class, function($e) { return View::error(400, 'validation'); })
+      ->catch(IllegalArgumentException::class, function($e) { return View::error(400, 'validation'); })
       ->handle(new IllegalArgumentException('test'))
     ;
     Assert::equals([400, 'errors/validation'], [$view->status, $view->template]);
@@ -69,7 +69,7 @@ class ExceptionsTest {
   #[Test]
   public function mapping_throwable_to_catch_all() {
     $view= (new Exceptions())
-      ->mapping(Throwable::class)
+      ->catch(Throwable::class)
       ->handle(new IllegalArgumentException('test'))
     ;
     Assert::equals([500, 'errors/500'], [$view->status, $view->template]);
@@ -78,8 +78,8 @@ class ExceptionsTest {
   #[Test]
   public function order_is_relevant() {
     $view= (new Exceptions())
-      ->mapping(IllegalArgumentException::class, 400)
-      ->mapping(Throwable::class)
+      ->catch(IllegalArgumentException::class, 400)
+      ->catch(Throwable::class)
       ->handle(new IllegalArgumentException('test'))
     ;
     Assert::equals([400, 'errors/400'], [$view->status, $view->template]);
@@ -88,8 +88,8 @@ class ExceptionsTest {
   #[Test]
   public function parent_shadows_type() {
     $view= (new Exceptions())
-      ->mapping(Throwable::class)
-      ->mapping(IllegalArgumentException::class, 400) // Not used in this case!
+      ->catch(Throwable::class)
+      ->catch(IllegalArgumentException::class, 400) // Not used in this case!
       ->handle(new IllegalArgumentException('test'))
     ;
     Assert::equals([500, 'errors/500'], [$view->status, $view->template]);
@@ -98,7 +98,7 @@ class ExceptionsTest {
   #[Test]
   public function context_contains_exception() {
     $view= (new Exceptions())
-      ->mapping(IllegalArgumentException::class)
+      ->catch(IllegalArgumentException::class)
       ->handle(new IllegalArgumentException('test'))
     ;
 
@@ -109,7 +109,7 @@ class ExceptionsTest {
   public function context_from_callables_is_merged() {
     $handler= function($e) { return View::error(400, 'validation')->with(['type' => get_class($e)]); };
     $view= (new Exceptions())
-      ->mapping(IllegalArgumentException::class, $handler)
+      ->catch(IllegalArgumentException::class, $handler)
       ->handle(new IllegalArgumentException('test'))
     ;
 
