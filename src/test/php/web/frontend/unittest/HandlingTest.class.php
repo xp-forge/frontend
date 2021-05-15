@@ -139,13 +139,13 @@ class HandlingTest extends TestCase {
     );
   }
 
-  #[Test, Expect(['class' => Error::class, 'withMessage'=> '/Method PATCH not supported by any delegate/'])]
-  public function unsupported_verb() {
+  #[Test, Expect(['class' => Error::class, 'withMessage'=> '/Cannot route PATCH requests to .+/'])]
+  public function unsupported_route() {
     $fixture= new Frontend(new Users(), new class() implements Templates {
       public function write($template, $context, $out) { /* NOOP */ }
     });
 
-    $this->handle($fixture, 'PATCH', '/users/1', [], 'username=@illegal@');
+    $this->handle($fixture, 'PATCH', '/users/1', [], '(irrelevant)');
   }
 
   #[Test, Expect(['class' => Error::class, 'withMessage'=> '/Illegal username ".+"/'])]

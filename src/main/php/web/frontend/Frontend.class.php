@@ -31,14 +31,14 @@ class Frontend implements Handler {
   public function handle($req, $res) {
     $res->header('Server', 'XP/Frontend');
 
-    $verb= strtolower($req->method());
-    if (null === ($target= $this->delegates->target($verb, $req->uri()->path()))) {
-      throw new Error(400, 'Method '.$req->method().' not supported by any delegate');
+    $method= strtolower($req->method());
+    if (null === ($target= $this->delegates->target($method, $req->uri()->path()))) {
+      throw new Error(404, 'Cannot route '.$req->method().' requests to '.$req->uri()->path());
     }
     list($delegate, $matches)= $target;
 
     // Verify CSRF token for anything which is not a GET or HEAD request
-    if (!in_array($verb, ['get', 'head']) && $req->value('token') !== $req->param('token')) {
+    if (!in_array($method, ['get', 'head']) && $req->value('token') !== $req->param('token')) {
       throw new Error(400, 'Missing CSRF token for '.$delegate->name());
     }
 
