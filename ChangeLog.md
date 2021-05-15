@@ -9,8 +9,8 @@ Web frontends change log
   and render a view instead of falling back to the minimalistic default
   error pages provided by `xp-forge/web`.
   (@thekid)
-* **Heads up:** Unmatched routes now result in a 404 error; and missing
-  or mismatched CSRF tokens now yield 403s - see issue #24
+* **Heads up:** Unmatched routes now result in a 404 "Not found" errors.
+  Missing or mismatched CSRF tokens now yield 403 "Forbidden" - see #24
   (@thekid)
 
 ## 3.3.0 / 2021-04-30
