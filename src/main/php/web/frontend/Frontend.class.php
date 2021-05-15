@@ -67,7 +67,7 @@ class Frontend implements Handler {
         $args[]= $matches[$name] ?? $source($req, $name);
       }
 
-      return $delegate->invoke($args, $this->templates);
+      return $delegate->invoke($args);
     } catch (TargetInvocationException $e) {
       return $this->errors()->handle($e->getCause());
     }
@@ -83,6 +83,6 @@ class Frontend implements Handler {
    */
   public function handle($req, $res) {
     $res->header('Server', 'XP/Frontend');
-    $this->view($req, $res)->transfer($req, $res, $this->globals);
+    $this->view($req, $res)->using($this->templates)->transfer($req, $res, $this->globals);
   }
 }
