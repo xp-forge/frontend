@@ -17,10 +17,6 @@ class RaiseErrors implements Errors {
    * @throws web.Error
    */
   public function handle($cause) {
-    if ($cause instanceof Error) {
-      throw $cause;
-    } else {
-      throw new Error(500, $cause->getMessage(), $cause);
-    }
+    throw $cause instanceof Error ? $cause : new Error(500, $cause->getMessage(), $cause);
   }
 }
