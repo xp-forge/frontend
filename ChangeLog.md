@@ -3,6 +3,16 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 3.4.0 / 2021-05-15
+
+* Merged PR #25: Exception handling API. This allows to catch exceptions
+  and render a view instead of falling back to the minimalistic default
+  error pages provided by `xp-forge/web`.
+  (@thekid)
+* **Heads up:** Unmatched routes now result in a 404 error; and missing
+  or mismatched CSRF tokens now yield 403s - see issue #24
+  (@thekid)
+
 ## 3.3.0 / 2021-04-30
 
 * Added `charset=utf-8` parameter to `Content-Type` header for all text,
