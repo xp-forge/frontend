@@ -284,11 +284,9 @@ class HandlingTest extends TestCase {
 
   #[Test]
   public function content_type_headers() {
-    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) {
-        // NOOP
-      }
-    ]));
+    $fixture= new Frontend(new Users(), new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    });
 
     $res= $this->handle($fixture, 'GET', '/users');
     $this->assertEquals('text/html; charset='.\xp::ENCODING, $res->headers()['Content-Type']);
@@ -297,11 +295,9 @@ class HandlingTest extends TestCase {
 
   #[Test]
   public function defaults_to_no_caching() {
-    $fixture= new Frontend(new Blogs(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) {
-        // NOOP
-      }
-    ]));
+    $fixture= new Frontend(new Blogs(), new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    });
 
     $res= $this->handle($fixture, 'GET', '/blogs');
     $this->assertEquals('no-cache', $res->headers()['Cache-Control']);
@@ -309,13 +305,23 @@ class HandlingTest extends TestCase {
 
   #[Test]
   public function view_can_set_caching() {
-    $fixture= new Frontend(new Blogs(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) {
-        // NOOP
-      }
-    ]));
+    $fixture= new Frontend(new Blogs(), new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    });
 
     $res= $this->handle($fixture, 'GET', '/blogs/development/1');
     $this->assertEquals('max-age=2419200, must-revalidate', $res->headers()['Cache-Control']);
+  }
+
+  #[Test]
+  public function view_can_return_null() {
+    $fixture= new Frontend(new Blogs(), newinstance(Templates::class, [], [
+      'write' => function($template, $context= [], $out) use(&$result) {
+        $result= $context;
+      }
+    ]));
+
+    $this->handle($fixture, 'GET', '/blogs/stats');
+    $this->assertContext(['request' => ['params' => []]], $result);
   }
 }

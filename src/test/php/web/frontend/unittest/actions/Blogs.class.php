@@ -10,6 +10,11 @@ class Blogs {
     return ['development' => [1]];
   }
 
+  #[Get('/stats')]
+  public function statistics() {
+    // Not yet implemented
+  }
+
   #[Get('/{category}/{id:[0-9]+}')]
   public function article($category, $id) {
     return View::named('blog')

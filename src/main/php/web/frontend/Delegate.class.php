@@ -87,7 +87,7 @@ class Delegate {
       $result->template ?? $result->template= $this->group();
       return $result;
     } else {
-      return View::named($this->group())->with($result);
+      return View::named($this->group())->with((array)$result);
     }
   }
 }

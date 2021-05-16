@@ -80,7 +80,7 @@ class View {
    * @param  [:var] $context
    * @return self
    */
-  public function with($context) {
+  public function with(array $context) {
     $this->context+= $context;
     return $this;
   }
