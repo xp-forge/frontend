@@ -22,6 +22,7 @@ class HandlersInTest extends TestCase {
     $this->assertEquals(
       [
         '#get/blogs/(?<category>[^/]+)/(?<id>[0-9]+)$#',
+        '#get/oauth/(?<tenant>[^/]+)/select/?$#',
         '#get/users/(?<id>[^/]+)/avatar$#',
         '#get/users/(?<id>[^/]+)$#',
         '#get/blogs/stats$#',

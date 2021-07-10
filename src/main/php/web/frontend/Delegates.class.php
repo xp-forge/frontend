@@ -25,11 +25,11 @@ class Delegates {
     foreach (typeof($instance)->getMethods() as $method) {
       $name= $method->getName();
       foreach ($method->getAnnotations() as $verb => $segment) {
-        if ('/' === $segment || null === $segment) {
-          $pattern= $base.'/?';
-        } else {
-          $pattern= $base.preg_replace(['/\{([^:}]+):([^}]+)\}/', '/\{([^}]+)\}/'], ['(?<$1>$2)', '(?<$1>[^/]+)'], $segment);
-        }
+        $pattern= preg_replace(
+          ['/\{([^:}]+):([^}]+)\}/', '/\{([^}]+)\}/'],
+          ['(?<$1>$2)', '(?<$1>[^/]+)'],
+          $base.('/' === $segment || null === $segment ? '/?' : $segment)
+        );
         $this->patterns['#'.$verb.$pattern.'$#']= new Delegate($instance, $method);
       }
     }

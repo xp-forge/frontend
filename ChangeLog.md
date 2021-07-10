@@ -3,6 +3,11 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 3.5.0 / 2021-07-10
+
+* Added possibility to use placeholders in `#[Handler]` annotations
+  (@thekid)
+
 ## 3.4.1 / 2021-05-16
 
 * Fixed issue #26: Unsupported operand types: array + null - @thekid

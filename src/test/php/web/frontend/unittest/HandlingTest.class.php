@@ -2,7 +2,7 @@
 
 use lang\IndexOutOfBoundsException;
 use unittest\{Expect, Test, TestCase, Values};
-use web\frontend\unittest\actions\{Blogs, Home, Users};
+use web\frontend\unittest\actions\{Blogs, Home, Users, Select};
 use web\frontend\{Frontend, Templates, View};
 use web\io\{TestInput, TestOutput};
 use web\{Error, Request, Response};
@@ -209,6 +209,19 @@ class HandlingTest extends TestCase {
 
     $return= ['category' => 'development', 'article' => 1];
     $res= $this->handle($fixture, 'GET', '/blogs/development/1');
+    $this->assertContext($return + ['request' => ['params' => []]], $result);
+  }
+
+  #[Test]
+  public function path_segments_in_handler() {
+    $fixture= new Frontend(new Select(), newinstance(Templates::class, [], [
+      'write' => function($template, $context, $out) use(&$result) {
+        $result= $context;
+      }
+    ]));
+
+    $return= ['tenant' => '8555b51d-6f6d-42cd-843c-daa1c25fd5ee'];
+    $res= $this->handle($fixture, 'GET', '/oauth/8555b51d-6f6d-42cd-843c-daa1c25fd5ee/select');
     $this->assertContext($return + ['request' => ['params' => []]], $result);
   }
 
