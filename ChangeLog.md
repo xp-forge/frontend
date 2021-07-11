@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 3.6.0 / 2021-07-11
+
+* Merged PR #27: Add support for remote dependencies - @thekid
+
 ## 3.5.0 / 2021-07-10
 
 * Added possibility to use placeholders in `#[Handler]` annotations
