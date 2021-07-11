@@ -129,8 +129,10 @@ class BundleRunner {
             Console::writef("  - Resolving \e[32mnpm/%s\e[0m (\e[33m%s\e[0m => ", $source, $constraint);
             $version= $resolve->version($source, $constraint);
             Console::writeLine("\e[33m", $version, "\e[0m)");
-
             $bundles[$name][]= new LibraryDependency($source, $version, $sources);
+          } else if (preg_match('/^https?:\/\//', $source)) {
+            Console::writeLinef("  - Resolving \e[32m%s\e[0m (\e[33mremote\e[0m)", $source);
+            $bundles[$name][]= new RemoteDependency($source, $sources);
           } else {
             Console::writeLinef("  - Resolving \e[32m%s\e[0m (\e[33mlocal %s\e[0m)", $source, $relative);
             $bundles[$name][]= new LocalDependency($relative->resolve($source), $sources);
