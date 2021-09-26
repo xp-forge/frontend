@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 3.6.1 / 2021-09-26
+
+* Made compatible with XP web 3.0, see xp-forge/web#83 - @thekid
+
 ## 3.6.0 / 2021-07-11
 
 * Merged PR #27: Add support for remote dependencies - @thekid
