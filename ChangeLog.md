@@ -3,6 +3,11 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 3.6.2 / 2021-10-21
+
+* Made library compatible with XP 11, `xp-forge/json` version 5.0.0
+  (@thekid)
+
 ## 3.6.1 / 2021-09-26
 
 * Made compatible with XP web 3.0, see xp-forge/web#83 - @thekid
