@@ -227,7 +227,7 @@ The bundler can also resolve *https* URLs, local files as well as [Google fonts]
 {
   "bundles": {
     "vendor": {
-      "https://cdn.amcharts.com/lib/4": "core.js | charts.js | themes/animated.js | themes/kelly.js",
+      "https://cdn.amcharts.com/lib/4": "core.js | charts.js | themes/kelly.js",
       "src/main/js": "index.js",
       "fonts://display=swap": "Overpass"
     }
