@@ -109,9 +109,10 @@ class BundleRunner {
       'final'  => function($t) { Console::writef('%s%s', str_repeat(' ', strlen($t)), str_repeat("\x08", strlen($t))); },
     ];
     $handlers= [
-      'css' => new ProcessStylesheet($files),
-      'js'  => new ProcessJavaScript(),
-      '*'   => new StoreFile($files),
+      'fonts' => new ProcessFonts($files),
+      'css'   => new ProcessStylesheet($files),
+      'js'    => new ProcessJavaScript(),
+      '*'    => new StoreFile($files),
     ];
 
     try {
@@ -133,6 +134,9 @@ class BundleRunner {
           } else if (preg_match('/^https?:\/\//', $source)) {
             Console::writeLinef("  - Resolving \e[32m%s\e[0m (\e[33mremote\e[0m)", $source);
             $bundles[$name][]= new RemoteDependency($source, $sources);
+          } else if (preg_match('/^fonts?:\/\//', $source)) {
+            Console::writeLinef("  - Resolving \e[32m%s\e[0m (\e[33mfonts\e[0m)", implode(' & ', $sources));
+            $bundles[$name][]= new FontsDependency($source, $sources);
           } else {
             Console::writeLinef("  - Resolving \e[32m%s\e[0m (\e[33mlocal %s\e[0m)", $source, $relative);
             $bundles[$name][]= new LocalDependency($relative->resolve($source), $sources);
