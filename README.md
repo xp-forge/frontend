@@ -221,6 +221,20 @@ $ xp bundle -m src/main/webapp/manifest.json src/main/webapp/static
 
 This will create *vendor.[fingerprint].js* and *vendor.[fingerprint].css* files as well as compressed versions (*if the zlib and [brotli](https://github.com/kjdev/php-ext-brotli) PHP extensions are available*) and the assets manifest, which maps the file names without fingerprints to those with.
 
+The bundler can also resolve *https* URLs, local files as well as [Google fonts](https://fonts.google.com/):
+
+```json
+{
+  "bundles": {
+    "vendor": {
+      "https://cdn.amcharts.com/lib/4": "core.js | charts.js | themes/animated.js | themes/kelly.js",
+      "src/main/js": "index.js",
+      "fonts://display=swap": "Overpass"
+    }
+  }
+}
+```
+
 ## Error handling
 
 By default, errors and exceptions will yield in a minimalistic error page with the corresponding error code (*defaulting to 500 Internal Server Error*) shown. Exceptions can be handled by a closure, a status code or by default, and decide to return a view of their own. This view is loaded from the *errors/* subfolder and passed a context of `['cause' => $exception]`.

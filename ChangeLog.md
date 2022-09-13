@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 3.7.0 / 2022-09-13
+
+* Merged PR #28: Add support for bundling web fonts - @thekid
+
 ## 3.6.2 / 2021-10-21
 
 * Made library compatible with XP 11, `xp-forge/json` version 5.0.0
