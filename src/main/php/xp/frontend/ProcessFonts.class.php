@@ -17,7 +17,7 @@ class ProcessFonts {
     $bytes= Streams::readAll($stream);
 
     // Download fonts
-    preg_match_all('/src: url\(([^)]+)\)/', $bytes, $resources, PREG_SET_ORDER);
+    preg_match_all('/url\(([^)]+)\)/', $bytes, $resources, PREG_SET_ORDER);
     foreach ($resources as $resource) {
       $uri= new URI(trim($resource[1], '"\''));
       $bundle= $this->files->store(
@@ -26,7 +26,7 @@ class ProcessFonts {
       );
 
       // Update CSS with stored file's filename
-      $bytes= str_replace($resource[0], 'src: url('.$bundle->name().')', $bytes);
+      $bytes= str_replace($resource[0], 'url('.$bundle->name().')', $bytes);
     }
 
     $result->concat('css', $bytes);
