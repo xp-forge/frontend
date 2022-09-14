@@ -1,6 +1,5 @@
 <?php namespace xp\frontend;
 
-use io\File;
 use io\streams\InputStream;
 
 /** Stores assets and dependencies by with fingerprints in their filenames */
@@ -19,11 +18,8 @@ class WithFingerprints extends Files {
     $this->manifest= $manifest;
   }
 
-  public function resolve($name, $type, $hash) {
-    return $this->manifest->associate(
-      $name.'.'.$type,
-      $name.'.'.substr($hash, 0, 7).'.'.$type
-    );
+  private function hashed($name, $type, $hash) {
+    return $name.'.'.substr($hash, 0, 7).'.'.$type;
   }
 
   /**
@@ -32,11 +28,11 @@ class WithFingerprints extends Files {
    *
    * @throws io.IOException
    */
-  public function store(InputStream $in, string $path): File {
+  public function store(InputStream $in, string $path): Bundle {
+    $type= substr($path, strrpos($path, '.') + 1);
 
     // Store file temporarily and calculate a checksum while writing to it
-    $out= new File(tempnam($this->target->getURI(), self::class));
-    $out->open(File::WRITE);
+    $out= new Bundle(tempnam($this->target->getURI(), self::class), $type);
     try {
       $ctx= hash_init(self::HASH);
       while ($in->available()) {
@@ -50,10 +46,17 @@ class WithFingerprints extends Files {
       $out->close();
     }
 
-    // Rename the file to [filename].[contenthash].[extension]
-    $file= basename($path);
-    $type= substr($file, strrpos($file, '.') + 1);
-    $out->move($this->target->getURI().$this->resolve(basename($file, '.'.$type), $type, $hash));
+    // Register in manifest
+    $name= basename($path, '.'.$type);
+    $this->manifest->associate(
+      $name.'.'.$type,
+      $this->hashed($name, $type, $hash)
+    );
+
+    // Rename the files to [filename].[contenthash].[extension]
+    foreach ($out->files() as $suffix => $file) {
+      $file->move($this->target->getURI().$this->hashed($name, $type, $hash).$suffix);
+    }
     return $out;
   }
 }

@@ -4,6 +4,8 @@ use io\File;
 use io\streams\{OutputStream, GzCompressingOutputStream};
 
 class Bundle implements OutputStream {
+  const COMPRESS = ['css', 'js', 'svg', 'json', 'xml', 'ttf', 'otf', 'eot'];
+
   private static $zlib, $brotli;
   private $files= [];
   private $output= [];
@@ -16,34 +18,43 @@ class Bundle implements OutputStream {
   /**
    * Creates a new bundle
    *
-   * @param  io.Folder|string $path
-   * @param  string $name
+   * @param  io.Path|string $path
+   * @param  ?string $type
    */
-  public function __construct($path, $name) {
-    $this->output[]= $this->output(new File($path, $name));
-    if (self::$zlib) {
-      $this->output[]= new GzCompressingOutputStream($this->output(new File($path, $name.'.gz')), 9);
-    }
-    if (self::$brotli) {
-      $this->output[]= new BrCompressingOutputStream($this->output(new File($path, $name.'.br')), 11); 
+  public function __construct($path, $type= null) {
+    $this->output[]= $this->output($path);
+
+    // Check whether it's typically worthwhile compressing a file based on the
+    // given type (falling back to the file extension if omitted).
+    if (in_array($type ?? strtolower(substr($path, strrpos($path, '.') + 1)), self::COMPRESS)) {
+      self::$zlib && $this->output[]= new GzCompressingOutputStream($this->output($path, '.gz'), 9);
+      self::$brotli && $this->output[]= new BrCompressingOutputStream($this->output($path, '.br'), 11);
     }
   }
 
   /**
    * Registers a given file and returns its output stream
    *
-   * @param  io.File $file
+   * @param  io.Path|string $path
+   * @param  string $suffix
    * @param  io.OutputStream
    */
-  private function output($file) {
-    $this->files[]= $file;
+  private function output($path, $suffix= '') {
+    $this->files[$suffix]= $file= new File($path.$suffix);
     return $file->out();
   }
 
   /**
+   * Returns the name under which this bundle was stored
+   *
+   * @return string
+   */
+  public function name() { return $this->files['']->filename; }
+
+  /**
    * Returns the files produced by this bundle
    *
-   * @return io.File[]
+   * @return [:io.File]
    */
   public function files() { return $this->files; }
 

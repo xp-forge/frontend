@@ -12,14 +12,12 @@ abstract class Files {
     $this->target->exists() || $this->target->create();
   }
 
-  public abstract function resolve($name, $type, $hash);
-
   /**
    * Store a given input stream under a given name and return file its
    * contents were written to.
    *
    * @throws io.IOException
    */
-  public abstract function store(InputStream $in, string $path): File;
+  public abstract function store(InputStream $in, string $path): Bundle;
 
 }
