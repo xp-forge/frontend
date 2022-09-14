@@ -221,14 +221,14 @@ $ xp bundle -m src/main/webapp/manifest.json src/main/webapp/static
 
 This will create *vendor.[fingerprint].js* and *vendor.[fingerprint].css* files as well as compressed versions (*if the zlib and [brotli](https://github.com/kjdev/php-ext-brotli) PHP extensions are available*) and the assets manifest, which maps the file names without fingerprints to those with.
 
-The bundler can also resolve *https* URLs, local files as well as [Google fonts](https://fonts.google.com/):
+The bundler can also resolve local files, URLs as well as [Google fonts](https://fonts.google.com/):
 
 ```json
 {
   "bundles": {
     "vendor": {
-      "https://cdn.amcharts.com/lib/4": "core.js | charts.js | themes/kelly.js",
       "src/main/js": "index.js",
+      "https://cdn.amcharts.com/lib/4": "core.js | charts.js | themes/kelly.js",
       "fonts://display=swap": "Overpass"
     }
   }
