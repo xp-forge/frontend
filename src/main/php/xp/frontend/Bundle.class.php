@@ -4,7 +4,7 @@ use io\File;
 use io\streams\{OutputStream, GzCompressingOutputStream};
 
 class Bundle implements OutputStream {
-  const COMPRESS = ['css', 'js', 'svg', 'json', 'xml', 'ttf', 'otf', 'woff', 'woff2', 'eot'];
+  const COMPRESS = ['css', 'js', 'svg', 'json', 'xml', 'ttf', 'otf', 'eot'];
 
   private static $zlib, $brotli;
   private $files= [];
