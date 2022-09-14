@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 3.8.0 / 2022-09-14
+
+* Merged PR #29: Compress assets downloaded as dependencies - @thekid
+
 ## 3.7.0 / 2022-09-13
 
 * Merged PR #28: Add support for bundling web fonts - @thekid
