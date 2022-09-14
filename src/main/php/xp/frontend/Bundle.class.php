@@ -45,6 +45,13 @@ class Bundle implements OutputStream {
   }
 
   /**
+   * Returns the name under which this bundle was stored
+   *
+   * @return string
+   */
+  public function name() { return $this->files['']->filename; }
+
+  /**
    * Returns the files produced by this bundle
    *
    * @return [:io.File]

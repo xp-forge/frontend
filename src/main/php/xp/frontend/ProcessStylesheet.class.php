@@ -21,13 +21,13 @@ class ProcessStylesheet {
     foreach ($resources as $resource) {
       $uri= new URI(trim($resource[1], '"\''));
       if ($uri->isRelative()) {
-        $file= $this->files->store(
+        $bundle= $this->files->store(
           $result->fetch($stream->origin->resolve($uri), !$stream->cached()),
           $uri->path()
         );
 
-        // Update CSS with stored file's filename
-        $bytes= str_replace($resource[0], 'url('.$file->filename.')', $bytes);
+        // Update CSS with stored bundle's filename
+        $bytes= str_replace($resource[0], 'url('.$bundle->name().')', $bytes);
       }
     }
 
