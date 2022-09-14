@@ -1,7 +1,7 @@
 <?php namespace xp\frontend;
 
-use io\File;
 use io\streams\InputStream;
+use io\{Path, File};
 
 /** Stores assets and dependencies by their original filenames */
 class UsingFilenames extends Files {
@@ -16,9 +16,8 @@ class UsingFilenames extends Files {
    *
    * @throws io.IOException
    */
-  public function store(InputStream $in, string $path): File {
-    $out= new File($this->target, basename($path));
-    $out->open(File::WRITE);
+  public function store(InputStream $in, string $path): Bundle {
+    $out= new Bundle(new Path($this->target, basename($path)));
     try {
       while ($in->available()) {
         $out->write($in->read());

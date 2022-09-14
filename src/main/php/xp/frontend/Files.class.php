@@ -20,6 +20,6 @@ abstract class Files {
    *
    * @throws io.IOException
    */
-  public abstract function store(InputStream $in, string $path): File;
+  public abstract function store(InputStream $in, string $path): Bundle;
 
 }

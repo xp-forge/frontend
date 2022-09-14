@@ -155,7 +155,7 @@ class BundleRunner {
         }
 
         foreach ($result->sources() as $type => $source) {
-          $bundle= new Bundle($target, $files->resolve($name, $type, $source->hash));
+          $bundle= new Bundle(new Path($target, $files->resolve($name, $type, $source->hash)));
           with ($source, $bundle, function($in, $target) {
             $in->transfer($target);
           });
@@ -171,7 +171,7 @@ class BundleRunner {
       if ($manifest) {
         Console::writeLinef("\e[32mCleaning up previous versions\e[0m");
         foreach ($manifest->removed() as $remove) {
-          $bundle= new Bundle($target, $remove);
+          $bundle= new Bundle(new Path($target, $remove));
           $bundle->close();
           foreach ($bundle->files() as $file) {
             $path= str_replace($cwd->getURI(), '', realpath($file->getURI()));
