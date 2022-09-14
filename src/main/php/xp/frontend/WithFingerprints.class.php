@@ -1,6 +1,5 @@
 <?php namespace xp\frontend;
 
-use io\File;
 use io\streams\InputStream;
 
 /** Stores assets and dependencies by with fingerprints in their filenames */

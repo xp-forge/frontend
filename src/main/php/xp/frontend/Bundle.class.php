@@ -24,7 +24,8 @@ class Bundle implements OutputStream {
   public function __construct($path, $type= null) {
     $this->output[]= $this->output($path);
 
-    // Check whether it's typically worthwhile compressin a file.
+    // Check whether it's typically worthwhile compressing a file based on the
+    // given type (falling back to the file extension if omitted).
     if (in_array($type ?? substr($path, strrpos($path, '.') + 1), self::COMPRESS)) {
       self::$zlib && $this->output[]= new GzCompressingOutputStream($this->output($path, '.gz'), 9);
       self::$brotli && $this->output[]= new BrCompressingOutputStream($this->output($path, '.br'), 11);
@@ -34,7 +35,7 @@ class Bundle implements OutputStream {
   /**
    * Registers a given file and returns its output stream
    *
-   * @param  io.Path $path
+   * @param  io.Path|string $path
    * @param  string $suffix
    * @param  io.OutputStream
    */

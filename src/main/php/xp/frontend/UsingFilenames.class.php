@@ -1,7 +1,7 @@
 <?php namespace xp\frontend;
 
+use io\Path;
 use io\streams\InputStream;
-use io\{Path, File};
 
 /** Stores assets and dependencies by their original filenames */
 class UsingFilenames extends Files {
