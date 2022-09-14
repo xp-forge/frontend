@@ -155,11 +155,7 @@ class BundleRunner {
         }
 
         foreach ($result->sources() as $type => $source) {
-          $bundle= new Bundle(new Path($target, $files->resolve($name, $type, $source->hash)));
-          with ($source, $bundle, function($in, $target) {
-            $in->transfer($target);
-          });
-
+          $bundle= $files->store($source, new Path($target, $name.'.'.$type));
           foreach ($bundle->files() as $file) {
             $path= str_replace($cwd->getURI(), '', realpath($file->getURI()));
             Console::writeLinef("\r\e[0K> %s: \e[33m%.2f kB\e[0m", $path, $file->size() / 1024);

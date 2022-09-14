@@ -1,9 +1,8 @@
 <?php namespace xp\frontend;
 
-use io\streams\OutputStream;
-use lang\Closeable;
+use io\streams\InputStream;
 
-class Source implements Closeable {
+class Source implements InputStream {
   private $list;
   public $hash;
 
@@ -13,14 +12,14 @@ class Source implements Closeable {
     $this->hash= $hash;
   }
 
-  /** Transfers this source to an output stream */
-  public function transfer(OutputStream $out): self {
-    foreach ($this->list as $bytes) {
-      foreach ($bytes as $chunk) {
-        $out->write($chunk);
-      }
-    }
-    return $this;
+  /** @return int */
+  public function available() {
+    return sizeof($this->list);
+  }
+
+  /** @return string */
+  public function read($bytes= 8192) {
+    return implode('', array_pop($this->list));
   }
 
   /** @return void */

@@ -6,10 +6,6 @@ use io\streams\InputStream;
 /** Stores assets and dependencies by their original filenames */
 class UsingFilenames extends Files {
 
-  public function resolve($name, $type, $hash) {
-    return $name.'.'.$type;
-  }
-
   /**
    * Store a given input stream under a given name and return file its
    * contents were written to.

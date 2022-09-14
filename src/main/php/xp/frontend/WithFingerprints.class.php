@@ -22,13 +22,6 @@ class WithFingerprints extends Files {
     return $name.'.'.substr($hash, 0, 7).'.'.$type;
   }
 
-  public function resolve($name, $type, $hash) {
-    return $this->manifest->associate(
-      $name.'.'.$type,
-      $this->hashed($name, $type, $hash)
-    );
-  }
-
   /**
    * Store a given input stream under a given name and return file its
    * contents were written to.
@@ -55,7 +48,10 @@ class WithFingerprints extends Files {
 
     // Register in manifest
     $name= basename($path, '.'.$type);
-    $this->resolve($name, $type, $hash);
+    $this->manifest->associate(
+      $name.'.'.$type,
+      $this->hashed($name, $type, $hash)
+    );
 
     // Rename the files to [filename].[contenthash].[extension]
     foreach ($out->files() as $suffix => $file) {
