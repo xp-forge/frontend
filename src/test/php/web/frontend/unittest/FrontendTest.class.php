@@ -60,6 +60,7 @@ class FrontendTest {
 
   #[Test]
   public function security() {
-    Assert::instance(Security::class, (new Frontend(new Users(), $this->templates))->security());
+    $s= new Security();
+    Assert::equals($s, (new Frontend(new Users(), $this->templates))->enacting($s)->security());
   }
 }

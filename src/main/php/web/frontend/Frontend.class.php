@@ -11,7 +11,8 @@ use web\{Error, Handler};
  * @test  web.frontend.unittest.CSRFTokenTest
  */
 class Frontend implements Handler {
-  private $delegates, $templates, $errors, $security;
+  private $delegates, $templates, $errors;
+  private $security= null;
   public $globals;
 
   /**
@@ -27,11 +28,7 @@ class Frontend implements Handler {
     $this->templates= $templates;
     $this->globals= is_string($globals) ? ['base' => rtrim($globals, '/')] : $globals;
     $this->errors= $handling;
-    $this->security= new Security();
   }
-
-  /** Returns security controls */
-  public function security(): Security { return $this->security; }
 
   /** Overwrites error handler */
   public function handling(Errors $errors): self {
@@ -39,9 +36,20 @@ class Frontend implements Handler {
     return $this;
   }
 
+  /** Overwrites security */
+  public function enacting(Security $security): self {
+    $this->security= $security;
+    return $this;
+  }
+
   /** Returns error handler */
   public function errors(): Errors {
     return $this->errors ?? $this->errors= new RaiseErrors();
+  }
+
+  /** Returns security */
+  public function security(): Security {
+    return $this->security ?? $this->security= new Security();
   }
 
   /**
@@ -87,7 +95,7 @@ class Frontend implements Handler {
    */
   public function handle($req, $res) {
     $res->header('Server', 'XP/Frontend');
-    $this->security->apply($this->view($req, $res))
+    $this->security()->apply($this->view($req, $res))
       ->using($this->templates)
       ->transfer($req, $res, $this->globals)
     ;

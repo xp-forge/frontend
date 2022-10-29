@@ -240,7 +240,7 @@ The bundler can also resolve local files, URLs as well as [Google fonts](https:/
 By default, errors and exceptions will yield in a minimalistic error page with the corresponding error code (*defaulting to 500 Internal Server Error*) shown. Exceptions can be handled by a closure, a status code or by default, and decide to return a view of their own. This view is loaded from the *errors/* subfolder and passed a context of `['cause' => $exception]`.
 
 ```php
-use web\frontend\{HandlersIn, FrontendIn, Exceptions};
+use web\frontend\{HandlersIn, Frontend, Exceptions};
 use org\example\{InvalidOrder, LinkExpired};
 use lang\Throwable;
 
@@ -283,17 +283,18 @@ This library sets the following security header defaults:
 To configure framing, referrer and content security policies, use the *security()* fluent interface:
 
 ```php
-use web\Frontend;
+use web\frontend\{Frontend, Security};
 
-$frontend= new Frontend($delegates, $templates);
-$frontend->security()
-  ->framing('SAMEORIGIN')
-  ->referrers('strict-origin')
-  ->csp([
-    'default-src' => '"none"',
-    'script-src'  => ['"self"', '"nonce-{{nonce}}"', 'https://example.com'],
-    // etcetera
-  ])
+$frontend= (new Frontend($delegates, $templates))
+  ->enacting((new Security())
+    ->framing('SAMEORIGIN')
+    ->referrers('strict-origin')
+    ->csp([
+      'default-src' => '"none"',
+      'script-src'  => ['"self"', '"nonce-{{nonce}}"', 'https://example.com'],
+      // etcetera
+    ])
+  )
 ;
 ```
 

@@ -2,7 +2,7 @@
 
 use unittest\{Assert, Before, Test};
 use web\frontend\unittest\actions\Home;
-use web\frontend\{Frontend, Templates};
+use web\frontend\{Frontend, Security, Templates};
 use web\io\{TestInput, TestOutput};
 use web\{Request, Response};
 
@@ -49,7 +49,7 @@ class SecurityTest {
   #[Test]
   public function change_x_frame_options() {
     $fixture= new Frontend(new Home(), $this->templates);
-    $fixture->security()->framing('SAMEORIGIN');
+    $fixture->enacting((new Security())->framing('SAMEORIGIN'));
     $res= $this->handle($fixture);
 
     Assert::equals('SAMEORIGIN', $res->headers()['X-Frame-Options']);
@@ -66,7 +66,7 @@ class SecurityTest {
   #[Test]
   public function change_referrer_policy() {
     $fixture= new Frontend(new Home(), $this->templates);
-    $fixture->security()->referrers('strict-origin');
+    $fixture->enacting((new Security())->referrers('strict-origin'));
     $res= $this->handle($fixture);
 
     Assert::equals('strict-origin', $res->headers()['Referrer-Policy']);
@@ -75,10 +75,10 @@ class SecurityTest {
   #[Test]
   public function add_content_security_policy() {
     $fixture= new Frontend(new Home(), $this->templates);
-    $fixture->security()->csp([
+    $fixture->enacting((new Security())->csp([
       'default-src' => '"none"',
       'script-src'  => ['"self"', '"nonce-1234"', 'https://example.com']
-    ]);
+    ]));
     $res= $this->handle($fixture);
 
     Assert::equals(
@@ -90,7 +90,7 @@ class SecurityTest {
   #[Test]
   public function add_report_only_content_security_policy() {
     $fixture= new Frontend(new Home(), $this->templates);
-    $fixture->security()->csp(['default-src' => '"none"'], true);
+    $fixture->enacting((new Security())->csp(['default-src' => '"none"'], true));
     $res= $this->handle($fixture);
 
     Assert::equals(
@@ -106,7 +106,7 @@ class SecurityTest {
         $result= $context;
       }
     ]));
-    $fixture->security()->csp(['script-src' => '"nonce-{{nonce}}"']);
+    $fixture->enacting((new Security())->csp(['script-src' => '"nonce-{{nonce}}"']));
     $res= $this->handle($fixture);
 
     preg_match('/script-src "nonce-([^"]+)"/', $res->headers()['Content-Security-Policy'], $m);
@@ -121,7 +121,7 @@ class SecurityTest {
         $result= $context;
       }
     ]));
-    $fixture->security()->csp(['script-src' => '"nonce-{{nonce}}"']);
+    $fixture->enacting((new Security())->csp(['script-src' => '"nonce-{{nonce}}"']));
 
     Assert::notEquals(
       $this->handle($fixture)->headers()['Content-Security-Policy'],
