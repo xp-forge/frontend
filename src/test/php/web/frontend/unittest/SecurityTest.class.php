@@ -76,13 +76,25 @@ class SecurityTest {
   public function add_content_security_policy() {
     $fixture= new Frontend(new Home(), $this->templates);
     $fixture->enacting((new Security())->csp([
-      'default-src' => '"none"',
-      'script-src'  => ['"self"', '"nonce-1234"', 'https://example.com']
+      'default-src' => "'none'",
+      'script-src'  => ["'self'", "'nonce-1234'", 'https://example.com']
     ]));
     $res= $this->handle($fixture);
 
     Assert::equals(
-      'default-src "none"; script-src "self" "nonce-1234" https://example.com',
+      "default-src 'none'; script-src 'self' 'nonce-1234' https://example.com",
+      $res->headers()['Content-Security-Policy']
+    );
+  }
+
+  #[Test]
+  public function csp_double_quotes_are_replaced_by_single_quotes() {
+    $fixture= new Frontend(new Home(), $this->templates);
+    $fixture->enacting((new Security())->csp(['default-src' => '"none"']));
+    $res= $this->handle($fixture);
+
+    Assert::equals(
+      "default-src 'none'",
       $res->headers()['Content-Security-Policy']
     );
   }
@@ -90,11 +102,11 @@ class SecurityTest {
   #[Test]
   public function add_report_only_content_security_policy() {
     $fixture= new Frontend(new Home(), $this->templates);
-    $fixture->enacting((new Security())->csp(['default-src' => '"none"'], true));
+    $fixture->enacting((new Security())->csp(['default-src' => "'none'"], true));
     $res= $this->handle($fixture);
 
     Assert::equals(
-      'default-src "none"',
+      "default-src 'none'",
       $res->headers()['Content-Security-Policy-Report-Only']
     );
   }
@@ -109,7 +121,7 @@ class SecurityTest {
     $fixture->enacting((new Security())->csp(['script-src' => '"nonce-{{nonce}}"']));
     $res= $this->handle($fixture);
 
-    preg_match('/script-src "nonce-([^"]+)"/', $res->headers()['Content-Security-Policy'], $m);
+    preg_match("/script-src 'nonce-([^']+)'/", $res->headers()['Content-Security-Policy'], $m);
     Assert::equals(32, strlen($m[1]), 'nonce must consist of 32 bytes "'.$m[1].'"');
     Assert::equals($m[1], $result['nonce'] ?? null, 'nonce must appear in content');
   }

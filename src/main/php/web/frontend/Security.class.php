@@ -41,7 +41,7 @@ class Security {
     $name= $reportOnly ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
     $header= '';
     foreach ($sources as $source => $value) {
-      $header.= '; '.$source.' '.(is_array($value) ? implode(' ', $value) : $value);
+      $header.= '; '.$source.' '.strtr(is_array($value) ? implode(' ', $value) : $value, '"', "'");
     }
     $this->headers[$name]= substr($header, 2);
     return $this;
