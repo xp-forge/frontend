@@ -35,6 +35,7 @@ class Security {
    * @param  [:string|string[]] $sources
    * @param  bool $reportOnly whether to report only (true) or to enforce (false)
    * @return self
+   * @see    https://content-security-policy.com/
    */
   public function csp(array $sources, bool $reportOnly= false): self {
     $name= $reportOnly ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
