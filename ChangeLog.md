@@ -3,13 +3,13 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
-## 4.0.0 / ????-??-??
+## 4.0.0 / 2022-10-29
 
 * Merged PR #32: Remove error handling constructor parameter - @thekid
 * Merged PR #31: Implement default security policies, setting the headers
   `X-Content-Type-Options`, `X-Frame-Options` and `Referrer-Policy` to
   sensible default values and providing a way to define a Content Security
-  Policy. See also issue #30
+  Policy. See https://github.com/xp-forge/frontend#security and issue #30
   (@thekid)
 
 ## 3.8.0 / 2022-09-14
