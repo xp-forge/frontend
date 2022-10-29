@@ -11,7 +11,8 @@ use web\{Error, Handler};
  * @test  web.frontend.unittest.CSRFTokenTest
  */
 class Frontend implements Handler {
-  private $delegates, $templates, $errors;
+  private $delegates, $templates;
+  private $errors= null;
   public $globals;
 
   /**
@@ -20,13 +21,11 @@ class Frontend implements Handler {
    * @param  web.frontend.Delegates|object $arg
    * @param  web.frontend.Templates $templates
    * @param  [:var] $globals
-   * @param  ?web.frontend.Errors $handling
    */
-  public function __construct($arg, Templates $templates, $globals= [], Errors $handling= null) {
+  public function __construct($arg, Templates $templates, $globals= []) {
     $this->delegates= $arg instanceof Delegates ? $arg : new MethodsIn($arg);
     $this->templates= $templates;
     $this->globals= is_string($globals) ? ['base' => rtrim($globals, '/')] : $globals;
-    $this->errors= $handling;
   }
 
   /** Overwrites error handler */
