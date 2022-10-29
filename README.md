@@ -240,7 +240,7 @@ The bundler can also resolve local files, URLs as well as [Google fonts](https:/
 By default, errors and exceptions will yield in a minimalistic error page with the corresponding error code (*defaulting to 500 Internal Server Error*) shown. Exceptions can be handled by a closure, a status code or by default, and decide to return a view of their own. This view is loaded from the *errors/* subfolder and passed a context of `['cause' => $exception]`.
 
 ```php
-use web\frontend\{HandlersIn, FrontendIn, Exceptions};
+use web\frontend\{HandlersIn, Frontend, Exceptions};
 use org\example\{InvalidOrder, LinkExpired};
 use lang\Throwable;
 
@@ -271,6 +271,34 @@ Using our handlebars engine from above, the template *errors/404.handlebars* cou
 </body>
 </html>
 ```
+
+## Security
+
+This library sets the following security header defaults:
+
+* `X-Content-Type-Options: nosniff` - prevents browsers from [MIME sniffing](https://mimesniff.spec.whatwg.org/)
+* `X-Frame-Options: DENY` - prevents site from being embedded in an `<iframe>`.
+* `Referrer-Policy: no-referrer-when-downgrade` - doesn't send HTTP referrer over unencrypted connections.
+
+To configure framing, referrer and content security policies, use the *security()* fluent interface:
+
+```php
+use web\frontend\{Frontend, Security};
+
+$frontend= (new Frontend($delegates, $templates))
+  ->enacting((new Security())
+    ->framing('SAMEORIGIN')
+    ->referrers('strict-origin')
+    ->csp([
+      'default-src' => '"none"',
+      'script-src'  => ['"self"', '"nonce-{{nonce}}"', 'https://example.com'],
+      // etcetera
+    ])
+  )
+;
+```
+
+Read more about hardening response headers at https://scotthelme.co.uk/hardening-your-http-response-headers/ or watch this talk: https://www.youtube.com/watch?v=mr230uotw-Y
 
 ## Performance
 

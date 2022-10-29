@@ -81,7 +81,7 @@ class View {
    * @return self
    */
   public function with(array $context) {
-    $this->context+= $context;
+    null === $this->context || $this->context+= $context;
     return $this;
   }
 
@@ -113,6 +113,7 @@ class View {
    *
    * @param  web.Request $req
    * @param  web.Response $res
+   * @param  [:var] $globals
    * @return void
    */
   public function transfer($req, $res, $globals) {
@@ -128,9 +129,7 @@ class View {
       $this->context+= $globals;
       $this->context['request']= $req;
 
-      // See https://webhint.io/docs/user-guide/hints/hint-x-content-type-options/
       $res->header('Content-Type', 'text/html; charset='.\xp::ENCODING);
-      $res->header('X-Content-Type-Options', 'nosniff');
       $out= $res->stream();
       try {
         $this->templates->write($this->template, $this->context, $out);

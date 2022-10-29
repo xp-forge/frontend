@@ -13,6 +13,7 @@ use web\{Error, Handler};
 class Frontend implements Handler {
   private $delegates, $templates;
   private $errors= null;
+  private $security= null;
   public $globals;
 
   /**
@@ -34,9 +35,20 @@ class Frontend implements Handler {
     return $this;
   }
 
+  /** Overwrites security */
+  public function enacting(Security $security): self {
+    $this->security= $security;
+    return $this;
+  }
+
   /** Returns error handler */
   public function errors(): Errors {
     return $this->errors ?? $this->errors= new RaiseErrors();
+  }
+
+  /** Returns security */
+  public function security(): Security {
+    return $this->security ?? $this->security= new Security();
   }
 
   /**
@@ -82,6 +94,9 @@ class Frontend implements Handler {
    */
   public function handle($req, $res) {
     $res->header('Server', 'XP/Frontend');
-    $this->view($req, $res)->using($this->templates)->transfer($req, $res, $this->globals);
+    $this->security()->apply($this->view($req, $res))
+      ->using($this->templates)
+      ->transfer($req, $res, $this->globals)
+    ;
   }
 }
