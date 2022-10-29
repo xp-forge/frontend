@@ -116,11 +116,7 @@ class SecurityTest {
 
   #[Test]
   public function nonce_generated_is_unique_for_every_request() {
-    $fixture= new Frontend(new Home(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) use(&$result) {
-        $result= $context;
-      }
-    ]));
+    $fixture= new Frontend(new Home(), $this->templates);
     $fixture->enacting((new Security())->csp(['script-src' => '"nonce-{{nonce}}"']));
 
     Assert::notEquals(
