@@ -11,7 +11,7 @@ use web\{Error, Handler};
  * @test  web.frontend.unittest.CSRFTokenTest
  */
 class Frontend implements Handler {
-  private $delegates, $templates, $errors;
+  private $delegates, $templates, $errors, $security;
   public $globals;
 
   /**
