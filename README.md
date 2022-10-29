@@ -285,7 +285,7 @@ To configure framing, referrer and content security policies, use the *security(
 ```php
 use web\Frontend;
 
-$frontend= (new Frontend(new HandlersIn('org.example.web'), $templates));
+$frontend= new Frontend($delegates, $templates);
 $frontend->security()
   ->framing('SAMEORIGIN')
   ->referrers('strict-origin')
