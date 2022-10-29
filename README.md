@@ -272,6 +272,33 @@ Using our handlebars engine from above, the template *errors/404.handlebars* cou
 </html>
 ```
 
+## Security
+
+This library sets the following security header defaults:
+
+* `X-Content-Type-Options: nosniff`
+* `X-Frame-Options: DENY`
+* `Referrer-Policy: no-referrer-when-downgrade`
+
+To configure framing, referrer and content security policies, use the *security()* fluent interface:
+
+```php
+use web\Frontend;
+
+$frontend= (new Frontend(new HandlersIn('org.example.web'), $templates));
+$frontend->security()
+  ->framing('SAMEORIGIN')
+  ->referrers('strict-origin')
+  ->csp([
+    'default-src' => '"none"',
+    'script-src'  => ['"self"', '"nonce-{{nonce}}"', 'https://example.com'],
+    // etcetera
+  ])
+;
+```
+
+Read more about hardening response headers at https://scotthelme.co.uk/hardening-your-http-response-headers/ or watch this talk: https://www.youtube.com/watch?v=mr230uotw-Y
+
 ## Performance
 
 When using the production servers, the application's code is only compiled and its setup only runs once. This gives us lightning-fast response times:
