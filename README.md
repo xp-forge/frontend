@@ -276,9 +276,9 @@ Using our handlebars engine from above, the template *errors/404.handlebars* cou
 
 This library sets the following security header defaults:
 
-* `X-Content-Type-Options: nosniff`
-* `X-Frame-Options: DENY`
-* `Referrer-Policy: no-referrer-when-downgrade`
+* `X-Content-Type-Options: nosniff` - prevents browsers from [MIME sniffing](https://mimesniff.spec.whatwg.org/)
+* `X-Frame-Options: DENY` - prevents site from being embedded in an `<iframe>`.
+* `Referrer-Policy: no-referrer-when-downgrade` - doesn't send HTTP referrer over unencrypted connections.
 
 To configure framing, referrer and content security policies, use the *security()* fluent interface:
 
