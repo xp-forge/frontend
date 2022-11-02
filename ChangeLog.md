@@ -3,6 +3,12 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 4.1.0 / 2022-11-03
+
+* Merged PR #33: Support glob patterns and directories for local
+  dependencies, see https://www.php.net/glob
+  (@thekid)
+
 ## 4.0.0 / 2022-10-29
 
 * Merged PR #32: Remove error handling constructor parameter - @thekid
