@@ -3,6 +3,11 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 4.2.0 / 2022-11-13
+
+* Merged PR #35: Handle HEAD requests via GET unless explicitely handled
+  (@thekid)
+
 ## 4.1.0 / 2022-11-03
 
 * Merged PR #33: Support glob patterns and directories for local
