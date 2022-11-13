@@ -6,6 +6,7 @@ class View {
   public $status= 200;
   public $context= [];
   public $headers= ['Cache-Control' => 'no-cache'];
+  public $stream= true;
 
   /** @param string $template */
   private function __construct($template) {
@@ -19,7 +20,9 @@ class View {
    * @return self
    */
   public static function named($template) {
-    return new self($template);
+    $self= new self($template);
+    $self->headers['Content-Type']= 'text/html; charset='.\xp::ENCODING;
+    return $self;
   }
 
   /**
@@ -32,7 +35,8 @@ class View {
     $self= new self(null);
     $self->status= 302;
     $self->headers['Location']= $url;
-    $self->context= null;
+    $self->headers['Content-Length']= 0;
+    $self->stream= false;
     return $self;
   }
 
@@ -48,6 +52,7 @@ class View {
   public static function error(int $status, $template= null) {
     $self= new self('errors/'.($template ?? $status));
     $self->status= $status;
+    $self->headers['Content-Type']= 'text/html; charset='.\xp::ENCODING;
     return $self;
   }
 
@@ -81,7 +86,7 @@ class View {
    * @return self
    */
   public function with(array $context) {
-    null === $this->context || $this->context+= $context;
+    $this->context+= $context;
     return $this;
   }
 
@@ -122,20 +127,14 @@ class View {
       $res->header($name, $value);
     }
 
-    if (null === $this->context) {
-      $res->header('Content-Length', 0);
-      $res->flush();
-    } else {
-      $this->context+= $globals;
-      $this->context['request']= $req;
-
-      $res->header('Content-Type', 'text/html; charset='.\xp::ENCODING);
-      $out= $res->stream();
+    if ($this->stream && $out= $res->stream()) {
       try {
-        $this->templates->write($this->template, $this->context, $out);
+        $this->templates->write($this->template, ['request' => $req] + $this->context + $globals, $out);
       } finally {
         $out->close();
       }
+    } else {
+      $res->flush();
     }
   }
 }

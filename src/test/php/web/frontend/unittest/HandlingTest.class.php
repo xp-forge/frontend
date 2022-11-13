@@ -337,4 +337,16 @@ class HandlingTest extends TestCase {
     $this->handle($fixture, 'GET', '/blogs/stats');
     $this->assertContext(['request' => ['params' => []]], $result);
   }
+
+  #[Test]
+  public function head_request_handled_by_get_but_does_not_send_response() {
+    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+      'write' => function($template, $context= [], $out) {
+        $out->write('Test');
+      }
+    ]));
+
+    $res= $this->handle($fixture, 'HEAD', '/users/1');
+    $this->assertEquals("\r\n\r\n", strstr($res->output()->bytes(), "\r\n\r\n"));
+  }
 }
