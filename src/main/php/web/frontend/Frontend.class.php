@@ -56,19 +56,19 @@ class Frontend implements Handler {
    *
    * @param  web.Request $req
    * @param  web.Response $res
+   * @param  web.frontend.Delegate $delegate
+   * @param  [:var] $matches
    * @return web.frontend.View
    */
-  private function view($req, $res) {
+  private function view($req, $res, $delegate, $matches= []) {
     static $CSRF_EXEMPT= ['get' => true, 'head' => true];
 
-    $method= strtolower($req->method());
-    if (null === ($target= $this->delegates->target($method, $req->uri()->path()))) {
+    if (null === $delegate) {
       return $this->errors()->handle(new Error(404, 'Cannot route '.$req->method().' requests to '.$req->uri()->path()));
     }
-    list($delegate, $matches)= $target;
 
     // Verify CSRF token for anything which is not a GET or HEAD request
-    if (!isset($CSRF_EXEMPT[$method]) && $req->value('token') !== $req->param('token')) {
+    if (!isset($CSRF_EXEMPT[strtolower($req->method())]) && $req->value('token') !== $req->param('token')) {
       return $this->errors()->handle(new Error(403, 'Incorrect CSRF token for '.$delegate->name()));
     }
 
@@ -93,10 +93,21 @@ class Frontend implements Handler {
    * @throws web.Error
    */
   public function handle($req, $res) {
+    static $NOT_FOUND= [null];
+
+    // Handle HEAD requests with GET unless explicitely specified
+    $method= strtolower($req->method());
+    $path= $req->uri()->path();
+    if ('head' === $method) {
+      $target= $this->delegates->target($method, $path) ?? $this->delegates->target('get', $path) ?? $NOT_FOUND;
+      $view= $this->view($req, $res, ...$target);
+      $view->stream= false;
+    } else {
+      $target= $this->delegates->target($method, $path) ?? $NOT_FOUND;
+      $view= $this->view($req, $res, ...$target);
+    }
+
     $res->header('Server', 'XP/Frontend');
-    $this->security()->apply($this->view($req, $res))
-      ->using($this->templates)
-      ->transfer($req, $res, $this->globals)
-    ;
+    $this->security()->apply($view)->using($this->templates)->transfer($req, $res, $this->globals);
   }
 }

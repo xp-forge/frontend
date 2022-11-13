@@ -337,4 +337,42 @@ class HandlingTest extends TestCase {
     $this->handle($fixture, 'GET', '/blogs/stats');
     $this->assertContext(['request' => ['params' => []]], $result);
   }
+
+  #[Test]
+  public function head_handled_by_get() {
+    $handler= newinstance(Users::class, [], [
+      '#[Get] handler' => function() use(&$invoked) { return $invoked= true; }
+    ]);
+    $fixture= new Frontend($handler, new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    });
+
+    $this->handle($fixture, 'HEAD', '/');
+    $this->assertTrue($invoked);
+  }
+
+  #[Test]
+  public function head_explictely_defined() {
+    $handler= newinstance(Users::class, [], [
+      '#[Head] handler' => function() use(&$invoked) { return $invoked= true; }
+    ]);
+    $fixture= new Frontend($handler, new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    });
+
+    $this->handle($fixture, 'HEAD', '/');
+    $this->assertTrue($invoked);
+  }
+
+  #[Test]
+  public function head_request_does_not_send_response() {
+    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+      'write' => function($template, $context= [], $out) {
+        $out->write('Test');
+      }
+    ]));
+
+    $res= $this->handle($fixture, 'HEAD', '/users/1');
+    $this->assertEquals("\r\n\r\n", strstr($res->output()->bytes(), "\r\n\r\n"));
+  }
 }
