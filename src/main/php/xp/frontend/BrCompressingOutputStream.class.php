@@ -11,6 +11,7 @@ use lang\IllegalArgumentException;
  * @see  https://github.com/kjdev/php-ext-brotli
  */
 class BrCompressingOutputStream implements OutputStream {
+  private $out, $handle;
 
   /**
    * Creates a new compressing output stream
