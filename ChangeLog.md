@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 4.2.1 / 2022-12-19
+
+* Fixed *Creation of dynamic property*"* errors in PHP 8.2 - @thekid
+
 ## 4.2.0 / 2022-11-13
 
 * Merged PR #35: Handle HEAD requests via GET unless explicitely handled
