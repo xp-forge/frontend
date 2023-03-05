@@ -2,7 +2,7 @@
 
 use io\{File, Files, Folder};
 use lang\Environment;
-use unittest\{After, Assert, Test, Values};
+use test\{After, Assert, Test, Values};
 use web\frontend\AssetsFrom;
 use web\io\{TestInput, TestOutput};
 use web\{Request, Response};
@@ -132,7 +132,7 @@ class AssetsFromTest {
     );
   }
 
-  #[Test, Values('types')]
+  #[Test, Values(from: 'types')]
   public function mime($file, $expected) {
     Assert::equals($expected, (new AssetsFrom('.'))->mime($file));
   }
@@ -246,7 +246,7 @@ class AssetsFromTest {
     Assert::equals(404, $res->status());
   }
 
-  #[Test, Values('headers')]
+  #[Test, Values(from: 'headers')]
   public function adding_headers($headers) {
     $files= ['fixture.css' => self::CONTENTS];
     $res= $this->serve(
@@ -257,7 +257,7 @@ class AssetsFromTest {
     Assert::equals('no-cache', $res->headers()['Cache-Control']);
   }
 
-  #[Test, Values('headers')]
+  #[Test, Values(from: 'headers')]
   public function headers_are_not_added_when_file_does_not_exist($headers) {
     $files= [];
     $res= $this->serve(
@@ -269,7 +269,7 @@ class AssetsFromTest {
     Assert::false(isset($res->headers()['Cache-Control']));
   }
 
-  #[Test, Values('headers')]
+  #[Test, Values(from: 'headers')]
   public function headers_are_not_added_for_conditional($headers) {
     $files= ['fixture.css' => self::CONTENTS];
     $res= $this->serve(

@@ -1,7 +1,6 @@
 <?php namespace web\frontend\unittest;
 
-use unittest\Assert;
-use unittest\TestCase;
+use test\{Assert, Expect, Before, Test};
 use web\frontend\unittest\actions\Users;
 use web\frontend\{Frontend, Templates};
 use web\io\{TestInput, TestOutput};
@@ -12,9 +11,8 @@ class CSRFTokenTest {
 
   private $fixture;
 
-  /** @return void */
   #[Before]
-  public function setUp() {
+  public function fixture() {
     $this->fixture= new Frontend(new Users(), new class() implements Templates {
       public function write($template, $context, $out) { /* NOOP */ }
     });
@@ -48,12 +46,12 @@ class CSRFTokenTest {
     $this->execute('GET', '/users');
   }
 
-  #[Test, Expect(class: Error::class, withMessage: '/Incorrect CSRF token for .+Users::create/')]
+  #[Test, Expect(class: Error::class, message: '/Incorrect CSRF token for .+Users::create/')]
   public function raises_error_when_missing() {
     $this->execute('POST', '/users', 'username=test');
   }
 
-  #[Test, Expect(class: Error::class, withMessage: '/Incorrect CSRF token for .+Users::create/')]
+  #[Test, Expect(class: Error::class, message: '/Incorrect CSRF token for .+Users::create/')]
   public function raises_error_when_incorrect() {
     $this->execute('POST', '/users', 'token=INCORRECT&username=test');
   }

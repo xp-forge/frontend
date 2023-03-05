@@ -1,7 +1,7 @@
 <?php namespace web\frontend\unittest;
 
 use lang\{IllegalArgumentException, Throwable};
-use unittest\{Assert, Expect, Test};
+use test\{Assert, Expect, Test};
 use web\Error;
 use web\frontend\{Exceptions, View};
 
@@ -12,17 +12,17 @@ class ExceptionsTest {
     new Exceptions();
   }
 
-  #[Test, Expect(class: Error::class, withMessage: 'test')]
+  #[Test, Expect(class: Error::class, message: 'test')]
   public function throws_error_if_not_mapped() {
     (new Exceptions())->handle(new Error(404, 'test'));
   }
 
-  #[Test, Expect(class: Error::class, withMessage: 'test')]
+  #[Test, Expect(class: Error::class, message: 'test')]
   public function throws_as_error_if_not_mapped() {
     (new Exceptions())->handle(new IllegalArgumentException('test'));
   }
 
-  #[Test, Expect(class: Error::class, withMessage: 'test')]
+  #[Test, Expect(class: Error::class, message: 'test')]
   public function callable_returning_null_will_raise() {
     (new Exceptions())
       ->catch(IllegalArgumentException::class, function($e) { return null; })
