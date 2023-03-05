@@ -3,6 +3,8 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Merged PR #36: Migrate to new testing library - @thekid
+
 ## 4.2.1 / 2022-12-19
 
 * Fixed *Creation of dynamic property* errors in PHP 8.2 - @thekid
