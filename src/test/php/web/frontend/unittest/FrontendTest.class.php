@@ -3,7 +3,7 @@
 use lang\IllegalArgumentException;
 use unittest\{Assert, Before, Expect, Test, Values};
 use web\frontend\unittest\actions\Users;
-use web\frontend\{Frontend, Exceptions, Security, RaiseErrors, Templates};
+use web\frontend\{Exceptions, Frontend, RaiseErrors, Security, Templates};
 
 class FrontendTest {
   private $templates;

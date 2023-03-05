@@ -1,13 +1,14 @@
 <?php namespace web\frontend\unittest;
 
 use lang\IndexOutOfBoundsException;
+use unittest\Assert;
 use unittest\{Expect, Test, TestCase, Values};
-use web\frontend\unittest\actions\{Blogs, Home, Users, Select};
+use web\frontend\unittest\actions\{Blogs, Home, Select, Users};
 use web\frontend\{Frontend, Templates, View};
 use web\io\{TestInput, TestOutput};
 use web\{Error, Request, Response};
 
-class HandlingTest extends TestCase {
+class HandlingTest {
 
   /**
    * Calls fixture's `handle()` method
@@ -41,7 +42,7 @@ class HandlingTest extends TestCase {
    */
   private function assertContext($expected, $actual) {
     $actual['request']= ['params' => $actual['request']->params()];
-    $this->assertEquals($expected, $actual);
+    Assert::equals($expected, $actual);
   }
 
   #[Test]
@@ -53,7 +54,7 @@ class HandlingTest extends TestCase {
     ]));
 
     $this->handle($fixture, 'GET', '/users/1');
-    $this->assertEquals('users', $result);
+    Assert::equals('users', $result);
   }
 
   #[Test]
@@ -65,7 +66,7 @@ class HandlingTest extends TestCase {
     ]));
 
     $res= $this->handle($fixture, 'GET', '/users/1');
-    $this->assertNotEquals(false, strpos($res->output()->bytes(), 'Test'));
+    Assert::notEquals(false, strpos($res->output()->bytes(), 'Test'));
   }
 
   #[Test]
@@ -166,7 +167,7 @@ class HandlingTest extends TestCase {
     ]));
 
     $this->handle($fixture, 'GET', '/users/1000');
-    $this->assertEquals('no-user', $result);
+    Assert::equals('no-user', $result);
   }
 
   #[Test]
@@ -176,7 +177,7 @@ class HandlingTest extends TestCase {
     });
 
     $res= $this->handle($fixture, 'GET', '/users/1000');
-    $this->assertEquals(404, $res->status());
+    Assert::equals(404, $res->status());
   }
 
   #[Test]
@@ -186,7 +187,7 @@ class HandlingTest extends TestCase {
     });
 
     $res= $this->handle($fixture, 'GET', '/users/1');
-    $this->assertEquals('1', $res->headers()['X-User-ID']);
+    Assert::equals('1', $res->headers()['X-User-ID']);
   }
 
   #[Test]
@@ -196,7 +197,7 @@ class HandlingTest extends TestCase {
     });
 
     $res= $this->handle($fixture, 'GET', '/users/0');
-    $this->assertEquals([302, '/users/1'], [$res->status(), $res->headers()['Location']]);
+    Assert::equals([302, '/users/1'], [$res->status(), $res->headers()['Location']]);
   }
 
   #[Test]
@@ -273,9 +274,9 @@ class HandlingTest extends TestCase {
       $this->handle($fixture, 'GET', '/users/1/avatar');
       $this->fail('No exception raised', null, Error::class);
     } catch (Error $expected) {
-      $this->assertEquals(500, $expected->status());
-      $this->assertTrue((bool)preg_match('/Undefined.+avatar/', $expected->getMessage()));
-      $this->assertInstanceOf(IndexOutOfBoundsException::class, $expected->getCause());
+      Assert::equals(500, $expected->status());
+      Assert::true((bool)preg_match('/Undefined.+avatar/', $expected->getMessage()));
+      Assert::instance(IndexOutOfBoundsException::class, $expected->getCause());
     }
   }
 
@@ -289,9 +290,9 @@ class HandlingTest extends TestCase {
       $this->handle($fixture, 'GET', '/users/42/avatar');
       $this->fail('No exception raised', null, Error::class);
     } catch (Error $expected) {
-      $this->assertEquals(404, $expected->status());
-      $this->assertEquals('No such user 42', $expected->getMessage());
-      $this->assertNull($expected->getCause());
+      Assert::equals(404, $expected->status());
+      Assert::equals('No such user 42', $expected->getMessage());
+      Assert::null($expected->getCause());
     }
   }
 
@@ -302,8 +303,8 @@ class HandlingTest extends TestCase {
     });
 
     $res= $this->handle($fixture, 'GET', '/users');
-    $this->assertEquals('text/html; charset='.\xp::ENCODING, $res->headers()['Content-Type']);
-    $this->assertEquals('nosniff', $res->headers()['X-Content-Type-Options']);
+    Assert::equals('text/html; charset='.\xp::ENCODING, $res->headers()['Content-Type']);
+    Assert::equals('nosniff', $res->headers()['X-Content-Type-Options']);
   }
 
   #[Test]
@@ -313,7 +314,7 @@ class HandlingTest extends TestCase {
     });
 
     $res= $this->handle($fixture, 'GET', '/blogs');
-    $this->assertEquals('no-cache', $res->headers()['Cache-Control']);
+    Assert::equals('no-cache', $res->headers()['Cache-Control']);
   }
 
   #[Test]
@@ -323,7 +324,7 @@ class HandlingTest extends TestCase {
     });
 
     $res= $this->handle($fixture, 'GET', '/blogs/development/1');
-    $this->assertEquals('max-age=2419200, must-revalidate', $res->headers()['Cache-Control']);
+    Assert::equals('max-age=2419200, must-revalidate', $res->headers()['Cache-Control']);
   }
 
   #[Test]
@@ -348,7 +349,7 @@ class HandlingTest extends TestCase {
     });
 
     $this->handle($fixture, 'HEAD', '/');
-    $this->assertTrue($invoked);
+    Assert::true($invoked);
   }
 
   #[Test]
@@ -361,7 +362,7 @@ class HandlingTest extends TestCase {
     });
 
     $this->handle($fixture, 'HEAD', '/');
-    $this->assertTrue($invoked);
+    Assert::true($invoked);
   }
 
   #[Test]
@@ -373,6 +374,6 @@ class HandlingTest extends TestCase {
     ]));
 
     $res= $this->handle($fixture, 'HEAD', '/users/1');
-    $this->assertEquals("\r\n\r\n", strstr($res->output()->bytes(), "\r\n\r\n"));
+    Assert::equals("\r\n\r\n", strstr($res->output()->bytes(), "\r\n\r\n"));
   }
 }

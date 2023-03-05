@@ -1,6 +1,6 @@
 <?php namespace web\frontend\unittest;
 
-use io\{Files, File, Folder};
+use io\{File, Files, Folder};
 use lang\Environment;
 use unittest\{After, Assert, Test, Values};
 use web\frontend\AssetsFrom;

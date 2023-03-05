@@ -1,6 +1,6 @@
 <?php namespace xp\frontend;
 
-use io\streams\{Streams, InputStream};
+use io\streams\{InputStream, Streams};
 use util\URI;
 
 class ProcessJavaScript {

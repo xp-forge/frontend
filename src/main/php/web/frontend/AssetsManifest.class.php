@@ -1,7 +1,7 @@
 <?php namespace web\frontend;
 
 use io\File;
-use text\json\{Json, Input, FileInput};
+use text\json\{FileInput, Input, Json};
 use util\URI;
 
 /**

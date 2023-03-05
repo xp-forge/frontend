@@ -1,10 +1,11 @@
 <?php namespace web\frontend\unittest;
 
 use lang\reflect\Package;
+use unittest\Assert;
 use unittest\{Test, TestCase};
 use web\frontend\HandlersIn;
 
-class HandlersInTest extends TestCase {
+class HandlersInTest {
 
   #[Test]
   public function can_create_with_string() {
@@ -19,7 +20,7 @@ class HandlersInTest extends TestCase {
   #[Test]
   public function patterns_sorted_by_length() {
     $delegates= new HandlersIn('web.frontend.unittest.actions');
-    $this->assertEquals(
+    Assert::equals(
       [
         '#get/blogs/(?<category>[^/]+)/(?<id>[0-9]+)$#',
         '#get/oauth/(?<tenant>[^/]+)/select/?$#',

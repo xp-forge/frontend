@@ -1,7 +1,7 @@
 <?php namespace xp\frontend;
 
 use io\File;
-use io\streams\{OutputStream, GzCompressingOutputStream};
+use io\streams\{GzCompressingOutputStream, OutputStream};
 
 class Bundle implements OutputStream {
   const COMPRESS = ['css', 'js', 'svg', 'json', 'xml', 'ttf', 'otf', 'eot'];

@@ -3,11 +3,12 @@
 use io\File;
 use lang\FormatException;
 use text\json\StringInput;
-use unittest\{Test, Values, Expect, TestCase};
+use unittest\Assert;
+use unittest\{Expect, Test, TestCase, Values};
 use util\URI;
 use web\frontend\AssetsManifest;
 
-class AssetsManifestTest extends TestCase {
+class AssetsManifestTest {
 
   /** @return iterable */
   private function inputs() {
@@ -38,12 +39,12 @@ class AssetsManifestTest extends TestCase {
 
   #[Test, Values('inputs')]
   public function assets($input) {
-    $this->assertEquals(json_decode($input, true), $this->fixture($input)->assets);
+    Assert::equals(json_decode($input, true), $this->fixture($input)->assets);
   }
 
   #[Test]
   public function immutable_asset() {
-    $this->assertEquals(
+    Assert::equals(
       'max-age=31536000, immutable',
       $this->fixture('{"vendor.css" : "vendor.f6cad2a.css"}')->immutable('vendor.f6cad2a.css')
     );
@@ -51,7 +52,7 @@ class AssetsManifestTest extends TestCase {
 
   #[Test]
   public function immutable_file() {
-    $this->assertEquals(
+    Assert::equals(
       'max-age=31536000, immutable',
       $this->fixture('{"vendor.css" : "vendor.f6cad2a.css"}')->immutable(new File('vendor.f6cad2a.css'))
     );
@@ -59,7 +60,7 @@ class AssetsManifestTest extends TestCase {
 
   #[Test]
   public function immutable_uri() {
-    $this->assertEquals(
+    Assert::equals(
       'max-age=31536000, immutable',
       $this->fixture('{"vendor.css" : "vendor.f6cad2a.css"}')->immutable(new URI('/assets/vendor.f6cad2a.css'))
     );
@@ -67,14 +68,14 @@ class AssetsManifestTest extends TestCase {
 
   #[Test]
   public function regular_asset() {
-    $this->assertNull(
+    Assert::null(
       $this->fixture('{"vendor.css" : "vendor.f6cad2a.css"}')->immutable('style.css')
     );
   }
 
   #[Test]
   public function regular_gzipped_asset() {
-    $this->assertNull(
+    Assert::null(
       $this->fixture('{"vendor.css" : "vendor.f6cad2a.css"}')->immutable('vendor.f6cad2a.css.gz')
     );
   }

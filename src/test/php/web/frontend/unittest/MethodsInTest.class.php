@@ -1,10 +1,11 @@
 <?php namespace web\frontend\unittest;
 
+use unittest\Assert;
 use unittest\{Test, TestCase};
 use web\frontend\MethodsIn;
 use web\frontend\unittest\actions\Users;
 
-class MethodsInTest extends TestCase {
+class MethodsInTest {
 
   #[Test]
   public function can_create() {
@@ -14,7 +15,7 @@ class MethodsInTest extends TestCase {
   #[Test]
   public function patterns_sorted_by_length() {
     $delegates= new MethodsIn(new Users());
-    $this->assertEquals(
+    Assert::equals(
       [
         '#get/users/(?<id>[^/]+)/avatar$#',
         '#get/users/(?<id>[^/]+)$#',

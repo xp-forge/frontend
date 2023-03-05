@@ -3,7 +3,7 @@
 use io\streams\MemoryInputStream;
 use unittest\{Assert, Test, Values};
 use util\URI;
-use xp\frontend\{Resolver, Fetch, Cached};
+use xp\frontend\{Cached, Fetch, Resolver};
 
 class ResolverTest {
 

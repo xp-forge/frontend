@@ -1,17 +1,19 @@
 <?php namespace web\frontend\unittest;
 
+use unittest\Assert;
 use unittest\TestCase;
 use web\frontend\unittest\actions\Users;
 use web\frontend\{Frontend, Templates};
 use web\io\{TestInput, TestOutput};
 use web\{Error, Request, Response};
 
-class CSRFTokenTest extends TestCase {
+class CSRFTokenTest {
   const TOKEN= 'd6cb/ttqAu0iXrj9ycQrGN9lo';
 
   private $fixture;
 
   /** @return void */
+  #[Before]
   public function setUp() {
     $this->fixture= new Frontend(new Users(), new class() implements Templates {
       public function write($template, $context, $out) { /* NOOP */ }

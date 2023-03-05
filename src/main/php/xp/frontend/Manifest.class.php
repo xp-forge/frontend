@@ -1,7 +1,7 @@
 <?php namespace xp\frontend;
 
 use io\File;
-use text\json\{Json, FileInput, FileOutput};
+use text\json\{FileInput, FileOutput, Json};
 
 class Manifest {
   private $file;

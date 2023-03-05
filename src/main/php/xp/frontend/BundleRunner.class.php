@@ -2,7 +2,7 @@
 
 use io\{File, Folder, Path};
 use lang\{Environment, Runtime, Throwable};
-use text\json\{Json, FileInput, StreamInput};
+use text\json\{FileInput, Json, StreamInput};
 use util\cmd\Console;
 use util\profiling\Timer;
 

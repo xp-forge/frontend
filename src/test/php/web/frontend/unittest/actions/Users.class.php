@@ -1,7 +1,7 @@
 <?php namespace web\frontend\unittest\actions;
 
 use web\Error;
-use web\frontend\{View, Handler, Get, Post, Param};
+use web\frontend\{Get, Handler, Param, Post, View};
 
 #[Handler]
 class Users {
