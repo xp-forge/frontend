@@ -1,8 +1,8 @@
 <?php namespace web\frontend\unittest;
 
 use lang\IndexOutOfBoundsException;
-use unittest\Assert;
-use unittest\{Expect, Test, TestCase, Values};
+use test\Assert;
+use test\{Expect, Test, TestCase, Values};
 use web\frontend\unittest\actions\{Blogs, Home, Select, Users};
 use web\frontend\{Frontend, Templates, View};
 use web\io\{TestInput, TestOutput};
@@ -48,7 +48,7 @@ class HandlingTest {
   #[Test]
   public function template_name_inferred_from_class_name() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) use(&$result) {
+      'write' => function($template, $context, $out) use(&$result) {
         $result= $template;
       }
     ]));
@@ -60,7 +60,7 @@ class HandlingTest {
   #[Test]
   public function template_rendered() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) {
+      'write' => function($template, $context, $out) {
         $out->write('Test');
       }
     ]));
@@ -72,7 +72,7 @@ class HandlingTest {
   #[Test]
   public function extract_path_segment() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) use(&$result) {
+      'write' => function($template, $context, $out) use(&$result) {
         $result= $context;
       }
     ]));
@@ -89,7 +89,7 @@ class HandlingTest {
   #[Test, Values(['/users?max=100&start=1', '/users?start=1&max=100'])]
   public function use_request_parameters($uri) {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) use(&$result) {
+      'write' => function($template, $context, $out) use(&$result) {
         $result= $context;
       }
     ]));
@@ -107,7 +107,7 @@ class HandlingTest {
   #[Test]
   public function omit_optional_request_parameter() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) use(&$result) {
+      'write' => function($template, $context, $out) use(&$result) {
         $result= $context;
       }
     ]));
@@ -125,7 +125,7 @@ class HandlingTest {
   #[Test]
   public function post() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) use(&$result) {
+      'write' => function($template, $context, $out) use(&$result) {
         $result= $context;
       }
     ]));
@@ -140,7 +140,7 @@ class HandlingTest {
     );
   }
 
-  #[Test, Expect(['class' => Error::class, 'withMessage'=> '/Cannot route PATCH requests to .+/'])]
+  #[Test, Expect(class: Error::class, message: '/Cannot route PATCH requests to .+/')]
   public function unsupported_route() {
     $fixture= new Frontend(new Users(), new class() implements Templates {
       public function write($template, $context, $out) { /* NOOP */ }
@@ -149,7 +149,7 @@ class HandlingTest {
     $this->handle($fixture, 'PATCH', '/users/1', [], '(irrelevant)');
   }
 
-  #[Test, Expect(['class' => Error::class, 'withMessage'=> '/Illegal username ".+"/'])]
+  #[Test, Expect(class: Error::class, message: '/Illegal username ".+"/')]
   public function exceptions_result_in_internal_server_error() {
     $fixture= new Frontend(new Users(), new class() implements Templates {
       public function write($template, $context, $out) { /* NOOP */ }
@@ -161,7 +161,7 @@ class HandlingTest {
   #[Test]
   public function template_determined_from_view() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) use(&$result) {
+      'write' => function($template, $context, $out) use(&$result) {
         $result= $template;
       }
     ]));
@@ -230,7 +230,7 @@ class HandlingTest {
   public function globals_included() {
     $globals= ['base' => '/', 'fingerprint' => '99b3825'];
     $fixture= new Frontend(new Home(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) use(&$result) {
+      'write' => function($template, $context, $out) use(&$result) {
         $result= $context;
       }
     ]), $globals);
@@ -243,7 +243,7 @@ class HandlingTest {
   public function globals_overwritten_by_context() {
     $globals= ['home' => '(overwritten)'];
     $fixture= new Frontend(new Home(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) use(&$result) {
+      'write' => function($template, $context, $out) use(&$result) {
         $result= $context;
       }
     ]), $globals);
@@ -255,7 +255,7 @@ class HandlingTest {
   #[Test]
   public function accessing_request() {
     $fixture= new Frontend(new Home(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) use(&$result) {
+      'write' => function($template, $context, $out) use(&$result) {
         $result= $context;
       }
     ]));
@@ -330,7 +330,7 @@ class HandlingTest {
   #[Test]
   public function view_can_return_null() {
     $fixture= new Frontend(new Blogs(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) use(&$result) {
+      'write' => function($template, $context, $out) use(&$result) {
         $result= $context;
       }
     ]));
@@ -368,7 +368,7 @@ class HandlingTest {
   #[Test]
   public function head_request_does_not_send_response() {
     $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
-      'write' => function($template, $context= [], $out) {
+      'write' => function($template, $context, $out) {
         $out->write('Test');
       }
     ]));

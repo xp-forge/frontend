@@ -1,7 +1,7 @@
 <?php namespace web\frontend\unittest\bundler;
 
 use io\streams\MemoryInputStream;
-use unittest\{Assert, Test, Values};
+use test\{Assert, Test, Values};
 use util\URI;
 use xp\frontend\{Cached, Fetch, Resolver};
 
@@ -35,7 +35,7 @@ class ResolverTest {
     yield ['0.9.*', '0.9.5'];
   }
 
-  #[Test, Values('matched')]
+  #[Test, Values(from: 'matched')]
   public function version($constraint, $expected) {
     $r= new Resolver(new class('.', false, null) extends Fetch {
       public function get($url, $headers= [], $revalidate= true, $progress= []) {

@@ -1,6 +1,6 @@
 <?php namespace web\frontend\unittest;
 
-use unittest\{Assert, Before, Test};
+use test\{Assert, Before, Test};
 use web\frontend\unittest\actions\Home;
 use web\frontend\{Frontend, Security, Templates};
 use web\io\{TestInput, TestOutput};

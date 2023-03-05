@@ -1,7 +1,7 @@
 <?php namespace web\frontend\unittest;
 
-use unittest\Assert;
-use unittest\{Test, TestCase};
+use test\Assert;
+use test\{Test, TestCase};
 use web\frontend\MethodsIn;
 use web\frontend\unittest\actions\Users;
 

@@ -3,8 +3,8 @@
 use io\File;
 use lang\FormatException;
 use text\json\StringInput;
-use unittest\Assert;
-use unittest\{Expect, Test, TestCase, Values};
+use test\Assert;
+use test\{Expect, Test, TestCase, Values};
 use util\URI;
 use web\frontend\AssetsManifest;
 
@@ -32,12 +32,12 @@ class AssetsManifestTest {
     $this->fixture('{}');
   }
 
-  #[Test, Expect(class: FormatException::class, withMessage: '/Unexpected token/')]
+  #[Test, Expect(class: FormatException::class, message: '/Unexpected token/')]
   public function cannot_create_with_malformed() {
     $this->fixture('not.json');
   }
 
-  #[Test, Values('inputs')]
+  #[Test, Values(from: 'inputs')]
   public function assets($input) {
     Assert::equals(json_decode($input, true), $this->fixture($input)->assets);
   }
