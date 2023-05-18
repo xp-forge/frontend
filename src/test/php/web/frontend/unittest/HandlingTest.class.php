@@ -275,7 +275,7 @@ class HandlingTest {
       $this->fail('No exception raised', null, Error::class);
     } catch (Error $expected) {
       Assert::equals(500, $expected->status());
-      Assert::true((bool)preg_match('/Undefined.+avatar/', $expected->getMessage()));
+      Assert::matches('/Undefined.+avatar/', $expected->getMessage());
       Assert::instance(IndexOutOfBoundsException::class, $expected->getCause());
     }
   }
