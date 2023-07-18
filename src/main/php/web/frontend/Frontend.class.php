@@ -91,10 +91,10 @@ class Frontend implements Handler {
    *
    * @param  web.Request $req
    * @param  web.Response $res
-   * @return var
+   * @return ?var[] $target
    * @throws web.Error
    */
-  public function handle($req, $res) {
+  public function handle($req, $res, $target= null) {
     static $NOT_FOUND= [null];
 
     // Handle HEAD requests with GET unless explicitely specified
@@ -105,7 +105,7 @@ class Frontend implements Handler {
       $view= $this->view($req, $res, ...$target);
       $view->stream= false;
     } else {
-      $target= $this->delegates->target($method, $path) ?? $NOT_FOUND;
+      $target= $target ?? $this->delegates->target($method, $path) ?? $NOT_FOUND;
       $view= $this->view($req, $res, ...$target);
     }
 
