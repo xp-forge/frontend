@@ -3,6 +3,7 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Added accessors for delegates and templates to `Frontend` - @thekid
 * Merged PR #36: Migrate to new testing library - @thekid
 
 ## 4.2.1 / 2022-12-19

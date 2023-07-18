@@ -41,15 +41,17 @@ class Frontend implements Handler {
     return $this;
   }
 
+  /** Returns delegates */
+  public function delegates(): Delegates { return $this->delegates; }
+
+  /** Returns templating */
+  public function templates(): Templates { return $this->templates; }
+
   /** Returns error handler */
-  public function errors(): Errors {
-    return $this->errors ?? $this->errors= new RaiseErrors();
-  }
+  public function errors(): Errors { return $this->errors ?? $this->errors= new RaiseErrors(); }
 
   /** Returns security */
-  public function security(): Security {
-    return $this->security ?? $this->security= new Security();
-  }
+  public function security(): Security { return $this->security ?? $this->security= new Security(); }
 
   /**
    * Determines view to be displayed, handling errors while going along.

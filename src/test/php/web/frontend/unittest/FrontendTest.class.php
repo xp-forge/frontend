@@ -3,7 +3,7 @@
 use lang\IllegalArgumentException;
 use test\{Assert, Before, Expect, Test, Values};
 use web\frontend\unittest\actions\Users;
-use web\frontend\{Exceptions, Frontend, RaiseErrors, Security, Templates};
+use web\frontend\{Exceptions, Frontend, RaiseErrors, Security, Templates, MethodsIn};
 
 class FrontendTest {
   private $templates;
@@ -50,6 +50,23 @@ class FrontendTest {
   public function changed_exception_handling() {
     $h= new Exceptions();
     Assert::equals($h, (new Frontend(new Users(), $this->templates))->handling($h)->errors());
+  }
+
+  #[Test]
+  public function delegates() {
+    $delegates= new MethodsIn(new Users());
+    Assert::equals($delegates, (new Frontend($delegates, $this->templates))->delegates());
+  }
+
+  #[Test]
+  public function delegate_to_instance() {
+    $instance= new Users();
+    Assert::equals(new MethodsIn($instance), (new Frontend($instance, $this->templates))->delegates());
+  }
+
+  #[Test]
+  public function templating() {
+    Assert::equals($this->templates, (new Frontend(new Users(), $this->templates))->templates());
   }
 
   #[Test]
