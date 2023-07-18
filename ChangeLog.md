@@ -3,6 +3,8 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 4.3.0 / 2023-07-18
+
 * Added possibility to explicitely pass target delegate and parameters
   to frontend handling, bypassing the request URI based routing logic.
   (@thekid)
