@@ -2,6 +2,7 @@
 
 use lang\IllegalArgumentException;
 use web\frontend\View;
+use lang\reflect\Method;
 
 class Delegate {
   private static $SOURCES;
@@ -24,11 +25,11 @@ class Delegate {
    * Creates a new delegate
    *
    * @param  object $instance
-   * @param  lang.reflect.Method $method
+   * @param  string|lang.reflect.Method $method
    */
   public function __construct($instance, $method) {
     $this->instance= $instance;
-    $this->method= $method;
+    $this->method= $method instanceof Method ? $method : typeof($instance)->getMethod($method);
   }
 
   /** @return string */
