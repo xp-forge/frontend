@@ -1,8 +1,8 @@
 <?php namespace web\frontend;
 
-use lang\IllegalArgumentException;
+use lang\reflection\Method;
+use lang\{IllegalArgumentException, Reflection};
 use web\frontend\View;
-use lang\reflect\Method;
 
 class Delegate {
   private static $SOURCES;
@@ -25,11 +25,11 @@ class Delegate {
    * Creates a new delegate
    *
    * @param  object $instance
-   * @param  string|lang.reflect.Method $method
+   * @param  string|lang.reflection.Method $method
    */
   public function __construct($instance, $method) {
     $this->instance= $instance;
-    $this->method= $method instanceof Method ? $method : typeof($instance)->getMethod($method);
+    $this->method= $method instanceof Method ? $method : Reflection::type($instance)->method($method);
   }
 
   /** @return string */
@@ -40,7 +40,7 @@ class Delegate {
 
   /** @return string */
   public function name() {
-    return nameof($this->instance).'::'.$this->method->getName();
+    return nameof($this->instance).'::'.$this->method->name();
   }
 
   /**
@@ -52,26 +52,28 @@ class Delegate {
   public function parameters() {
     if (null === $this->parameters) {
       $this->parameters= [];
-      foreach ($this->method->getParameters() as $param) {
-        if ($annotations= $param->getAnnotations()) {
-          foreach ($annotations as $from => $value) {
-            $source= self::$SOURCES[$from] ?? self::$SOURCES['default'];
-          }
+      foreach ($this->method->parameters() as $param) {
 
-          $name= null === $value ? $param->getName() : $value;
-          if ($param->isOptional()) {
-            $default= $param->getDefaultValue();
-            $this->parameters[$name]= function($req, $name) use($source, $default) {
-              return $source($req, $name) ?? $default;
+        // Check for parameter annotations...
+        foreach ($param->annotations() as $from => $value) {
+          $source= self::$SOURCES[$from] ?? self::$SOURCES['default'];
+          $name= $value->argument(0) ?? $param->name();
+
+          if ($param->optional()) {
+            $this->parameters[$name]= function($req, $name) use($source, $param) {
+              return $source($req, $name) ?? $param->default();
             };
           } else {
             $this->parameters[$name]= $source;
           }
-        } else {
-          $this->parameters[$param->getName()]= self::$SOURCES['segment'];
+          continue 2;
         }
+
+        // ...falling back to selecting the parameter from the segments
+        $this->parameters[$param->name()]= self::$SOURCES['segment'];
       }
     }
+
     return $this->parameters;
   }
 
