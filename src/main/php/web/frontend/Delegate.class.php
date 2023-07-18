@@ -55,9 +55,9 @@ class Delegate {
       foreach ($this->method->parameters() as $param) {
 
         // Check for parameter annotations...
-        foreach ($param->annotations() as $from => $value) {
-          $source= self::$SOURCES[$from] ?? self::$SOURCES['default'];
-          $name= $value->argument(0) ?? $param->name();
+        foreach ($param->annotations() as $annotation) {
+          $source= self::$SOURCES[$annotation->name()] ?? self::$SOURCES['default'];
+          $name= $annotation->argument(0) ?? $param->name();
 
           if ($param->optional()) {
             $this->parameters[$name]= function($req, $name) use($source, $param) {

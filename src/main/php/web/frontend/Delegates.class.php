@@ -22,14 +22,14 @@ class Delegates {
     $base= rtrim($base, '/');
     foreach (Reflection::type($instance)->methods() as $method) {
       $name= $method->name();
-      foreach ($method->annotations() as $verb => $annotation) {
+      foreach ($method->annotations() as $annotation) {
         $segment= $annotation->argument(0);
         $pattern= preg_replace(
           ['/\{([^:}]+):([^}]+)\}/', '/\{([^}]+)\}/'],
           ['(?<$1>$2)', '(?<$1>[^/]+)'],
           $base.('/' === $segment || null === $segment ? '/?' : $segment)
         );
-        $this->patterns['#'.$verb.$pattern.'$#']= new Delegate($instance, $method);
+        $this->patterns['#'.$annotation->name().$pattern.'$#']= new Delegate($instance, $method);
       }
     }
     return $this;
