@@ -1,7 +1,7 @@
 <?php namespace web\frontend;
 
 use lang\reflect\TargetInvocationException;
-use web\{Error, Handler};
+use web\{Error, Handler, Request};
 
 /**
  * Annotation-based frontend
@@ -52,6 +52,23 @@ class Frontend implements Handler {
 
   /** Returns security */
   public function security(): Security { return $this->security ?? $this->security= new Security(); }
+
+  /**
+   * Selects a target for a given method and path
+   *
+   * @param  util.URI|web.Request|string $arg
+   * @return ?var[]
+   */
+  public function target($method, $arg= '/') {
+    if ($arg instanceof URI) {
+      $path= $arg->path();
+    } else if ($arg instanceof Request) {
+      $path= $arg->uri()->path();
+    } else {
+      $path= (string)$arg;
+    }
+    return $this->delegates->target($method, $path);
+  }
 
   /**
    * Determines view to be displayed, handling errors while going along.

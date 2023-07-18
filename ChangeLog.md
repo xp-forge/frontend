@@ -3,6 +3,9 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Added possibility to explicitely pass target delegate and parameters
+  to frontend handling, bypassing the request URI based routing logic.
+  (@thekid)
 * Added accessors for delegates and templates to `Frontend` - @thekid
 * Merged PR #36: Migrate to new testing library - @thekid
 

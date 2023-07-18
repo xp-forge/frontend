@@ -3,7 +3,7 @@
 use lang\IllegalArgumentException;
 use test\{Assert, Before, Expect, Test, Values};
 use web\frontend\unittest\actions\Users;
-use web\frontend\{Exceptions, Frontend, RaiseErrors, Security, Templates, MethodsIn};
+use web\frontend\{Delegate, Exceptions, Frontend, RaiseErrors, Security, Templates, MethodsIn};
 
 class FrontendTest {
   private $templates;
@@ -73,5 +73,23 @@ class FrontendTest {
   public function security() {
     $s= new Security();
     Assert::equals($s, (new Frontend(new Users(), $this->templates))->enacting($s)->security());
+  }
+
+  #[Test]
+  public function all_target() {
+    $users= new Users();
+    Assert::equals(
+      [new Delegate($users, 'all'), ['get/users']],
+      (new Frontend($users, $this->templates))->target('get', '/users')
+    );
+  }
+
+  #[Test]
+  public function find_target() {
+    $users= new Users();
+    Assert::equals(
+      [new Delegate($users, 'find'), [0 => 'get/users/me', 1 => 'me', 'id' => 'me']],
+      (new Frontend($users, $this->templates))->target('get', '/users/me')
+    );
   }
 }
