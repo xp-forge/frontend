@@ -20,9 +20,7 @@ class HandlersIn extends Delegates {
     $p= $package instanceof Package ? $package : new Package($package);
     foreach ($p->types() as $type) {
       if ($handler= $type->annotation(Handler::class)) {
-        $this->with($new ? $new($type) : $type->newInstance(), (string)$handler->argument(0));
-      } else {
-        throw new \lang\IllegalStateException('Not a handler: '.$type->name());
+        $this->with($new ? $new($type->class()) : $type->newInstance(), (string)$handler->argument(0));
       }
     }
     uksort($this->patterns, function($a, $b) { return strlen($b) - strlen($a); });
