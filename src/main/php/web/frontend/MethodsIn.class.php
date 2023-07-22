@@ -1,20 +1,22 @@
 <?php namespace web\frontend;
 
-use lang\IllegalArgumentException;
+use lang\{IllegalArgumentException, Reflection};
 
-/**
- * Creates routing based on a given instance
- */
+/** Creates routing based on a given instance */
 class MethodsIn extends Delegates {
 
   /** @param object $instance */
   public function __construct($instance) {
-    $type= typeof($instance);
     if (!is_object($instance)) {
-      throw new IllegalArgumentException('Expected an object, have '.$type);
+      throw new IllegalArgumentException('Expected an object, have '.typeof($instance));
     }
 
-    $this->with($instance, $type->hasAnnotation('handler') ? (string)$type->getAnnotation('handler') : '/');
+    $type= Reflection::type($instance);
+    if ($handler= $type->annotation(Handler::class)) {
+      $this->with($instance, (string)$handler->argument(0));
+    } else {
+      $this->with($instance, '/');
+    }
     uksort($this->patterns, function($a, $b) { return strlen($b) - strlen($a); });
   }
 }

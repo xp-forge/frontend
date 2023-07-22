@@ -1,26 +1,28 @@
 <?php namespace web\frontend;
 
-use lang\reflect\Package;
+use lang\reflection\Package;
 
 /**
- * Creates routing based on classes annotated with `@handler` in a
- * given package.
+ * Creates routing based on classes annotated with the `Handler` annotation
+ * in a given package.
  *
- * @test  xp://web.frontend.unittest.HandlersInTest
+ * @test  web.frontend.unittest.HandlersInTest
  */
 class HandlersIn extends Delegates {
 
   /**
    * Creates this delegates instance
    *
-   * @param  lang.reflect.Package|string $package
+   * @param  lang.reflection.Package|string $package
    * @param  function(lang.XPClass): object $new Optional function to create instances
    */
   public function __construct($package, $new= null) {
-    $p= $package instanceof Package ? $package : Package::forName($package);
-    foreach ($p->getClasses() as $class) {
-      if ($class->hasAnnotation('handler')) {
-        $this->with($new ? $new($class) : $class->newInstance(), (string)$class->getAnnotation('handler'));
+    $p= $package instanceof Package ? $package : new Package($package);
+    foreach ($p->types() as $type) {
+      if ($handler= $type->annotation(Handler::class)) {
+        $this->with($new ? $new($type) : $type->newInstance(), (string)$handler->argument(0));
+      } else {
+        throw new \lang\IllegalStateException('Not a handler: '.$type->name());
       }
     }
     uksort($this->patterns, function($a, $b) { return strlen($b) - strlen($a); });
