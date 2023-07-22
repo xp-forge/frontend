@@ -1,25 +1,25 @@
 <?php namespace web\frontend\unittest;
 
-use lang\reflect\Package;
-use test\Assert;
-use test\{Test, TestCase};
+use lang\reflection\Package;
+use test\{Assert, Test};
 use web\frontend\HandlersIn;
 
 class HandlersInTest {
+  const PACKAGE= 'web.frontend.unittest.actions';
 
   #[Test]
   public function can_create_with_string() {
-    new HandlersIn('web.frontend.unittest.actions');
+    new HandlersIn(self::PACKAGE);
   }
 
   #[Test]
   public function can_create_with_package() {
-    new HandlersIn(Package::forName('web.frontend.unittest.actions'));
+    new HandlersIn(new Package(self::PACKAGE));
   }
 
   #[Test]
   public function patterns_sorted_by_length() {
-    $delegates= new HandlersIn('web.frontend.unittest.actions');
+    $delegates= new HandlersIn(self::PACKAGE);
     Assert::equals(
       [
         '#get/blogs/(?<category>[^/]+)/(?<id>[0-9]+)$#',

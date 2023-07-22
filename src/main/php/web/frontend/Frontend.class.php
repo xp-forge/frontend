@@ -1,6 +1,6 @@
 <?php namespace web\frontend;
 
-use lang\reflect\TargetInvocationException;
+use lang\reflection\TargetException;
 use web\{Error, Handler, Request};
 
 /**
@@ -98,7 +98,7 @@ class Frontend implements Handler {
       }
 
       return $delegate->invoke($args);
-    } catch (TargetInvocationException $e) {
+    } catch (TargetException $e) {
       return $this->errors()->handle($e->getCause());
     }
   }
