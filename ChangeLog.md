@@ -3,6 +3,13 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 5.0.0 / 2023-07-22
+
+* Merged PR #37: Migrate to new reflection library. This introduces
+  BC breaks in several cases, which may be regarded *internal* APIs,
+  but might have also been used by the outside.
+  (@thekid)
+
 ## 4.3.0 / 2023-07-18
 
 * Added possibility to explicitely pass target delegate and parameters
