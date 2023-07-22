@@ -82,7 +82,7 @@ class Delegate {
    *
    * @param  var[] $args
    * @return web.frontend.View
-   * @throws lang.reflect.TargetInvocationException
+   * @throws lang.reflection.TargetException
    */
   public function invoke($args) {
     $result= $this->method->invoke($this->instance, $args);
