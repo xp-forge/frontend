@@ -177,7 +177,6 @@ $assets= new AssetsFrom($path)->with(fn($uri) => [
 
 Because mapping the filenames happens in the template engine, the manifest must also be passed there:
 
-
 ```php
 use web\frontend\Handlebars;
 use web\frontend\helpers\Assets;

@@ -3,6 +3,13 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 5.1.0 / 2023-07-29
+
+* Merged PR #38: Make it possible to select a template fragment. The
+  Handlebars template engine implements this, for example. See the PR
+  xp-forge/handlebars-templates#14
+  (@thekid)
+
 ## 5.0.0 / 2023-07-22
 
 * Merged PR #37: Migrate to new reflection library. This introduces
