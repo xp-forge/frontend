@@ -1,5 +1,6 @@
 <?php namespace web\frontend;
 
+/** @test web.frontend.unittest.ViewTest */
 class View {
   public $template;
   public $fragment= null;
