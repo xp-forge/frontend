@@ -2,6 +2,7 @@
 
 class View {
   public $template;
+  public $fragment= null;
   public $templates;
   public $status= 200;
   public $context= [];
@@ -68,6 +69,17 @@ class View {
   }
 
   /**
+   * Sets fragment
+   *
+   * @param  string $fragment
+   * @return self
+   */
+  public function fragment($fragment) {
+    $this->fragment= $fragment;
+    return $this;
+  }
+
+  /**
    * Adds a header
    *
    * @param  string $name
@@ -129,7 +141,12 @@ class View {
 
     if ($this->stream && $out= $res->stream()) {
       try {
-        $this->templates->write($this->template, ['request' => $req] + $this->context + $globals, $out);
+        $this->templates->write(
+          $this->template,
+          ['request' => $req] + $this->context + $globals,
+          $out,
+          $this->fragment
+        );
       } finally {
         $out->close();
       }
