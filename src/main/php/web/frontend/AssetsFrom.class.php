@@ -25,11 +25,14 @@ class AssetsFrom extends FilesFrom {
     '*'        => ''
   ];
 
+  private $sources= [];
   private $preference;
 
-  /** @param io.Path|io.Folder|string $path */
-  public function __construct($path) {
-    parent::__construct($path);
+  /** @param io.Path|io.Folder|string|io.Path[]|io.Folder[]|string[] $sources */
+  public function __construct($sources) {
+    foreach (is_array($sources) ? $sources : [$sources] as $source) {
+      $this->sources[]= $source instanceof Path ? $source : new Path($source);
+    }
     $this->preferring(self::PREFERENCE);
   }
 
@@ -109,20 +112,21 @@ class AssetsFrom extends FilesFrom {
    */
   public function handle($request, $response) {
     $path= $request->uri()->path();
-    $base= $this->path();
+    foreach ($this->sources as $source) {
 
-    // Check all variants in Accept-Encoding, including `*`
-    foreach ($this->negotiate($request->header('Accept-Encoding', '')) as $encoding => $q) {
-      $target= new Path($base, $path.(self::ENCODINGS[$encoding] ?? '*'));
-      if ($target->exists() && $target->isFile()) {
-        $response->header('Vary', 'Accept-Encoding');
-        '*' === $encoding || $response->header('Content-Encoding', $encoding);
+      // Check all variants in Accept-Encoding, including `*`
+      foreach ($this->negotiate($request->header('Accept-Encoding', '')) as $encoding => $q) {
+        $target= new Path($source, $path.(self::ENCODINGS[$encoding] ?? '*'));
+        if ($target->exists() && $target->isFile()) {
+          $response->header('Vary', 'Accept-Encoding');
+          '*' === $encoding || $response->header('Content-Encoding', $encoding);
 
-        return $this->serve($request, $response, $target->asFile(), $this->mime($path));
+          return $this->serve($request, $response, $target->asFile(), $this->mime($path));
+        }
       }
     }
 
-    // No target exists, generate a 404
+    // Target does not exist in any of the sources, generate a 404
     return $this->serve($request, $response, null);
   }
 }

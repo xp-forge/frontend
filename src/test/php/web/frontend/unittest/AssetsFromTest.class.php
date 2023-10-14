@@ -181,6 +181,28 @@ class AssetsFromTest {
     Assert::equals(404, $res->status());
   }
 
+  #[Test]
+  public function supports_multiple_sources() {
+    $local= $this->folderWith(['fixture.css' => '/* Local */']);
+    $module= $this->folderWith(['module.css' => '/* Module */']);
+
+    $res= $this->serve(new AssetsFrom([$local, $module]), '/module.css');
+
+    Assert::equals(200, $res->status());
+    $this->assertFile('/* Module */', $res);
+  }
+
+  #[Test]
+  public function loads_file_from_first_source() {
+    $local= $this->folderWith(['fixture.css' => '/* Local */']);
+    $module= $this->folderWith(['fixture.css' => '/* Module */']);
+
+    $res= $this->serve(new AssetsFrom([$local, $module]), '/fixture.css');
+
+    Assert::equals(200, $res->status());
+    $this->assertFile('/* Local */', $res);
+  }
+
   #[Test, Values([['fixture.css.gz', 'gzip'], ['fixture.css.br', 'br'], ['fixture.css.dfl', 'deflate'], ['fixture.css.bz2', 'bzip2']])]
   public function serves_compressed_when_file_present($file, $encoding) {
     $files= [$file => self::COMPRESSED];
