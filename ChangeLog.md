@@ -3,8 +3,11 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 5.2.0 / 2023-10-15
+
 * Merged PR #39: Support multiple sources in web.frontend.AssetsFrom
   (@thekid)
+* Added PHP 8.4 to the test matrix - @thekid
 
 ## 5.1.0 / 2023-07-29
 
