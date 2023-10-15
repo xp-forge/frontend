@@ -113,10 +113,11 @@ class AssetsFrom extends FilesFrom {
    */
   public function handle($request, $response) {
     $path= $request->uri()->path();
+    $accept= $this->negotiate($request->header('Accept-Encoding', ''));
     foreach ($this->sources as $source) {
 
       // Check all variants in Accept-Encoding, including `*`
-      foreach ($this->negotiate($request->header('Accept-Encoding', '')) as $encoding => $q) {
+      foreach ($accept as $encoding => $q) {
         $target= new Path($source, $path.(self::ENCODINGS[$encoding] ?? '*'));
         if ($target->exists() && $target->isFile()) {
           $response->header('Vary', 'Accept-Encoding');
