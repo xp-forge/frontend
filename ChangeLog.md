@@ -3,6 +3,9 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Merged PR #39: Support multiple sources in web.frontend.AssetsFrom
+  (@thekid)
+
 ## 5.1.0 / 2023-07-29
 
 * Merged PR #38: Make it possible to select a template fragment. The
