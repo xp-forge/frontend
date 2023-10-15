@@ -30,10 +30,11 @@ class AssetsFrom extends FilesFrom {
 
   /** @param io.Path|io.Folder|string|io.Path[]|io.Folder[]|string[] $sources */
   public function __construct($sources) {
+    $this->preferring(self::PREFERENCE);
     foreach (is_array($sources) ? $sources : [$sources] as $source) {
       $this->sources[]= $source instanceof Path ? $source : new Path($source);
     }
-    $this->preferring(self::PREFERENCE);
+    parent::__construct($this->sources[0] ?? '.');
   }
 
   /**
