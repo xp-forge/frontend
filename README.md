@@ -140,6 +140,23 @@ return View::named('blog')
 
 Assets are delivered by the `AssetsFrom` handler as seen above. It takes care of content types, handling conditional and range requests for partial content, as well as compression.
 
+### Sources
+
+The constructor accepts single paths as well as an array of paths which will be searched for the requested asset. The first path to provide the asset is selected, the file being served from there.
+
+```php
+use web\frontend\AssetsFrom;
+
+// Single source
+$assets= new AssetsFrom($this->environment->path('src/main/webapp'));
+
+// Multiple sources
+$assets= new AssetsFrom([
+  $this->environment->path('src/main/webapp'),
+  $this->environment->path('vendor/example/layout-lib/src/main/webapp'),
+]);
+```
+
 ### Caching
 
 Assets can be delivered with a `Cache-Control` header by passing it to the `with` function. In this example, assets are cached for 28 days, but clients are asked to revalidate using conditional requests before using their cached copy.
