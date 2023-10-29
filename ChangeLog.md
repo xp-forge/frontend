@@ -3,6 +3,8 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 5.3.0 / 2023-10-29
+
 * Merged PR #40: Support `X-Csrf-Token` header (in addition to passing
   `token` via payload). This makes integrating with frameworks such as
   [HTMX](https://htmx.org/) easier. 
