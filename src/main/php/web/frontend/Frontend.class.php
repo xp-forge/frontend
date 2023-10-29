@@ -87,7 +87,8 @@ class Frontend implements Handler {
     }
 
     // Verify CSRF token for anything which is not a GET or HEAD request
-    if (!isset($CSRF_EXEMPT[strtolower($req->method())]) && $req->value('token') !== $req->param('token')) {
+    $token= $req->param('token') ?? $req->header('X-CSRF-Token');
+    if (!isset($CSRF_EXEMPT[strtolower($req->method())]) && $req->value('token') !== $token) {
       return $this->errors()->handle(new Error(403, 'Incorrect CSRF token for '.$delegate->name()));
     }
 

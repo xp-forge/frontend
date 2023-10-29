@@ -24,11 +24,12 @@ class CSRFTokenTest {
    * @param  string $method
    * @param  string $uri
    * @param  ?string $payload
+   * @param  [:string] $headers
    * @return void
    * @throws web.Error
    */
-  private function execute($method, $uri, $payload= null) {
-    $headers= $payload ? ['Content-Type' => 'application/x-www-form-urlencoded'] : [];
+  private function execute($method, $uri, $payload= null, $headers= []) {
+    $payload && $headers['Content-Type']= 'application/x-www-form-urlencoded';
 
     $req= new Request(new TestInput($method, $uri, $headers, (string)$payload));
     $res= new Response(new TestOutput());
@@ -37,8 +38,13 @@ class CSRFTokenTest {
   }
 
   #[Test]
-  public function validated() {
+  public function validated_as_part_of_payload() {
     $this->execute('POST', '/users', 'token='.self::TOKEN.'&username=test');
+  }
+
+  #[Test]
+  public function validated_as_header() {
+    $this->execute('POST', '/users', 'username=test', ['X-CSRF-Token' => self::TOKEN]);
   }
 
   #[Test]
