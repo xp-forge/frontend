@@ -44,7 +44,7 @@ class CSRFTokenTest {
 
   #[Test]
   public function validated_as_header() {
-    $this->execute('POST', '/users', 'username=test', ['X-CSRF-Token' => self::TOKEN]);
+    $this->execute('POST', '/users', 'username=test', ['X-Csrf-Token' => self::TOKEN]);
   }
 
   #[Test]
