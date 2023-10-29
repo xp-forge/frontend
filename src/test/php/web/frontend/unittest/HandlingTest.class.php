@@ -140,6 +140,28 @@ class HandlingTest {
     );
   }
 
+  #[Test]
+  public function delete() {
+    $fixture= new Frontend(new Users(), new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    });
+
+    $res= $this->handle($fixture, 'DELETE', '/users/1000');
+    Assert::equals(302, $res->status());
+    Assert::equals('/users?deleted=1000', $res->headers()['Location']);
+  }
+
+  #[Test]
+  public function delete_via_special_method_field() {
+    $fixture= new Frontend(new Users(), new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    });
+
+    $res= $this->handle($fixture, 'POST', '/users/1000', [], '_method=DELETE');
+    Assert::equals(302, $res->status());
+    Assert::equals('/users?deleted=1000', $res->headers()['Location']);
+  }
+
   #[Test, Expect(class: Error::class, message: '/Cannot route PATCH requests to .+/')]
   public function unsupported_route() {
     $fixture= new Frontend(new Users(), new class() implements Templates {

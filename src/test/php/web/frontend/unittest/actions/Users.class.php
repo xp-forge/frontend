@@ -1,7 +1,7 @@
 <?php namespace web\frontend\unittest\actions;
 
 use web\Error;
-use web\frontend\{Get, Handler, Param, Post, View};
+use web\frontend\{Delete, Get, Handler, Param, Post, View};
 
 #[Handler]
 class Users {
@@ -46,6 +46,12 @@ class Users {
     $id= sizeof($this->list) + 1;
     $this->list[]= ['id' => $id, 'name' => $username];
     return ['created' => $id];
+  }
+
+  #[Delete('/users/{id}')]
+  public function delete($id) {
+    unset($this->list[$id]);
+    return View::redirect('/users?deleted='.urlencode($id));
   }
 
   #[Get('/users/{id}/avatar')]

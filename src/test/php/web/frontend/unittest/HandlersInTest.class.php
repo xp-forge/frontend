@@ -25,6 +25,7 @@ class HandlersInTest {
         '#get/blogs/(?<category>[^/]+)/(?<id>[0-9]+)$#',
         '#get/oauth/(?<tenant>[^/]+)/select/?$#',
         '#get/users/(?<id>[^/]+)/avatar$#',
+        '#delete/users/(?<id>[^/]+)$#',
         '#get/users/(?<id>[^/]+)$#',
         '#get/blogs/stats$#',
         '#get/blogs/?$#',

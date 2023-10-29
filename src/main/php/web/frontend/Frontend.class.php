@@ -116,7 +116,7 @@ class Frontend implements Handler {
     static $NOT_FOUND= [null];
 
     // Handle HEAD requests with GET unless explicitely specified
-    $method= strtolower($req->method());
+    $method= strtolower($req->param('_method') ?? $req->method());
     $path= $req->uri()->path();
     if ('head' === $method) {
       $target= $this->delegates->target($method, $path) ?? $this->delegates->target('get', $path) ?? $NOT_FOUND;
