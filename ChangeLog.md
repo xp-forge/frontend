@@ -3,6 +3,11 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Merged PR #40: Support `X-Csrf-Token` header (in addition to passing
+  `token` via payload). This makes integrating with frameworks such as
+  [HTMX](https://htmx.org/) easier. 
+  (@thekid)
+
 ## 5.2.0 / 2023-10-15
 
 * Merged PR #39: Support multiple sources in web.frontend.AssetsFrom
