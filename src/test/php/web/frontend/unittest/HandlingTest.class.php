@@ -152,7 +152,7 @@ class HandlingTest {
   }
 
   #[Test]
-  public function delete_via_special_method_field() {
+  public function special_method_field_overwrites_post_method() {
     $fixture= new Frontend(new Users(), new class() implements Templates {
       public function write($template, $context, $out) { /* NOOP */ }
     });
@@ -160,6 +160,16 @@ class HandlingTest {
     $res= $this->handle($fixture, 'POST', '/users/1000', [], '_method=DELETE');
     Assert::equals(302, $res->status());
     Assert::equals('/users?deleted=1000', $res->headers()['Location']);
+  }
+
+  #[Test]
+  public function special_method_field_cannot_be_used_for_get() {
+    $fixture= new Frontend(new Users(), new class() implements Templates {
+      public function write($template, $context, $out) { /* NOOP */ }
+    });
+
+    $res= $this->handle($fixture, 'GET', '/users/1000?_method=DELETE');
+    Assert::equals(404, $res->status());
   }
 
   #[Test, Expect(class: Error::class, message: '/Cannot route PATCH requests to .+/')]

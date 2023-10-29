@@ -115,16 +115,27 @@ class Frontend implements Handler {
   public function handle($req, $res, $target= null) {
     static $NOT_FOUND= [null];
 
-    // Handle HEAD requests with GET unless explicitely specified
-    $method= strtolower($req->param('_method') ?? $req->method());
+    $method= strtolower($req->method());
     $path= $req->uri()->path();
+
+    // Allow overwriting HTTP method in POST request via `_method`
+    if ('post' === $method && $o= $req->param('_method')) {
+      $method= strtolower($o);
+    }
+
+    // Handle HEAD requests with GET unless explicitely specified
     if ('head' === $method) {
-      $target= $this->delegates->target($method, $path) ?? $this->delegates->target('get', $path) ?? $NOT_FOUND;
-      $view= $this->view($req, $res, ...$target);
+      $view= $this->view($req, $res, ...$target
+        ?? $this->delegates->target($method, $path)
+        ?? $this->delegates->target('get', $path)
+        ?? $NOT_FOUND
+      );
       $view->stream= false;
     } else {
-      $target= $target ?? $this->delegates->target($method, $path) ?? $NOT_FOUND;
-      $view= $this->view($req, $res, ...$target);
+      $view= $this->view($req, $res, ...$target
+        ?? $this->delegates->target($method, $path)
+        ?? $NOT_FOUND
+      );
     }
 
     $res->header('Server', 'XP/Frontend');
