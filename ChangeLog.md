@@ -3,6 +3,11 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 5.5.0 / 2023-10-31
+
+* Merged PR #43: Support compression when downloading (in bundler)
+  (@thekid)
+
 ## 5.4.0 / 2023-10-30
 
 * Merged PR #42: Add support for special `_method` field to overwrite
