@@ -3,6 +3,8 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 5.4.0 / 2023-10-30
+
 * Merged PR #42: Add support for special `_method` field to overwrite
   POST for routing
   (@thekid)
