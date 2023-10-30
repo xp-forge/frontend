@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Merged PR #42: Add support for special `_method` field to overwrite
+  POST for routing
+  (@thekid)
+
 ## 5.3.0 / 2023-10-29
 
 * Merged PR #40: Support `X-Csrf-Token` header (in addition to passing
