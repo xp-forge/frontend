@@ -136,6 +136,17 @@ return View::named('blog')
 ;
 ```
 
+To overwrite the method used for POST requests, pass the special `_method` field:
+
+```html
+<form action="/example" method="POST">
+  <input type="hidden" name="_method" value="PUT">
+  <!-- Rest of form -->
+</form>
+```
+
+This will route the request as if it had been issued as `PUT /example HTTP/1.1`.
+
 ## Serving assets
 
 Assets are delivered by the `AssetsFrom` handler as seen above. It takes care of content types, handling conditional and range requests for partial content, as well as compression.
