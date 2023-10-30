@@ -1,6 +1,7 @@
 <?php namespace xp\frontend;
 
 use io\{File, Folder};
+use io\streams\Compression;
 use lang\IllegalArgumentException;
 use peer\http\HttpConnection;
 use util\URI;
@@ -8,7 +9,15 @@ use util\URI;
 class Fetch {
   const HTTPDATE = 'D, d M Y H:i:s T';
 
+  private static $accept= '';
   private $cache, $force;
+
+  static function __static() {
+    foreach (Compression::algorithms()->supported() as $algorithm) {
+      self::$accept.= $algorithm->token().', ';
+    }
+    self::$accept.= 'identity';
+  }
 
   /**
    * Creates HTTP client
@@ -39,12 +48,13 @@ class Fetch {
     $stored= new File($this->cache, 'fetch-'.md5($uri));
     if (!$stored->exists() || $this->force) {
       $stored->open(File::WRITE);
-      $r= $c->get();
+      $r= $c->get('', $headers + ['Accept-Encoding' => self::$accept]);
     } else if ($revalidate) {
       $stored->open(File::READWRITE);
       $stored->seek(0);
       $etag= $stored->readLine();
       $r= $c->get('', $headers + [
+        'Accept-Encoding'   => self::$accept,
         'If-None-Match'     => $etag,
         'If-Modified-Since' => gmdate(self::HTTPDATE, $stored->lastModified())
       ]);
@@ -59,7 +69,12 @@ class Fetch {
       $stored->seek(0);
       $stored->truncate($r->header('Content-Length')[0] ?? 0);
       $stored->writeLine($r->header('ETag')[0] ?? '');
-      return new Download($uri, new Transfer($r->in(), $stored->out()), $progress);
+
+      $transfer= new Transfer(
+        Compression::named($r->header('Content-Encoding')[0] ?? 'none')->open($r->in()),
+        $stored->out()
+      );
+      return new Download($uri, $transfer, $progress);
     } else if (304 === $status) {
       return new Cached($uri, $stored->in(), true, $progress);
     } else {
