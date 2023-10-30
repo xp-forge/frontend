@@ -1,16 +1,17 @@
 <?php namespace xp\frontend;
 
-use io\{File, Folder};
 use io\streams\Compression;
+use io\{File, Folder};
 use lang\IllegalArgumentException;
 use peer\http\HttpConnection;
 use util\URI;
 
+/** @test web.frontend.unittest.bundler.FetchTest */
 class Fetch {
   const HTTPDATE = 'D, d M Y H:i:s T';
 
   private static $accept= '';
-  private $cache, $force;
+  private $cache, $force, $connections;
 
   static function __static() {
     foreach (Compression::algorithms()->supported() as $algorithm) {
@@ -28,6 +29,24 @@ class Fetch {
   public function __construct($cache, $force) {
     $this->cache= $cache instanceof Folder ? $cache : new Folder($cache);
     $this->force= $force;
+    $this->connections= function($uri) { return new HttpConnection($uri); };
+  }
+
+  /**
+   * Specify a connection function, which gets passed a URI and returns a
+   * `HttpConnection` instance.
+   *
+   * @param  function(var): peer.http.HttpConnection $connections
+   * @return self
+   */
+  public function connecting($connections) {
+    $this->connections= cast($connections, 'function(var): peer.http.HttpConnection');
+    return $this;
+  }
+
+  /** Returns cache file for a given URI */
+  public function cache(URI $uri): File {
+    return new File($this->cache, 'fetch-'.md5($uri));
   }
 
   /**
@@ -43,9 +62,9 @@ class Fetch {
     if ($f= $progress['start'] ?? null) $f($url);
 
     $uri= $url instanceof URI ? $url : new URI($url);
-    $c= new HttpConnection($uri);
+    $c= $this->connections->__invoke($uri);
 
-    $stored= new File($this->cache, 'fetch-'.md5($uri));
+    $stored= $this->cache($uri);
     if (!$stored->exists() || $this->force) {
       $stored->open(File::WRITE);
       $r= $c->get('', $headers + ['Accept-Encoding' => self::$accept]);
