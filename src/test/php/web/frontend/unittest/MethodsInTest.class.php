@@ -18,6 +18,7 @@ class MethodsInTest {
     Assert::equals(
       [
         '#get/users/(?<id>[^/]+)/avatar$#',
+        '#delete/users/(?<id>[^/]+)$#',
         '#get/users/(?<id>[^/]+)$#',
         '#post/users$#',
         '#get/users$#',

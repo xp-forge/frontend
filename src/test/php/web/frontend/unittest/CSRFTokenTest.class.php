@@ -58,6 +58,11 @@ class CSRFTokenTest {
   }
 
   #[Test, Expect(class: Error::class, message: '/Incorrect CSRF token for .+Users::create/')]
+  public function raises_error_when_empty() {
+    $this->execute('POST', '/users', 'token=&username=test');
+  }
+
+  #[Test, Expect(class: Error::class, message: '/Incorrect CSRF token for .+Users::create/')]
   public function raises_error_when_incorrect() {
     $this->execute('POST', '/users', 'token=INCORRECT&username=test');
   }
