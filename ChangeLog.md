@@ -3,6 +3,9 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Merged PR #45: Add `View::empty()`` to create a view which will not
+  be rendered
+  (@thekid)
 * Merged PR #44: Allow specifying template *and* fragment separated
   by `#` in `View::named()`.
   (@thekid)
