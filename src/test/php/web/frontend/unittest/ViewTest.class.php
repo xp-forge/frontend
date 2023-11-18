@@ -21,6 +21,13 @@ class ViewTest {
   }
 
   #[Test]
+  public function template_and_fragment_separated_with_hash() {
+    $view= View::named('test#inline');
+    Assert::equals('test', $view->template);
+    Assert::equals('inline', $view->fragment);
+  }
+
+  #[Test]
   public function default_status() {
     Assert::equals(200, View::named('test')->status);
   }

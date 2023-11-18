@@ -18,11 +18,13 @@ class View {
   /**
    * Sets template to use
    *
-   * @param  string $template
+   * @param  string $name
    * @return self
    */
-  public static function named($template) {
+  public static function named($name) {
+    sscanf($name, "%[^#]#%[^\r]", $template, $fragment);
     $self= new self($template);
+    $self->fragment= $fragment;
     $self->headers['Content-Type']= 'text/html; charset='.\xp::ENCODING;
     return $self;
   }
