@@ -3,6 +3,8 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 5.6.0 / 2023-11-18
+
 * Merged PR #46: Allow specifying status code in `View::redirect()`
   (@thekid)
 * Merged PR #45: Add `View::empty()` to create a view which will not
