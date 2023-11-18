@@ -3,7 +3,9 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
-* Merged PR #45: Add `View::empty()`` to create a view which will not
+* Merged PR #46: Allow specifying status code in `View::redirect()`
+  (@thekid)
+* Merged PR #45: Add `View::empty()` to create a view which will not
   be rendered
   (@thekid)
 * Merged PR #44: Allow specifying template *and* fragment separated
