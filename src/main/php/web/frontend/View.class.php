@@ -28,6 +28,18 @@ class View {
   }
 
   /**
+   * Returns an empty view
+   *
+   * @return self
+   */
+  public static function empty() {
+    $self= new self(null);
+    $self->headers['Content-Length']= 0;
+    $self->stream= false;
+    return $self;
+  }
+
+  /**
    * Redirects to another URL
    *
    * @param  string|util.URI $uri

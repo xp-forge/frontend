@@ -39,6 +39,11 @@ class ViewTest {
   }
 
   #[Test]
+  public function empty() {
+    Assert::null(View::empty()->template);
+  }
+
+  #[Test]
   public function header() {
     Assert::equals(
       'image/png',
