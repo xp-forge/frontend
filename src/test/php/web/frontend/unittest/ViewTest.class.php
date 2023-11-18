@@ -67,6 +67,14 @@ class ViewTest {
   }
 
   #[Test]
+  public function redirect_using_307() {
+    $redirect= View::redirect('http://test', 307);
+
+    Assert::equals(307, $redirect->status);
+    Assert::equals('http://test', $redirect->headers['Location']);
+  }
+
+  #[Test]
   public function error_sets_template_and_status() {
     $redirect= View::error(404);
 

@@ -45,11 +45,12 @@ class View {
    * Redirects to another URL
    *
    * @param  string|util.URI $uri
+   * @param  int $status Defaults to 302
    * @return self
    */
-  public static function redirect($url) {
+  public static function redirect($url, $status= 302) {
     $self= new self(null);
-    $self->status= 302;
+    $self->status= $status;
     $self->headers['Location']= $url;
     $self->headers['Content-Length']= 0;
     $self->stream= false;
