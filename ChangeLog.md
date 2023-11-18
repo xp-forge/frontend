@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Merged PR #44: Allow specifying template *and* fragment separated
+  by `#` in `View::named()`.
+  (@thekid)
+
 ## 5.5.0 / 2023-10-31
 
 * Merged PR #43: Support compression when downloading (in bundler)
