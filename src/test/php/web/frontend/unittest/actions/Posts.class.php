@@ -3,7 +3,7 @@
 use web\frontend\unittest\ObjectId;
 use web\frontend\{Handler, Get};
 
-#[Handler('/posts')]
+#[Handler('/post')]
 class Posts {
 
   #[Get('/{id}')]

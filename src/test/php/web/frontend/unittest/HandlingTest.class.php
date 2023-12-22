@@ -417,7 +417,7 @@ class HandlingTest {
       }
     ]));
 
-    $this->handle($fixture, 'GET', '/posts/1234');
+    $this->handle($fixture, 'GET', '/post/1234');
     $this->assertContext(['id' => '1234', 'request' => ['params' => []]], $result);
   }
 }
