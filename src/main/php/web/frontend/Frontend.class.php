@@ -1,6 +1,7 @@
 <?php namespace web\frontend;
 
 use lang\reflection\TargetException;
+use util\data\Marshalling;
 use web\{Error, Handler, Request};
 
 /**
@@ -92,10 +93,11 @@ class Frontend implements Handler {
       return $this->errors()->handle(new Error(403, 'Incorrect CSRF token for '.$delegate->name()));
     }
 
+    $marshalling= new Marshalling();
     try {
       $args= [];
-      foreach ($delegate->parameters() as $name => $source) {
-        $args[]= $matches[$name] ?? $source($req, $name);
+      foreach ($delegate->parameters() as $name => $spec) {
+        $args[]= $marshalling->unmarshal($matches[$name] ?? $spec[1]($req, $name), $spec[0]);
       }
 
       return $delegate->invoke($args);

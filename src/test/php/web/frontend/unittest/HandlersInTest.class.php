@@ -27,6 +27,7 @@ class HandlersInTest {
         '#get/users/(?<id>[^/]+)/avatar$#',
         '#delete/users/(?<id>[^/]+)$#',
         '#get/users/(?<id>[^/]+)$#',
+        '#get/posts/(?<id>[^/]+)$#',
         '#get/blogs/stats$#',
         '#get/blogs/?$#',
         '#post/users$#',
