@@ -96,8 +96,8 @@ class Frontend implements Handler {
     $marshalling= new Marshalling();
     try {
       $args= [];
-      foreach ($delegate->parameters() as $name => $spec) {
-        $args[]= $marshalling->unmarshal($matches[$name] ?? $spec[1]($req, $name), $spec[0]);
+      foreach ($delegate->parameters() as $name => $param) {
+        $args[]= $marshalling->unmarshal($matches[$name] ?? $param($req, $name), $param->type);
       }
 
       return $delegate->invoke($args);
