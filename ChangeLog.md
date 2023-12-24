@@ -5,6 +5,7 @@ Web frontends change log
 
 ## 6.0.0 / 2023-12-24
 
+* Implemented xp-framework/rfc#341: Drop support for XP 9 - @thekid
 * Merged PR #47: Support unmarshalling handler parameters - @thekid
 
 ## 5.6.0 / 2023-11-18
