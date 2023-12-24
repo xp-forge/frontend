@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 6.0.0 / 2023-12-24
+
+* Merged PR #47: Support unmarshalling handler parameters - @thekid
+
 ## 5.6.0 / 2023-11-18
 
 * Merged PR #46: Allow specifying status code in `View::redirect()`
