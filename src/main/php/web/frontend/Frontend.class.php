@@ -12,7 +12,7 @@ use web\{Error, Handler, Request};
  * @test  web.frontend.unittest.CSRFTokenTest
  */
 class Frontend implements Handler {
-  private $delegates, $templates;
+  private $delegates, $templates, $marshalling;
   private $errors= null;
   private $security= null;
   public $globals;
@@ -27,6 +27,7 @@ class Frontend implements Handler {
   public function __construct($arg, Templates $templates, $globals= []) {
     $this->delegates= $arg instanceof Delegates ? $arg : new MethodsIn($arg);
     $this->templates= $templates;
+    $this->marshalling= new Marshalling();
     $this->globals= is_string($globals) ? ['base' => rtrim($globals, '/')] : $globals;
   }
 
@@ -93,11 +94,10 @@ class Frontend implements Handler {
       return $this->errors()->handle(new Error(403, 'Incorrect CSRF token for '.$delegate->name()));
     }
 
-    $marshalling= new Marshalling();
     try {
       $args= [];
       foreach ($delegate->parameters() as $name => $param) {
-        $args[]= $marshalling->unmarshal($matches[$name] ?? $param($req, $name), $param->type);
+        $args[]= $this->marshalling->unmarshal($matches[$name] ?? $param($req, $name), $param->type);
       }
 
       return $delegate->invoke($args);
