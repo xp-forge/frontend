@@ -3,7 +3,7 @@
 use lang\IndexOutOfBoundsException;
 use test\Assert;
 use test\{Expect, Test, TestCase, Values};
-use web\frontend\unittest\actions\{Blogs, Home, Select, Users};
+use web\frontend\unittest\actions\{Blogs, Home, Select, Users, Posts};
 use web\frontend\{Frontend, Templates, View};
 use web\io\{TestInput, TestOutput};
 use web\{Error, Request, Response};
@@ -407,5 +407,17 @@ class HandlingTest {
 
     $res= $this->handle($fixture, 'HEAD', '/users/1');
     Assert::equals("\r\n\r\n", strstr($res->output()->bytes(), "\r\n\r\n"));
+  }
+
+  #[Test]
+  public function marshals_to_custom_input() {
+    $fixture= new Frontend(new Posts(), newinstance(Templates::class, [], [
+      'write' => function($template, $context, $out) use(&$result) {
+        $result= $context;
+      }
+    ]));
+
+    $this->handle($fixture, 'GET', '/post/1234');
+    $this->assertContext(['id' => '1234', 'request' => ['params' => []]], $result);
   }
 }

@@ -47,12 +47,13 @@ class Delegate {
    * Returns a map of named sources to read arguments from request. Lazily
    * initialized on first use.
    *
-   * @return [:(function(web.Request, string): var)]
+   * @return [:web.frontend.Parameter]
    */
   public function parameters() {
     if (null === $this->parameters) {
       $this->parameters= [];
       foreach ($this->method->parameters() as $param) {
+        $type= $param->constraint()->type();
 
         // Check for parameter annotations...
         foreach ($param->annotations() as $annotation) {
@@ -60,17 +61,16 @@ class Delegate {
           $name= $annotation->argument(0) ?? $param->name();
 
           if ($param->optional()) {
-            $this->parameters[$name]= function($req, $name) use($source, $param) {
+            $source= function($req, $name) use($source, $param) {
               return $source($req, $name) ?? $param->default();
             };
-          } else {
-            $this->parameters[$name]= $source;
           }
+          $this->parameters[$name]= new Parameter($type, $source);
           continue 2;
         }
 
         // ...falling back to selecting the parameter from the segments
-        $this->parameters[$param->name()]= self::$SOURCES['segment'];
+        $this->parameters[$param->name()]= new Parameter($type, self::$SOURCES['segment']);
       }
     }
 

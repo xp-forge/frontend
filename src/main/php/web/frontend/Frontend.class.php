@@ -1,6 +1,7 @@
 <?php namespace web\frontend;
 
 use lang\reflection\TargetException;
+use util\data\Marshalling;
 use web\{Error, Handler, Request};
 
 /**
@@ -11,7 +12,7 @@ use web\{Error, Handler, Request};
  * @test  web.frontend.unittest.CSRFTokenTest
  */
 class Frontend implements Handler {
-  private $delegates, $templates;
+  private $delegates, $templates, $marshalling;
   private $errors= null;
   private $security= null;
   public $globals;
@@ -26,6 +27,7 @@ class Frontend implements Handler {
   public function __construct($arg, Templates $templates, $globals= []) {
     $this->delegates= $arg instanceof Delegates ? $arg : new MethodsIn($arg);
     $this->templates= $templates;
+    $this->marshalling= new Marshalling();
     $this->globals= is_string($globals) ? ['base' => rtrim($globals, '/')] : $globals;
   }
 
@@ -94,8 +96,8 @@ class Frontend implements Handler {
 
     try {
       $args= [];
-      foreach ($delegate->parameters() as $name => $source) {
-        $args[]= $matches[$name] ?? $source($req, $name);
+      foreach ($delegate->parameters() as $name => $param) {
+        $args[]= $this->marshalling->unmarshal($matches[$name] ?? $param($req, $name), $param->type);
       }
 
       return $delegate->invoke($args);
