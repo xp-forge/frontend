@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 6.1.0 / 2024-01-30
+
+* Made this library compatible with xp-forge/web version 4.0 - @thekid
+
 ## 6.0.0 / 2023-12-25
 
 * Implemented xp-framework/rfc#341: Drop support for XP 9 - @thekid
