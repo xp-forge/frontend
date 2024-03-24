@@ -5,6 +5,8 @@ Web frontends change log
 
 ## 6.2.0 / 2024-03-24
 
+* Added dependency on `xp-forge/compression`, see xp-framework/rfc#342
+  (@thekid)
 * Made compatible with XP 12 - @thekid
 
 ## 6.1.0 / 2024-01-30
