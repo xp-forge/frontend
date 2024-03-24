@@ -1,7 +1,8 @@
 <?php namespace xp\frontend;
 
 use io\File;
-use io\streams\{GzCompressingOutputStream, OutputStream};
+use io\streams\OutputStream;
+use io\streams\compress\{GzipOutputStream, BrotliOutputStream};
 
 class Bundle implements OutputStream {
   const COMPRESS = ['css', 'js', 'svg', 'json', 'xml', 'ttf', 'otf', 'eot'];
@@ -27,8 +28,8 @@ class Bundle implements OutputStream {
     // Check whether it's typically worthwhile compressing a file based on the
     // given type (falling back to the file extension if omitted).
     if (in_array($type ?? strtolower(substr($path, strrpos($path, '.') + 1)), self::COMPRESS)) {
-      self::$zlib && $this->output[]= new GzCompressingOutputStream($this->output($path, '.gz'), 9);
-      self::$brotli && $this->output[]= new BrCompressingOutputStream($this->output($path, '.br'), 11);
+      self::$zlib && $this->output[]= new GzipOutputStream($this->output($path, '.gz'), 9);
+      self::$brotli && $this->output[]= new BrotliOutputStream($this->output($path, '.br'), 11);
     }
   }
 
