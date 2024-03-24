@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 6.2.0 / 2024-03-24
+
+* Made compatible with XP 12 - @thekid
+
 ## 6.1.0 / 2024-01-30
 
 * Made this library compatible with xp-forge/web version 4.0 - @thekid
