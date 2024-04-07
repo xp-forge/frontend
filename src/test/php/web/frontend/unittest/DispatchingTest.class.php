@@ -40,6 +40,18 @@ class DispatchingTest {
   }
 
   #[Test]
+  public function with_params() {
+    $fixture= new class() {
+      #[Get]
+      public function dispatcher() {
+        return View::dispatch('/users', ['test' => 'success']);
+      }
+    };
+
+    Assert::equals(new URI('http://localhost/users?test=success'), $this->handle($fixture, 'GET', '/')->uri());
+  }
+
+  #[Test]
   public function no_dispatch() {
     $fixture= new class() {
       #[Get]

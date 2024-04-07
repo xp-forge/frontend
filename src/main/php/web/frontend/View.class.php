@@ -57,8 +57,15 @@ class View {
     return $self;
   }
 
-  public static function dispatch($url) {
-    return new Dispatch($url);
+  /**
+   * Dispatches request internally
+   *
+   * @param  string|util.URI $uri
+   * @param  [:string] $params
+   * @return web.frontend.Dispatch
+   */
+  public static function dispatch($url, $params= []) {
+    return new Dispatch($url, $params);
   }
 
   /**
