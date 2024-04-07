@@ -57,6 +57,10 @@ class View {
     return $self;
   }
 
+  public static function dispatch($url) {
+    return new Dispatch($url);
+  }
+
   /**
    * Creates an error view with a given status and template. The template
    * will be named *errors/{template}* or *errors/{status}* if its name
@@ -147,7 +151,7 @@ class View {
    * @param  web.Request $req
    * @param  web.Response $res
    * @param  [:var] $globals
-   * @return void
+   * @return var
    */
   public function transfer($req, $res, $globals) {
     $res->answer($this->status);

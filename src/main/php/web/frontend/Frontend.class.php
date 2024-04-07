@@ -111,7 +111,8 @@ class Frontend implements Handler {
    *
    * @param  web.Request $req
    * @param  web.Response $res
-   * @return ?var[] $target
+   * @param  ?var[] $target
+   * @return var
    * @throws web.Error
    */
   public function handle($req, $res, $target= null) {
@@ -141,6 +142,6 @@ class Frontend implements Handler {
     }
 
     $res->header('Server', 'XP/Frontend');
-    $this->security()->apply($view)->using($this->templates)->transfer($req, $res, $this->globals);
+    return $this->security()->apply($view)->using($this->templates)->transfer($req, $res, $this->globals);
   }
 }
