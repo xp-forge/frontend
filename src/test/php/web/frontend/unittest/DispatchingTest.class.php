@@ -79,7 +79,10 @@ class DispatchingTest {
   public function with_params() {
     $fixture= new class() {
       #[Get('/users')]
-      public function users(#[Param] string $test) {
+      public function users(
+        #[Param]
+        string $test
+      ) {
         return View::named("users-{$test}");
       }
 
