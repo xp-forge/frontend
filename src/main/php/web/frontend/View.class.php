@@ -48,10 +48,10 @@ class View {
    * @param  int $status Defaults to 302
    * @return self
    */
-  public static function redirect($url, $status= 302) {
+  public static function redirect($uri, $status= 302) {
     $self= new self(null);
     $self->status= $status;
-    $self->headers['Location']= $url;
+    $self->headers['Location']= $uri;
     $self->headers['Content-Length']= 0;
     $self->stream= false;
     return $self;
@@ -64,8 +64,8 @@ class View {
    * @param  [:string] $params
    * @return web.frontend.Dispatch
    */
-  public static function dispatch($url, $params= []) {
-    return new Dispatch($url, $params);
+  public static function dispatch($uri, $params= []) {
+    return new Dispatch($uri, $params);
   }
 
   /**
