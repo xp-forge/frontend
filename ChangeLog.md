@@ -3,6 +3,13 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 6.3.0 / 2024-05-20
+
+* Merged PR #48: Implement `View::dispatch()`, which redirects internally
+  and dispatches the request to another route, bumping the dependency on
+  the `web` library to https://github.com/xp-forge/web/releases/tag/v4.2.0
+  (@thekid)
+
 ## 6.2.0 / 2024-03-24
 
 * Added dependency on `xp-forge/compression`, see xp-framework/rfc#342
