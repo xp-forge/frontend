@@ -144,7 +144,7 @@ class View {
   }
 
   /**
-   * Sets `Content-Type` to header
+   * Sets `Content-Type` header
    *
    * @param  string $mime Header value
    * @return self
@@ -155,7 +155,7 @@ class View {
   }
 
   /**
-   * Sets `Cache-Control` to header, which defaults to "no-cache"
+   * Sets `Cache-Control` header, which defaults to "no-cache"
    *
    * @see    https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
    * @param  string $control Header value
@@ -167,7 +167,7 @@ class View {
   }
 
   /**
-   * Sets `Last-Modified` to header
+   * Sets `Last-Modified` header
    *
    * @see    https://developer.mozilla.org/en-US/docs/Web/HTTP/Conditional_requests
    * @param  ?int|float|string|util.Date $date
