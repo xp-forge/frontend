@@ -114,7 +114,18 @@ class Hello {
 }
 ```
 
-The above method routes will only accept `GET` requests. `POST` request methods can be annotated with `Post`, `PUT` with `Put`, and so on.
+The above method routes will only accept `GET` requests. `POST` request methods can be annotated with `Post`, `PUT` with `Put`, and so on. To overwrite the method used for POST requests, pass the special `_method` field:
+
+```html
+<form action="/example" method="POST">
+  <input type="hidden" name="_method" value="PUT">
+  <!-- Rest of form -->
+</form>
+```
+
+This will route the request as if it had been issued as `PUT /example HTTP/1.1`.
+
+### Views 
 
 Route methods can return `web.frontend.View` instances to have more control over the response:
 
@@ -127,6 +138,9 @@ return View::named('hello')->with(['greet' => 'World']);
 // Redirecting to either paths or absolute URIs
 return View::redirect('/hello/World');
 
+// No content
+return View::empty()->status(204);
+
 // Add headers and caching, here: for 7 days
 return View::named('blog')
   ->with($article)
@@ -135,17 +149,6 @@ return View::named('blog')
   ->cache('max-age=604800, must-revalidate')
 ;
 ```
-
-To overwrite the method used for POST requests, pass the special `_method` field:
-
-```html
-<form action="/example" method="POST">
-  <input type="hidden" name="_method" value="PUT">
-  <!-- Rest of form -->
-</form>
-```
-
-This will route the request as if it had been issued as `PUT /example HTTP/1.1`.
 
 ## Serving assets
 
