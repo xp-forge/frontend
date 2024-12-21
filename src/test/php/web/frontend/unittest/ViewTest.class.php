@@ -1,9 +1,23 @@
 <?php namespace web\frontend\unittest;
 
-use test\{Assert, Test};
+use test\{Assert, Test, Values};
+use util\Date;
 use web\frontend\View;
 
 class ViewTest {
+
+  /** @return iterable */
+  private function modifications() {
+
+    // Current date
+    yield [null, gmdate('D, d M Y H:i:s \G\M\T')];
+
+    // Reference date
+    $date= 'Mon, 25 Nov 2024 19:30:00 GMT';
+    yield [strtotime($date), $date];
+    yield [$date, $date];
+    yield [new Date($date), $date];
+  }
 
   #[Test]
   public function template() {
@@ -56,6 +70,11 @@ class ViewTest {
       'image/png',
       View::named('test')->header('Content-Type', 'image/png')->headers['Content-Type']
     );
+  }
+
+  #[Test, Values(from: 'modifications')]
+  public function modified($date, $expected) {
+    Assert::equals($expected, View::named('test')->modified($date)->headers['Last-Modified']);
   }
 
   #[Test]
