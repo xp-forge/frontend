@@ -3,6 +3,8 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 6.4.0 / 2024-12-21
+
 * Added `web.frontend.View::type()` to set `Content-Type` header easily
   (@thekid)
 * Merged PR #50: Add support for setting the `Last-Modified` header easily
