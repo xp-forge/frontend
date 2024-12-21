@@ -60,6 +60,14 @@ class ViewTest {
   }
 
   #[Test]
+  public function change_content_type() {
+    Assert::equals(
+      'image/png',
+      View::named('test')->type('image/png')->headers['Content-Type']
+    );
+  }
+
+  #[Test]
   public function empty() {
     Assert::null(View::empty()->template);
   }
@@ -69,14 +77,6 @@ class ViewTest {
     Assert::equals(
       'image/png',
       View::named('test')->header('Content-Type', 'image/png')->headers['Content-Type']
-    );
-  }
-
-  #[Test]
-  public function type() {
-    Assert::equals(
-      'image/png',
-      View::named('test')->type('image/png')->headers['Content-Type']
     );
   }
 
