@@ -72,6 +72,14 @@ class ViewTest {
     );
   }
 
+  #[Test]
+  public function type() {
+    Assert::equals(
+      'image/png',
+      View::named('test')->type('image/png')->headers['Content-Type']
+    );
+  }
+
   #[Test, Values(from: 'modifications')]
   public function modified($date, $expected) {
     Assert::equals($expected, View::named('test')->modified($date)->headers['Last-Modified']);

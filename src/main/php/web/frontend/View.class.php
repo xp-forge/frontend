@@ -144,6 +144,17 @@ class View {
   }
 
   /**
+   * Sets `Content-Type` to header
+   *
+   * @param  string $mime Header value
+   * @return self
+   */
+  public function type($mime) {
+    $this->headers['Content-Type']= $mime;
+    return $this;
+  }
+
+  /**
    * Sets `Cache-Control` to header, which defaults to "no-cache"
    *
    * @see    https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
