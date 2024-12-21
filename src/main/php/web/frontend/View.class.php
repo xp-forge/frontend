@@ -1,5 +1,8 @@
 <?php namespace web\frontend;
 
+use util\Date;
+use web\Headers;
+
 /** @test web.frontend.unittest.ViewTest */
 class View {
   public $template;
@@ -149,6 +152,21 @@ class View {
    */
   public function cache($control) {
     $this->headers['Cache-Control']= $control;
+    return $this;
+  }
+
+  /**
+   * Sets `Last-Modified` to header
+   *
+   * @see    https://developer.mozilla.org/en-US/docs/Web/HTTP/Conditional_requests
+   * @param  ?int|float|string|util.Date $date
+   * @return self
+   */
+  public function modified($date) {
+    $this->headers['Last-Modified']= Headers::date(null === $date
+      ? Date::now()
+      : ($date instanceof Date ? $date : new Date($date))
+    );
     return $this;
   }
 
