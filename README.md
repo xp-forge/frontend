@@ -119,7 +119,6 @@ The above method routes will only accept `GET` requests. `POST` request methods 
 Route methods can return `web.frontend.View` instances to have more control over the response:
 
 ```php
-use web\Headers;
 use web\frontend\View;
 
 // Equivalent of the above world() method's return value
@@ -131,7 +130,8 @@ return View::redirect('/hello/World');
 // Add headers and caching, here: for 7 days
 return View::named('blog')
   ->with($article)
-  ->header('Last-Modified', Headers::date($modified))
+  ->header('X-Binford', '6100 (more power)')
+  ->modified($modified)
   ->cache('max-age=604800, must-revalidate')
 ;
 ```
