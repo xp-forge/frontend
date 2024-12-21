@@ -3,6 +3,9 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Merged PR #50: Add support for setting the `Last-Modified` header easily
+  (@thekid)
+
 ## 6.3.0 / 2024-05-20
 
 * Merged PR #48: Implement `View::dispatch()`, which redirects internally
