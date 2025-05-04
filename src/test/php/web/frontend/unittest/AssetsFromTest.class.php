@@ -156,6 +156,30 @@ class AssetsFromTest {
     Assert::equals('Accept-Encoding', $res->headers()['Vary']);
   }
 
+  #[Test]
+  public function includes_csp_header_by_default() {
+    $assets= new AssetsFrom($this->folderWith(['fixture.css' => '...']));
+    $res= $this->serve($assets, '/fixture.css');
+
+    Assert::equals(AssetsFrom::POLICY, $res->headers()['Content-Security-Policy']);
+  }
+
+  #[Test]
+  public function using_string_csp() {
+    $assets= new AssetsFrom($this->folderWith(['fixture.css' => '...']));
+    $res= $this->serve($assets->policy('script-src none'), '/fixture.css');
+
+    Assert::equals('script-src none', $res->headers()['Content-Security-Policy']);
+  }
+
+  #[Test]
+  public function using_array_csp() {
+    $assets= new AssetsFrom($this->folderWith(['fixture.css' => '...']));
+    $res= $this->serve($assets->policy(['script-src none', 'object-src none']), '/fixture.css');
+
+    Assert::equals('script-src none; object-src none', $res->headers()['Content-Security-Policy']);
+  }
+
   #[Test, Values([[['fixture.css' => self::CONTENTS]], [['fixture.css.gz' => self::COMPRESSED]]])]
   public function handles_conditional_requests($files) {
     $res= $this->serve(new AssetsFrom($this->folderWith($files)), '/fixture.css', [
