@@ -8,7 +8,7 @@ Web frontends change log
 * Implemented default CSP in `web.frontend.AssetsFrom` to prevent XSS
   with SVG files. See #49 and https://stackoverflow.com/q/10557137
   (@thekid)
-**Heads up:** Dropped support for PHP < 7.4, see xp-framework/rfc#343
+* **Heads up:** Dropped support for PHP < 7.4, see xp-framework/rfc#343
   (@thekid)
 * Added PHP 8.5 to test matrix - @thekid
 
