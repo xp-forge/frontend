@@ -1,6 +1,6 @@
 <?php namespace web\frontend\unittest;
 
-use lang\IllegalArgumentException;
+use lang\Error;
 use test\{Assert, Before, Expect, Test, Values};
 use web\frontend\unittest\actions\Users;
 use web\frontend\{Delegate, Exceptions, Frontend, RaiseErrors, Security, Templates, MethodsIn};
@@ -20,7 +20,7 @@ class FrontendTest {
     new Frontend(new Users(), $this->templates);
   }
 
-  #[Test, Expect(IllegalArgumentException::class)]
+  #[Test, Expect(Error::class)]
   public function first_argument_must_be_object() {
     new Frontend(null, $this->templates);
   }

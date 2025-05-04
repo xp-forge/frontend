@@ -19,7 +19,7 @@ use text\json\{Json, StreamInput};
  * @test web.frontend.unittest.bundler.ResolverTest
  */
 class Resolver {
-  const LATEST = ['', '*', 'latest'];
+  const LATEST= ['', '*', 'latest'];
 
   private $fetch, $registry;
 
@@ -38,14 +38,11 @@ class Resolver {
    * @return [:var]
    */
   private function select($versions, $lo, $hi) {
-    $compare= function($id) use($lo, $hi) {
-      return
-        3 === sscanf($id, "%*d.%*d.%*d%[^\r]", $extra) &&
-        version_compare($id, $lo, 'ge') &&
-        version_compare($id, $hi, 'lt')
-      ;
-    };
-    return array_filter($versions, $compare);
+    return array_filter($versions, fn($id) => (
+      3 === sscanf($id, "%*d.%*d.%*d%[^\r]", $extra) &&
+      version_compare($id, $lo, 'ge') &&
+      version_compare($id, $hi, 'lt')
+    ));
   }
 
   /**
@@ -59,7 +56,7 @@ class Resolver {
     if (in_array($constraint, self::LATEST)) {
       $candidates= array_filter(
         $info['versions'],
-        function($id) { return 3 === sscanf($id, "%*d.%*d.%*d%[^\r]", $extra); }
+        fn($id) => 3 === sscanf($id, "%*d.%*d.%*d%[^\r]", $extra)
       );
     } else if ('^' === $constraint[0]) { // Don't allow breaking changes
       $c= sscanf($constraint, '^%d.%d.%d');
@@ -89,7 +86,7 @@ class Resolver {
 
     // Find newest applicable version
     if ($candidates) {
-      usort($candidates, function($a, $b) { return version_compare($b, $a); });
+      usort($candidates, fn($a, $b) => version_compare($b, $a));
       return $candidates[0];
     }
 

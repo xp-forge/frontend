@@ -33,9 +33,9 @@ class Exceptions implements Errors {
    */
   public function catch($type, $handler= null) {
     if (null === $handler) {
-      $this->mapping[$type]= function($cause) { return View::error($cause instanceof Error ? $cause->status() : 500); };
+      $this->mapping[$type]= fn($cause) => View::error($cause instanceof Error ? $cause->status() : 500);
     } else if (is_int($handler)) {
-      $this->mapping[$type]= function() use($handler) { return View::error($handler); };
+      $this->mapping[$type]= fn($cause) => View::error($handler);
     } else if (is_callable($handler)) {
       $this->mapping[$type]= $handler;
     } else {

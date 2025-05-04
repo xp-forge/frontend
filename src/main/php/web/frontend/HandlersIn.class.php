@@ -23,6 +23,6 @@ class HandlersIn extends Delegates {
         $this->with($new ? $new($type->class()) : $type->newInstance(), (string)$handler->argument(0));
       }
     }
-    uksort($this->patterns, function($a, $b) { return strlen($b) - strlen($a); });
+    uksort($this->patterns, fn($a, $b) => strlen($b) - strlen($a));
   }
 }
