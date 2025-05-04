@@ -2,9 +2,8 @@
 
 use io\File;
 use lang\FormatException;
+use test\{Assert, Expect, Test, Values};
 use text\json\StringInput;
-use test\Assert;
-use test\{Expect, Test, TestCase, Values};
 use util\URI;
 use web\frontend\AssetsManifest;
 
@@ -39,7 +38,7 @@ class AssetsManifestTest {
 
   #[Test, Values(from: 'inputs')]
   public function assets($input) {
-    Assert::equals(json_decode($input, true), $this->fixture($input)->assets);
+    Assert::equals(json_decode($input, true), (array)$this->fixture($input)->assets);
   }
 
   #[Test]

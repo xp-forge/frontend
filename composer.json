@@ -11,7 +11,7 @@
     "xp-framework/reflection": "^3.0 | ^2.0",
     "xp-forge/web": "^4.2",
     "xp-forge/compression": "^1.0",
-    "xp-forge/json": "^5.0 | ^4.0",
+    "xp-forge/json": "^6.0 | ^5.0",
     "xp-forge/marshalling": "^2.0",
     "php": ">=7.4.0"
   },
