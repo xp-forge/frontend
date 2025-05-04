@@ -67,8 +67,8 @@ class Security {
     foreach ($this->headers as $name => $value) {
       $view->header($name, preg_replace_callback(
         '/\{\{\s?([^}]+)\s?\}\}/',
-        function($m) use($view, &$variables) {
-          return $variables[$m[1]] ?? $variables[$m[1]]= bin2hex((new Random())->bytes(16));
+        function($m) use(&$variables) {
+          return $variables[$m[1]] ??= bin2hex((new Random())->bytes(16));
         },
         $value
       ));
