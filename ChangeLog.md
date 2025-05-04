@@ -3,6 +3,8 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Made it possible to use `web.frontend.Security` instances for assets
+  (@thekid)
 * Implemented default CSP in `web.frontend.AssetsFrom` to prevent XSS
   with SVG files. See #49 and https://stackoverflow.com/q/10557137
   (@thekid)

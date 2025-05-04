@@ -315,20 +315,31 @@ To configure framing, referrer and content security policies, use the *security(
 ```php
 use web\frontend\{Frontend, Security};
 
-$frontend= (new Frontend($delegates, $templates))
-  ->enacting((new Security())
-    ->framing('SAMEORIGIN')
-    ->referrers('strict-origin')
-    ->csp([
-      'default-src' => '"none"',
-      'script-src'  => ['"self"', '"nonce-{{nonce}}"', 'https://example.com'],
-      // etcetera
-    ])
-  )
+$policy= (new Security())
+  ->framing('SAMEORIGIN')
+  ->referrers('strict-origin')
+  ->csp([
+    'default-src' => '"none"',
+    'script-src'  => ['"self"', '"nonce-{{nonce}}"', 'https://example.com'],
+    // etcetera
+  ])
+;
+$frontend= (new Frontend($delegates, $templates))->enacting($policy);
 ;
 ```
 
-Read more about hardening response headers at https://scotthelme.co.uk/hardening-your-http-response-headers/ or watch this talk: https://www.youtube.com/watch?v=mr230uotw-Y
+For static assets, the same policy can be used:
+
+```php
+use web\frontend\{AssetsFrom, Security};
+
+$policy= /* see above */
+$assets= (new AssetsFrom($path))->enacting($policy);
+```
+
+The default configuration is to set `script-src 'none'; object-src 'none'`, see https://stackoverflow.com/q/10557137
+
+*Read more about hardening response headers at https://scotthelme.co.uk/hardening-your-http-response-headers/ or watch this talk: https://www.youtube.com/watch?v=mr230uotw-Y*
 
 ## Performance
 

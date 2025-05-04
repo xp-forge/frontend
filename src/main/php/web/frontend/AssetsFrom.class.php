@@ -16,7 +16,7 @@ use web\handler\FilesFrom;
  */
 class AssetsFrom extends FilesFrom {
   const PREFERENCE= ['br', 'bzip2', 'gzip', 'deflate'];
-  const POLICY= 'script-src none; object-src none';
+  const POLICY= ['script-src' => "'none'", 'object-src' => "'none'"];
   const ENCODINGS= [
     'br'       => '.br',
     'bzip2'    => '.bz2',
@@ -27,11 +27,12 @@ class AssetsFrom extends FilesFrom {
   ];
 
   private $sources= [];
-  private $csp= self::POLICY;
+  private $security;
   private $preference;
 
   /** @param io.Path|io.Folder|string|io.Path[]|io.Folder[]|string[] $sources */
   public function __construct($sources) {
+    $this->security= (new Security())->csp(self::POLICY);
     $this->preferring(self::PREFERENCE);
     foreach (is_array($sources) ? $sources : [$sources] as $source) {
       $this->sources[]= $source instanceof Path ? $source : new Path($source);
@@ -39,15 +40,9 @@ class AssetsFrom extends FilesFrom {
     parent::__construct($this->sources[0] ?? '.');
   }
 
-  /**
-   * Change content security policy
-   *
-   * @see    https://github.com/xp-forge/frontend/issues/49
-   * @param  string|string[] $csp
-   * @return self
-   */
-  public function policy($csp) {
-    $this->csp= is_array($csp) ? implode('; ', $csp) : (string)$csp;
+  /** Overwrites security */
+  public function enacting(Security $security): self {
+    $this->security= $security;
     return $this;
   }
 
@@ -135,8 +130,10 @@ class AssetsFrom extends FilesFrom {
         $target= new Path($source, $path.(self::ENCODINGS[$encoding] ?? '*'));
         if ($target->exists() && $target->isFile()) {
           $response->header('Vary', 'Accept-Encoding');
-          $response->header('Content-Security-Policy', $this->csp);
           '*' === $encoding || $response->header('Content-Encoding', $encoding);
+          foreach ($this->security->headers() as $name => $value) {
+            $response->header($name, $value);
+          }
 
           return $this->serve($request, $response, $target->asFile(), $this->mime($path));
         }

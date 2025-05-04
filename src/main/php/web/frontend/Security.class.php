@@ -17,6 +17,9 @@ class Security {
     'Referrer-Policy'         => 'no-referrer-when-downgrade',
   ];
 
+  /** @return [:string] */
+  public function headers() { return $this->headers; }
+
   /** Sets frame options */
   public function framing(string $value): self {
     $this->headers['X-Frame-Options']= $value;
@@ -32,18 +35,24 @@ class Security {
   /**
    * Sets content security policy
    * 
-   * @param  [:string|string[]] $sources
+   * @param  string|[:string|string[]] $policy
    * @param  bool $reportOnly whether to report only (true) or to enforce (false)
    * @return self
    * @see    https://content-security-policy.com/
    */
-  public function csp(array $sources, bool $reportOnly= false): self {
+  public function csp($policy, bool $reportOnly= false): self {
     $name= $reportOnly ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
-    $header= '';
-    foreach ($sources as $source => $value) {
-      $header.= '; '.$source.' '.strtr(is_array($value) ? implode(' ', $value) : $value, '"', "'");
+
+    if (is_array($policy)) {
+      $header= '';
+      foreach ($policy as $source => $value) {
+        $header.= '; '.$source.' '.strtr(is_array($value) ? implode(' ', $value) : $value, '"', "'");
+      }
+      $this->headers[$name]= substr($header, 2);
+    } else {
+      $this->headers[$name]= $policy;
     }
-    $this->headers[$name]= substr($header, 2);
+
     return $this;
   }
 

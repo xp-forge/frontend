@@ -3,7 +3,7 @@
 use io\{File, Files, Folder};
 use lang\Environment;
 use test\{After, Assert, Test, Values};
-use web\frontend\AssetsFrom;
+use web\frontend\{AssetsFrom, Security};
 use web\io\{TestInput, TestOutput};
 use web\{Request, Response};
 
@@ -161,23 +161,15 @@ class AssetsFromTest {
     $assets= new AssetsFrom($this->folderWith(['fixture.css' => '...']));
     $res= $this->serve($assets, '/fixture.css');
 
-    Assert::equals(AssetsFrom::POLICY, $res->headers()['Content-Security-Policy']);
+    Assert::equals("script-src 'none'; object-src 'none'", $res->headers()['Content-Security-Policy']);
   }
 
   #[Test]
-  public function using_string_csp() {
+  public function enacting_security() {
     $assets= new AssetsFrom($this->folderWith(['fixture.css' => '...']));
-    $res= $this->serve($assets->policy('script-src none'), '/fixture.css');
+    $res= $this->serve($assets->enacting((new Security())->csp('script-src none')), '/fixture.css');
 
     Assert::equals('script-src none', $res->headers()['Content-Security-Policy']);
-  }
-
-  #[Test]
-  public function using_array_csp() {
-    $assets= new AssetsFrom($this->folderWith(['fixture.css' => '...']));
-    $res= $this->serve($assets->policy(['script-src none', 'object-src none']), '/fixture.css');
-
-    Assert::equals('script-src none; object-src none', $res->headers()['Content-Security-Policy']);
   }
 
   #[Test, Values([[['fixture.css' => self::CONTENTS]], [['fixture.css.gz' => self::COMPRESSED]]])]
