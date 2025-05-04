@@ -17,9 +17,6 @@ class Security {
     'Referrer-Policy'         => 'no-referrer-when-downgrade',
   ];
 
-  /** @return [:string] */
-  public function headers() { return $this->headers; }
-
   /** Sets frame options */
   public function framing(string $value): self {
     $this->headers['X-Frame-Options']= $value;
@@ -57,22 +54,37 @@ class Security {
   }
 
   /**
+   * Yields security headers, replacing placeholders with random values.
+   * Returns the replacement values map, if any.
+   *
+   * @return iterable
+   */
+  public function headers() {
+    $variables= [];
+    $random= null;
+    foreach ($this->headers as $name => $value) {
+      yield $name => preg_replace_callback(
+        '/\{\{\s?([^}]+)\s?\}\}/',
+        function($m) use(&$variables) {
+          return $variables[$m[1]]??= bin2hex(($random??= new Random())->bytes(16));
+        },
+        $value
+      );
+    }
+    return $variables;
+  }
+
+  /**
    * Passes security headers and context to view and returns it.
    *
    * @param  web.frontend.View
    * @return web.frontend.View
    */
   public function apply($view) {
-    $variables= [];
-    foreach ($this->headers as $name => $value) {
-      $view->header($name, preg_replace_callback(
-        '/\{\{\s?([^}]+)\s?\}\}/',
-        function($m) use(&$variables) {
-          return $variables[$m[1]] ??= bin2hex((new Random())->bytes(16));
-        },
-        $value
-      ));
+    $headers= $this->headers();
+    foreach ($headers as $name => $value) {
+      $view->header($name, $value);
     }
-    return $view->with($variables);
+    return $view->with($headers->getReturn());
   }
 }
