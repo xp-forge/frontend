@@ -278,7 +278,7 @@ $frontend= (new Frontend(new HandlersIn('org.example.web'), $templates))
   ->handling((new Exceptions())
     ->catch(InvalidOrder::class, fn($e) => View::error(503, 'invalid-order')),
     ->catch(LinkExpired::class, 404) // uses template "errors/404"
-    ->catch(Throwable::class)        // catch-all, errors/{status} for web.Error, errors/500 for others
+    ->catch(Throwable::class)        // "errors/{status}" for web.Error, "errors/500" for others
   )
 ;
 ```
