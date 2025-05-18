@@ -2,7 +2,8 @@
 
 use io\Path;
 use util\MimeType;
-use web\handler\FilesFrom;
+use web\Handler;
+use web\io\StaticContent;
 
 /**
  * Serves assets from a given path. Checks for files with extensions matching
@@ -14,7 +15,7 @@ use web\handler\FilesFrom;
  * @see  https://www.rootusers.com/gzip-vs-bzip2-vs-xz-performance-comparison/
  * @see  https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding
  */
-class AssetsFrom extends FilesFrom {
+class AssetsFrom implements Handler {
   const PREFERENCE= ['br', 'bzip2', 'gzip', 'deflate'];
   const POLICY= ['script-src' => "'none'", 'object-src' => "'none'"];
   const ENCODINGS= [
@@ -26,18 +27,28 @@ class AssetsFrom extends FilesFrom {
     '*'        => ''
   ];
 
+  private $content, $security, $preference;
   private $sources= [];
-  private $security;
-  private $preference;
 
   /** @param io.Path|io.Folder|string|io.Path[]|io.Folder[]|string[] $sources */
   public function __construct($sources) {
+    $this->content= new StaticContent();
     $this->security= (new Security())->csp(self::POLICY);
     $this->preferring(self::PREFERENCE);
     foreach (is_array($sources) ? $sources : [$sources] as $source) {
       $this->sources[]= $source instanceof Path ? $source : new Path($source);
     }
-    parent::__construct($this->sources[0] ?? '.');
+  }
+
+  /**
+   * Adds headers to successful responses, either from an array or a function.
+   *
+   * @param  [:string]|function(util.URI, io.File, string): iterable $headers
+   * @return self
+   */
+  public function with($headers) {
+    $this->content->with($headers);
+    return $this;
   }
 
   /** Overwrites security */
@@ -135,12 +146,12 @@ class AssetsFrom extends FilesFrom {
             $response->header($name, $value);
           }
 
-          return $this->serve($request, $response, $target->asFile(), $this->mime($path));
+          return $this->content->serve($request, $response, $target->asFile(), $this->mime($path));
         }
       }
     }
 
     // Target does not exist in any of the sources, generate a 404
-    return $this->serve($request, $response, null);
+    return $this->content->serve($request, $response, null);
   }
 }

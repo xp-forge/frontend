@@ -3,6 +3,12 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 7.1.0 / 2025-05-18
+
+* Refactored code base to use the `web.io.StaticContent` class instead
+  of inheriting from the *FilesFrom* handler.
+  (@thekid)
+
 ## 7.0.0 / 2025-05-04
 
 * Made it possible to use `web.frontend.Security` instances for assets
