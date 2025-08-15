@@ -2,18 +2,19 @@
 
 use io\File;
 use io\streams\OutputStream;
-use io\streams\compress\{GzipOutputStream, BrotliOutputStream};
+use io\streams\compress\{GzipOutputStream, BrotliOutputStream, ZStandardOutputStream};
 
 class Bundle implements OutputStream {
   const COMPRESS = ['css', 'js', 'svg', 'json', 'xml', 'ttf', 'otf', 'eot'];
 
-  private static $zlib, $brotli;
+  private static $zlib, $brotli, $zstd;
   private $files= [];
   private $output= [];
 
   static function __static() {
     self::$zlib= extension_loaded('zlib');
     self::$brotli= extension_loaded('brotli');
+    self::$zstd= extension_loaded('zstd');
   }
 
   /**
@@ -30,6 +31,7 @@ class Bundle implements OutputStream {
     if (in_array($type ?? strtolower(substr($path, strrpos($path, '.') + 1)), self::COMPRESS)) {
       self::$zlib && $this->output[]= new GzipOutputStream($this->output($path, '.gz'), 9);
       self::$brotli && $this->output[]= new BrotliOutputStream($this->output($path, '.br'), 11);
+      self::$zstd && $this->output[]= new ZStandardOutputStream($this->output($path, '.zstd'), 22);
     }
   }
 

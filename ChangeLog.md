@@ -3,6 +3,13 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 7.2.0 / 2025-08-15
+
+* Added compatibility with `xp-forge/compression` version 2.0+, enabling
+  the ZStandard compression algorithm when the `zstd` extension is loaded.
+  See https://github.com/kjdev/php-ext-zstd
+  (@thekid)
+
 ## 7.1.0 / 2025-05-18
 
 * Refactored code base to use the `web.io.StaticContent` class instead
