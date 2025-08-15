@@ -131,7 +131,7 @@ class BundleRunner {
             $version= $resolve->version($source, $constraint);
             Console::writeLine("\e[33m", $version, "\e[0m)");
             $bundles[$name][]= new LibraryDependency($source, $version, $sources);
-          } else if (preg_match('/^https?:\/\//', $source)) {
+          } else if (preg_match('/^https?(\+[a-z0-9]+)?:\/\//', $source)) {
             Console::writeLinef("  - Resolving \e[32m%s\e[0m (\e[33mremote\e[0m)", $source);
             $bundles[$name][]= new RemoteDependency($source, $sources);
           } else if (preg_match('/^fonts?:\/\//', $source)) {

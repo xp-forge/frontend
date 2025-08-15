@@ -8,6 +8,12 @@ Web frontends change log
 * Added compatibility with `xp-forge/compression` version 2.0+, enabling
   the ZStandard compression algorithm when the `zstd` extension is loaded.
   See https://github.com/kjdev/php-ext-zstd
+
+## 7.1.1 / 2025-05-26
+
+* Supported specifying SSL/TLS protocol by using e.g. `https+tlsv12://`
+  in the URLs. Workaround for CloudFlare raising "403 Forbidden" errors
+  when OpenSSL negotiates the TLS version; see issue #51.
   (@thekid)
 
 ## 7.1.0 / 2025-05-18
