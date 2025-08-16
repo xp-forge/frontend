@@ -13,7 +13,7 @@ class ProcessFonts {
     $this->files= $files;
   }
 
-  public function process(Result $result, InputStream $stream, URI $uri= null) {
+  public function process(Result $result, InputStream $stream, URI $uri) {
     $bytes= Streams::readAll($stream);
 
     // Download fonts

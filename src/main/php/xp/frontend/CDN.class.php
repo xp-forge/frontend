@@ -11,7 +11,7 @@ use util\URI;
 class CDN {
   private $fetch, $url, $progress;
 
-  public function __construct(Fetch $fetch, string $url= null, array $progress= []) {
+  public function __construct(Fetch $fetch, ?string $url= null, array $progress= []) {
     $this->fetch= $fetch;
     $this->url= $url ?? 'https://cdn.jsdelivr.net/npm/%s@%s/%s';
     $this->progress= $progress;

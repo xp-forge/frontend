@@ -11,7 +11,7 @@ class StoreFile {
     $this->files= $files;
   }
 
-  public function process(Result $result, InputStream $stream, URI $uri= null) {
+  public function process(Result $result, InputStream $stream, URI $uri) {
     $this->files->store($stream, $uri->path());
   }
 }

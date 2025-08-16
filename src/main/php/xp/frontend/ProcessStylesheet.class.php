@@ -12,7 +12,7 @@ class ProcessStylesheet {
     $this->files= $files;
   }
 
-  public function process(Result $result, InputStream $stream, URI $uri= null) {
+  public function process(Result $result, InputStream $stream, URI $uri) {
     $bytes= Streams::readAll($stream);
 
     // Download dependencies. If the stylesheet itself was read from cache, don't
