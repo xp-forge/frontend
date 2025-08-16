@@ -112,7 +112,7 @@ class BundleRunner {
       'fonts' => new ProcessFonts($files),
       'css'   => new ProcessStylesheet($files),
       'js'    => new ProcessJavaScript(),
-      '*'    => new StoreFile($files),
+      '*'     => new StoreFile($files),
     ];
 
     try {
