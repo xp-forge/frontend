@@ -3,6 +3,8 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+* Added PHP 8.6 to the test matrix - @thekid
+
 ## 7.2.0 / 2025-08-15
 
 * Added compatibility with `xp-forge/compression` version 2.0+, enabling
