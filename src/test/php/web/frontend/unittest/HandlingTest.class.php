@@ -4,7 +4,7 @@ use lang\IndexOutOfBoundsException;
 use test\Assert;
 use test\{Expect, Test, TestCase, Values};
 use web\frontend\unittest\actions\{Blogs, Home, Select, Users, Posts};
-use web\frontend\{Frontend, Templates, View};
+use web\frontend\{Frontend, Templates, View, CannotRoute};
 use web\io\{TestInput, TestOutput};
 use web\{Error, Request, Response};
 
@@ -172,7 +172,7 @@ class HandlingTest {
     Assert::equals(404, $res->status());
   }
 
-  #[Test, Expect(class: Error::class, message: '/Cannot route PATCH requests to .+/')]
+  #[Test, Expect(class: CannotRoute::class, message: '/Cannot route PATCH requests to .+/')]
   public function unsupported_route() {
     $fixture= new Frontend(new Users(), new class() implements Templates {
       public function write($template, $context, $out) { /* NOOP */ }
