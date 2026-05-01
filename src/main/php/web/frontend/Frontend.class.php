@@ -85,7 +85,7 @@ class Frontend implements Handler {
     static $CSRF_EXEMPT= ['get' => true, 'head' => true];
 
     if (null === $delegate) {
-      return $this->errors()->handle(new Error(404, 'Cannot route '.$req->method().' requests to '.$req->uri()->path()));
+      return $this->errors()->handle(new CannotRoute($req->method(), $req->uri()->path()));
     }
 
     // Verify CSRF token for anything which is not a GET or HEAD request
