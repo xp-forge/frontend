@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 7.4.0 / 2026-05-01
+
+* Merged PR #53: Create dedicated "cannot route" error - @thekid
+
 ## 7.3.0 / 2026-04-25
 
 * Made compatible with `xp-framework/http` version 11.0 - @thekid
