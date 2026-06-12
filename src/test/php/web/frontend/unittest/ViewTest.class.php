@@ -67,6 +67,14 @@ class ViewTest {
     );
   }
 
+  #[Test, Values([[[], ''], [['charset' => 'utf-8'], '; charset=utf-8'], [['boundary' => 'a;b'], '; boundary="a;b"']])]
+  public function content_type_with_type($params, $expected) {
+    Assert::equals(
+      "text/plain{$expected}",
+      View::named('test')->type('text/plain', $params)->headers['Content-Type']
+    );
+  }
+
   #[Test]
   public function empty() {
     Assert::null(View::empty()->template);
