@@ -26,7 +26,7 @@ class WithFingerprints extends Files {
    * Store a given input stream under a given name and return file its
    * contents were written to.
    *
-   * @throws io.IOException
+   * @throws io.OperationFailed
    */
   public function store(InputStream $in, string $path): Bundle {
     $type= substr($path, strrpos($path, '.') + 1);

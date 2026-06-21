@@ -16,7 +16,7 @@ abstract class Files {
    * Store a given input stream under a given name and return file its
    * contents were written to.
    *
-   * @throws io.IOException
+   * @throws io.OperationFailed
    */
   public abstract function store(InputStream $in, string $path): Bundle;
 
