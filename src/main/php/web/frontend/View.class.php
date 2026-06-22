@@ -146,10 +146,18 @@ class View {
   /**
    * Sets `Content-Type` header
    *
+   * @see    https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Type
    * @param  string $mime Header value
+   * @param  [:string] $params
    * @return self
    */
-  public function type($mime) {
+  public function type($mime, $params= []) {
+    foreach ($params as $key => $value) {
+      $mime.= '; '.$key.'='.(strlen($value) === strcspn($value, "()<>@,;:\\\"/[]?={} \t")
+        ? $value
+        : '"'.strtr($value, ['"' => '\\"']).'"'
+      );
+    }
     $this->headers['Content-Type']= $mime;
     return $this;
   }
@@ -157,7 +165,7 @@ class View {
   /**
    * Sets `Cache-Control` header, which defaults to "no-cache"
    *
-   * @see    https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+   * @see    https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control
    * @param  string $control Header value
    * @return self
    */
