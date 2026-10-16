@@ -159,7 +159,7 @@ class HandlingTest {
       }
     ]));
 
-    $this->handle($fixture, 'QUERY', '/users', [], 'q=Test');
+    $this->handle($fixture, 'QUERY', '/users/names', [], 'q=Test');
     Assert::equals('search', $result);
   }
 

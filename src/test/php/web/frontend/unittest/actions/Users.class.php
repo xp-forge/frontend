@@ -23,7 +23,7 @@ class Users {
     }
   }
 
-  #[Query('/users')]
+  #[Query('/users/names')]
   public function search(
     #[Param]
     $q= '',
