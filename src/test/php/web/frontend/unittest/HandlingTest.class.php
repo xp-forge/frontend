@@ -152,6 +152,18 @@ class HandlingTest {
   }
 
   #[Test]
+  public function query() {
+    $fixture= new Frontend(new Users(), newinstance(Templates::class, [], [
+      'write' => function($template, $context, $out) use(&$result) {
+        $result= $template;
+      }
+    ]));
+
+    $this->handle($fixture, 'QUERY', '/users', [], 'q=Test');
+    Assert::equals('search', $result);
+  }
+
+  #[Test]
   public function special_method_field_overwrites_post_method() {
     $fixture= new Frontend(new Users(), new class() implements Templates {
       public function write($template, $context, $out) { /* NOOP */ }

@@ -1,7 +1,7 @@
 <?php namespace web\frontend\unittest\actions;
 
 use web\Error;
-use web\frontend\{Delete, Get, Handler, Param, Post, View};
+use web\frontend\{Delete, Get, Handler, Param, Post, Query, View};
 
 #[Handler]
 class Users {
@@ -21,6 +21,16 @@ class Users {
     } else {
       return ['start' => $start, 'max' => $max, 'list' => array_slice($this->list, $start, $max)];
     }
+  }
+
+  #[Query('/users')]
+  public function search(
+    #[Param]
+    $q= '',
+    #[Param]
+    $max= -1
+  ) {
+    return View::named('search');
   }
 
   #[Get('/users/{id}')]

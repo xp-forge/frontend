@@ -30,6 +30,7 @@ class HandlersInTest {
         '#get/post/(?<id>[^/]+)$#',
         '#get/blogs/stats$#',
         '#get/blogs/?$#',
+        '#query/users$#',
         '#post/users$#',
         '#get/users$#',
         '#get/?$#'

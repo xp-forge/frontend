@@ -20,6 +20,7 @@ class MethodsInTest {
         '#get/users/(?<id>[^/]+)/avatar$#',
         '#delete/users/(?<id>[^/]+)$#',
         '#get/users/(?<id>[^/]+)$#',
+        '#query/users$#',
         '#post/users$#',
         '#get/users$#',
       ],
