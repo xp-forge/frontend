@@ -3,6 +3,10 @@ Web frontends change log
 
 ## ?.?.? / ????-??-??
 
+## 7.5.0 / 2026-10-17
+
+* Added compatibility with `xp-forge/json` version 7.0+ - @thekid
+
 ## 7.4.0 / 2026-05-01
 
 * Merged PR #53: Create dedicated "cannot route" error - @thekid
